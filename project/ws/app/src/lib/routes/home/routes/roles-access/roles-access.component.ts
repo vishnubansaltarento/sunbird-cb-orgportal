@@ -21,11 +21,11 @@ export class RolesAccessComponent implements OnInit, AfterViewInit, OnDestroy {
   uniqueRoles: any = []
 
   constructor(private router: Router,
-              private activeRouter: ActivatedRoute,
-              private usersService: UsersService,
+    private activeRouter: ActivatedRoute,
+    private usersService: UsersService,
     // private telemetrySvc: TelemetryService,
-              private events: EventService,
-              private roleservice: RolesService) { }
+    private events: EventService,
+    private roleservice: RolesService) { }
 
   ngOnInit() {
     this.tabledata = {
@@ -69,14 +69,35 @@ export class RolesAccessComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
   fetchIndidualRoleData(rootOrgId: string, rolename: string) {
-    // debugger
     this.usersService.getAllRoleUsers(rootOrgId, rolename).subscribe(data => {
       this.roleCountSpinner = true
-      const individualCount = data.count
-      for (let i = 0; i < this.data.length; i += 1) {
-        if (this.data[i].role === rolename) {
-          this.data[i].count = individualCount
-        }
+      // const individualCount = data.count
+      // for (let i = 0; i < this.data.length; i += 1) {
+      //   if (this.data[i].role === rolename) {
+      //     this.data[i].count = individualCount
+      //   }
+      // }
+      let users: any[] = []
+      if (data.count.content && data.count.content.length > 0) {
+        users = _.map(_.compact(_.map(data.count.content, i => {
+          let consider = false
+          if (!i.isDeleted && i.organisations && i.organisations.length > 0) {
+            _.each(i.organisations, o => {
+              if (!o.isDeleted && (o.roles || []).indexOf(rolename) >= 0) {
+                consider = true
+              }
+            })
+          }
+          return consider ? i : null
+        }))
+        ),
+          _.forEach(this.data, (value, i) => {
+            // tslint:disable-next-line:no-console
+            console.log('v', value)
+            if (this.data[i].role === rolename) {
+              this.data[i].count = users.length
+            }
+          })
       }
     })
   }
