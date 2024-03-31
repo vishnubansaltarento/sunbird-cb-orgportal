@@ -131,7 +131,7 @@ export class ReportsSectionComponent implements OnInit {
             adminDetails.content.forEach((user: any) => {
               const accessDetails = accessDetailsList && accessDetailsList.length > 0 ?
                 accessDetailsList.find((obj: any) => obj.userId === user.id) : { reportAccessExpiry: '' }
-              if (this.userDetails.id !== user.id) {
+              if (this.userDetails.id !== user.id && !user.isDeleted) {
                 const currentDate = this.datePipe.transform(new Date(), 'yyyy/MM/dd') || ''
                 const expireDate = this.datePipe.transform(_.get(accessDetails, 'reportAccessExpiry', ''), 'yyyy/MM/dd') || ''
                 const firstName = _.get(user, 'firstName', '')
