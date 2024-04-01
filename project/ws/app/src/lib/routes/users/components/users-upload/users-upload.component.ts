@@ -200,10 +200,17 @@ export class UsersUploadComponent implements OnInit, AfterViewInit, OnDestroy {
     if (fileList && fileList.length > 0) {
       const file: File = fileList[0]
       this.fileName = file.name
-      this.fileSelected = file
-      this.formGroup.patchValue({
-        file,
-      })
+      const fileCsv = this.fileName.replace(/[^A-Za-z0-9_.]/g, '')
+      if (fileCsv.toLowerCase().endsWith('.csv')) {
+        this.fileSelected = file
+        this.formGroup.patchValue({
+          file,
+        })
+      } else {
+        this.fileName = ''
+        this.showFileError = true
+        this.openSnackbar('Please select a valid file.')
+      }
     }
   }
 
