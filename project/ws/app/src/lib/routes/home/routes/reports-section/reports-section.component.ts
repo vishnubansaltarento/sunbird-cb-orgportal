@@ -339,7 +339,7 @@ export class ReportsSectionComponent implements OnInit {
     }
     this.dialog.open(ReportsVideoComponent, {
       data: {
-        videoLink: url
+        videoLink: url,
       },
       disableClose: true,
       width: '50%',
