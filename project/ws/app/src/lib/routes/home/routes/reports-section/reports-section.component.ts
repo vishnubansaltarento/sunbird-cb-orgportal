@@ -331,9 +331,15 @@ export class ReportsSectionComponent implements OnInit {
   }
 
   openVideoPopup() {
+    let url = ''
+    if (this.configSvc && this.userDetails.roles.includes('MDO_LEADER')) {
+      url = `${environment.karmYogiPath}/content-store/MDO-leader-reports.MP4`
+    } else {
+      url = `${environment.karmYogiPath}/content-store/MDO-admin-reports.mp4`
+    }
     this.dialog.open(ReportsVideoComponent, {
       data: {
-        videoLink: 'https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1&mute=1',
+        videoLink: url
       },
       disableClose: true,
       width: '50%',
