@@ -14,6 +14,8 @@ import { NsContent } from '@sunbird-cb/collection'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 import { ProfileV2UtillService } from '../../services/home-utill.service'
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
+import { ReportsVideoComponent } from '../reports-video/reports-video.component'
 
 // import * as XLSX from 'xlsx'
 
@@ -49,6 +51,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   content: NsContent.IContent = {} as NsContent.IContent
   isMdoAdmin = false
 
+  reportsNoteList: string[] = []
+
   tabledata: ITableData = {
     actions: [],
     columns: [
@@ -76,6 +80,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     private events: EventService,
     private loaderService: LoaderService,
     private profileUtilSvc: ProfileV2UtillService,
+    private sanitizer: DomSanitizer,
     // private telemetrySvc: TelemetryService,
     // private configSvc: ConfigurationsService,
     // private discussService: DiscussService,
@@ -105,6 +110,26 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.isMdoAdmin = this.configSvc.unMappedUser.roles.includes('MDO_ADMIN')
     }
     this.filterData('')
+
+    this.reportsNoteList = [
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque leo erat, tincidunt vel gravida sed, rhoncus vel velit. Duis at consectetur tellus. Sed vitae ipsum odio. `,
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque leo erat, tincidunt vel gravida sed, rhoncus vel velit. Duis at consectetur tellus. Sed vitae ipsum odio. `,
+    ]
+  }
+  sanitizeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html)
+  }
+
+  openVideoPopup() {
+    this.dialog.open(ReportsVideoComponent, {
+      data: {
+        videoLink: 'https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1&mute=1',
+      },
+      disableClose: true,
+      width: '50%',
+      height: '60%',
+      panelClass: 'overflow-visable',
+    })
   }
 
   filter(filter: string) {
