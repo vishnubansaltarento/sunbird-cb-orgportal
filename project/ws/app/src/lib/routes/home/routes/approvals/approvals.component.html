@@ -12,6 +12,30 @@
     <mat-card-title class="flex-4 mobile-margin text-capitalize">
       <span class="mat-subheading-1">Approvals</span>
     </mat-card-title>
+    <mat-card class="mb-8">
+      <mat-card-content class="flex gap-10">
+        <div class="section-1">
+          <div class="flex-4 mobile-margin text-capitalize mat-h2">Note:</div>
+          <ng-container *ngFor="let note of reportsNoteList">
+            <div class="flex gap-4 mb-4">
+              <div>
+                <mat-icon class="infoIcon">info_outlined</mat-icon>
+              </div>
+              <div [innerHTML]="sanitizeHtml(note)"></div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="reportsDemo flex justify-end section-2">
+          <div class="reportsDemoVideo flex flex-column flex-middle justify-center margin-top-m"
+            (click)="openVideoPopup()">
+            <mat-icon class="video_icon mb-2">play_circle</mat-icon>
+            <div>
+              Watch how it works
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
     <mat-card-content>
       <div class="flex flex-1 flex-column margin-fix">
         <div class="flex flex-1 filter max-height-60">

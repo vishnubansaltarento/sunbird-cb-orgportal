@@ -290,3 +290,18 @@ a:not([href]):not([tabindex]) {
   font-size: 20px !important;
 }
 
+.reportsDemo {
+    .reportsDemoVideo {
+      width: 200px;
+      height: 140px;
+      border-radius: 5px;
+      background-color: #FDEAD5;
+      font-weight: 600;
+      pointer-events: all;
+      cursor: pointer;
+
+      .video_icon {
+        font-size: 32px;
+      }
+    }
+  }

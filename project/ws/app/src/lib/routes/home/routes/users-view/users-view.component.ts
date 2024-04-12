@@ -114,9 +114,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
 
     this.reportsNoteList = [
       // tslint:disable-next-line: max-line-length
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque leo erat, tincidunt vel gravida sed, rhoncus vel velit. Duis at consectetur tellus. Sed vitae ipsum odio. `,
+      `Easily create users individually or in bulk.`,
       // tslint:disable-next-line: max-line-length
-      `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque leo erat, tincidunt vel gravida sed, rhoncus vel velit. Duis at consectetur tellus. Sed vitae ipsum odio. `,
+      `Edit any user profile within your organization.`,
+      // tslint:disable-next-line: max-line-length
+      `Verified Users: Users with all their primary fields approved.`,
+      // tslint:disable-next-line: max-line-length
+      `Non-Verified Users: Users whose one or more primary fields are yet to be approved. You can help by reviewing and approving their requests.`,
+      // tslint:disable-next-line: max-line-length
+      `Not My User: Remove a user from your organization with a simple click.`,
     ]
   }
   sanitizeHtml(html: string): SafeHtml {

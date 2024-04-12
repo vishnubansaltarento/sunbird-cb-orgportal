@@ -4,11 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { ApprovalsService } from '../../services/approvals.service'
 // import moment from 'moment'
 import { ITableData } from '@sunbird-cb/collection/lib/ui-org-table/interface/interfaces'
-import { MatSnackBar, PageEvent } from '@angular/material'
+import { MatDialog, MatSnackBar, PageEvent } from '@angular/material'
 /* tslint:disable */
 import _ from 'lodash'
 import { EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
+import { ReportsVideoComponent } from '../reports-video/reports-video.component'
 /* tslint:enable */
 @Component({
   selector: 'ws-app-approvals',
@@ -42,6 +44,7 @@ export class ApprovalsComponent implements OnInit, OnDestroy {
     needUserMenus: false,
   }
   configSvc: any
+  reportsNoteList: string[] = []
 
   constructor(
     private router: Router,
@@ -49,6 +52,8 @@ export class ApprovalsComponent implements OnInit, OnDestroy {
     private activeRouter: ActivatedRoute,
     private route: ActivatedRoute,
     private events: EventService,
+    public dialog: MatDialog,
+    private sanitizer: DomSanitizer,
     private snackbar: MatSnackBar) {
     this.configSvc = this.route.parent && this.route.parent.snapshot.data.configService
     if (this.activeRouter.parent && this.activeRouter.parent.snapshot.data.configService.unMappedUser.channel
@@ -63,6 +68,31 @@ export class ApprovalsComponent implements OnInit, OnDestroy {
     if (this.currentFilter === 'pending') {
       this.fetchApprovals()
     }
+
+    this.reportsNoteList = [
+      // tslint:disable-next-line: max-line-length
+      `Profile Verifications: Review and approve/reject user requests for verification of one or more primary fields.`,
+      // tslint:disable-next-line: max-line-length
+      `Transfers: Manage user transfer requests, including approving/rejecting transfers. You will receive these request in the “Transfers” section.`,
+      // tslint:disable-next-line: max-line-length
+      `You can update multiple user profiles in one go by using Bulk Profile Update.`,
+    ]
+  }
+
+  sanitizeHtml(html: string): SafeHtml {
+    return this.sanitizer.bypassSecurityTrustHtml(html)
+  }
+
+  openVideoPopup() {
+    this.dialog.open(ReportsVideoComponent, {
+      data: {
+        videoLink: 'https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1&mute=1',
+      },
+      disableClose: true,
+      width: '50%',
+      height: '60%',
+      panelClass: 'overflow-visable',
+    })
   }
 
   filter(key: string | 'timestamp' | 'best' | 'saved') {

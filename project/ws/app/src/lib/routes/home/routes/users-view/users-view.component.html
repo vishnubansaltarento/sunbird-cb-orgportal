@@ -13,7 +13,6 @@
       <span class="h-600-s-20-m color-87">Users</span>
     </mat-card-title>
     <mat-card class="mb-8">
-
       <mat-card-content class="flex gap-10">
         <div class="section-1">
           <div class="flex-4 mobile-margin text-capitalize mat-h2">Note:</div>
@@ -53,7 +52,7 @@
 
           <a routerLink="/app/home/users/active" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active','ws-mat-accent-border font-medium':currentFilter !== 'active'}"
-            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">All Users</a>
+            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">All users</a>
 
           <a routerLink="/app/home/users/verified" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'verified','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
