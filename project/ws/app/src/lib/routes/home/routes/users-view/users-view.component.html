@@ -53,26 +53,39 @@
 
           <a routerLink="/app/home/users/active" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active','ws-mat-accent-border font-medium':currentFilter !== 'active'}"
-            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">All Users (0)</a>
-          <a routerLink="/app/home/users/active" routerLinkActive="router-link-active" class="filter-option"
+            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">All Users</a>
+
+          <a routerLink="/app/home/users/verified" routerLinkActive="router-link-active" class="filter-option"
+            [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'verified','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
+            mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">Verified</a>
+
+          <a routerLink="/app/home/users/nonverified" routerLinkActive="router-link-active" class="filter-option"
+            [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'nonverified','ws-mat-accent-border font-medium':currentFilter !== 'nonverified'}"
+            mat-button (click)="filter('nonverified'); tabTelemetry('nonverified', 0)" role="button">Non-verified</a>
+          <!-- <a routerLink="/app/home/users/active" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active','ws-mat-accent-border font-medium':currentFilter !== 'active'}"
-            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">Verified (0)</a>
-          <a routerLink="/app/home/users/active" routerLinkActive="router-link-active" class="filter-option"
-            [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active','ws-mat-accent-border font-medium':currentFilter !== 'active'}"
-            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">Non-verified (0)</a>
-          <a routerLink="/app/home/users/active" routerLinkActive="router-link-active" class="filter-option"
-            [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'active','ws-mat-accent-border font-medium':currentFilter !== 'active'}"
-            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">Not my user (0)</a>
+            mat-button (click)="filter('active'); tabTelemetry('active', 0)" role="button">Not my user (0)</a> -->
         </div>
       </div>
-      <ng-container *ngIf="usersData && currentFilter !== 'upload'">
-        <!-- <ws-widget-org-user-table-v2 [userId]="currentUser" [tableData]="tabledata" [data]="dataForTable"
-          [isUpload]=false [isCreate]=true (eOnButtonClick)="clickHandler($event)" (actionsClick)="menuActions($event)"
-          (searchByEnterKey)="onEnterkySearch($event)" (pageChangeClick)="onPaginateChange($event)"
-          [showEditOnCondition]=true [totalRecords]="userDataTotalCount" [tabChangeIndex]="pageIndex">
-        </ws-widget-org-user-table-v2> -->
-        <ws-widget-user-card [userId]="currentUser" [tableData]="tabledata" [usersData]="usersData"
-          [totalRecords]="userDataTotalCount" [tabChangeIndex]="pageIndex"></ws-widget-user-card>
+      <!-- <ws-widget-org-user-table-v2 [userId]="currentUser" [tableData]="tabledata" [data]="dataForTable"
+                [isUpload]=false [isCreate]=true (eOnButtonClick)="clickHandler($event)" (actionsClick)="menuActions($event)"
+                (searchByEnterKey)="onEnterkySearch($event)" (pageChangeClick)="onPaginateChange($event)"
+                [showEditOnCondition]=true [totalRecords]="userDataTotalCount" [tabChangeIndex]="pageIndex">
+              </ws-widget-org-user-table-v2> -->
+      <ng-container *ngIf="usersData && currentFilter === 'active'">
+        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [tableData]="tabledata"
+          [usersData]="usersData" [totalRecords]="userDataTotalCount"
+          [tabChangeIndex]="pageIndex"></ws-widget-user-card>
+      </ng-container>
+      <ng-container *ngIf="usersData && currentFilter === 'verified'">
+        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [tableData]="tabledata"
+          [usersData]="usersData" [totalRecords]="userDataTotalCount"
+          [tabChangeIndex]="pageIndex"></ws-widget-user-card>
+      </ng-container>
+      <ng-container *ngIf="usersData && currentFilter === 'nonverified'">
+        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [tableData]="tabledata"
+          [usersData]="usersData" [totalRecords]="userDataTotalCount"
+          [tabChangeIndex]="pageIndex"></ws-widget-user-card>
       </ng-container>
       <ng-container *ngIf="currentFilter === 'upload'">
         <ws-app-users-upload></ws-app-users-upload>

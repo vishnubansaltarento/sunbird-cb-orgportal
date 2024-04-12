@@ -101,6 +101,45 @@
   font: 700 14px Lato;
 }
 
+.view-text-label {
+  width: 100%;
+  padding-bottom: 10px;
+  margin-bottom: 0;
+  color: rgba(0, 0, 0, 0.6);
+  display: block;
+  font: 500 13px Lato;
+}
+
+.infoicon {
+  font-size: 18px !important;
+  width: 20px;
+  height: 20px;
+  vertical-align: bottom;
+  margin-left: 5px;
+}
+
 ::ng-deep.mat-figure {
   display: block !important;
+}
+
+.roleslist {
+  padding-left: 0 !important;
+  margin: 0 !important;
+  li {
+    float: left;
+    margin: 0 16px 4px;
+  }
+}
+
+.tagslist {
+  padding-left: 0 !important;
+  list-style-type: none !important;
+  margin: 0 !important;
+  li {
+    float: left;
+    margin: 0 4px 4px;
+    background: #e0e0e0;
+    padding: 2px 10px;
+    border-radius: 14px;
+  }
 }

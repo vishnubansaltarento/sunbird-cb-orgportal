@@ -47,7 +47,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   usersData!: any
   configSvc: any
   activeUsersData!: any[]
-  inactiveUsersData!: any[]
+  verifiedUsersData!: any[]
+  nonverifiedUsersData!: any[]
   content: NsContent.IContent = {} as NsContent.IContent
   isMdoAdmin = false
 
@@ -112,7 +113,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     this.filterData('')
 
     this.reportsNoteList = [
+      // tslint:disable-next-line: max-line-length
       `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque leo erat, tincidunt vel gravida sed, rhoncus vel velit. Duis at consectetur tellus. Sed vitae ipsum odio. `,
+      // tslint:disable-next-line: max-line-length
       `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque leo erat, tincidunt vel gravida sed, rhoncus vel velit. Duis at consectetur tellus. Sed vitae ipsum odio. `,
     ]
   }
@@ -156,8 +159,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     switch (this.currentFilter) {
       case 'active':
         return this.activeUsersData
-      case 'inactive':
-        return this.inactiveUsersData
+      case 'verified':
+        return this.verifiedUsersData
+      case 'nonverified':
+        return this.nonverifiedUsersData
       // case 'blocked':
       //   return this.blockedUsers()
       default:
@@ -168,7 +173,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   filterData(query: string) {
     if (this.currentFilter === 'active') {
       this.activeUsers(query)
-    } else if (this.currentFilter === 'inactive') {
+    } else if (this.currentFilter === 'verified') {
+      this.verifiedUsers(query)
+    } else if (this.currentFilter === 'nonverified') {
       this.inActiveUsers(query)
     }
   }
@@ -227,6 +234,38 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     //   })
     // }
   }
+
+  verifiedUsers(query: string) {
+    this.loaderService.changeLoad.next(true)
+    const verifiedUsers: any[] = []
+    const status = this.currentFilter === 'active' ? 1 : 0
+    this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
+    this.usersService.getAllKongUsers(this.rootOrgId, status, this.limit, this.currentOffset, query).subscribe(data => {
+      this.userDataTotalCount = data.result.response.count
+      this.usersData = data.result.response
+      if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
+        _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
+          // tslint:disable-next-line
+          const org = { roles: _.get(_.first(_.filter(user.organisations, { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
+          verifiedUsers.push({
+            fullname: user ? `${user.firstName}` : null,
+            email: user.personalDetails && user.personalDetails.primaryEmail ?
+              this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
+            role: org.roles || [],
+            userId: user.id,
+            active: !user.isDeleted,
+            blocked: user.blocked,
+            roles: _.join(_.map((org.roles || []), i => `<li>${i}</li>`), ''),
+            orgId: user.rootOrgId,
+            orgName: user.rootOrgName,
+            allowEditUser: this.showEditUser(org.roles),
+          })
+        })
+      }
+      this.verifiedUsersData = verifiedUsers
+      return this.verifiedUsersData
+    })
+  }
   inActiveUsers(query: string) {
     this.loaderService.changeLoad.next(true)
     const inactiveUsersData: any[] = []
@@ -256,8 +295,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
             })
           })
         }
-        this.inactiveUsersData = inactiveUsersData
-        return this.inactiveUsersData
+        // this.inactiveUsersData = inactiveUsersData
+        this.nonverifiedUsersData = inactiveUsersData
+        return this.nonverifiedUsersData
       })
     // if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
     //   _.filter(this.usersData.content, { isDeleted: true }).forEach((user: any) => {
