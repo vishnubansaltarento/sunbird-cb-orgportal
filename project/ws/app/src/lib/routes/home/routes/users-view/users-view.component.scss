@@ -309,3 +309,23 @@ a:not([href]):not([tabindex]) {
   font-family: Lato;
   font-size: 14px;
 }
+
+.reportsDemo {
+    .reportsDemoVideo {
+      width: 200px;
+      height: 140px;
+      border-radius: 5px;
+      background-color: #FDEAD5;
+      font-weight: 600;
+      pointer-events: all;
+      cursor: pointer;
+
+      .video_icon {
+        font-size: 32px;
+      }
+    }
+  }
+.no-border {
+  border: 0;
+  box-shadow: none !important;
+}

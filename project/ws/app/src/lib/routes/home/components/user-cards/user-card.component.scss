@@ -1,0 +1,145 @@
+@import 'ws-common';
+@import 'ws-vars';
+@import 'ws-mixins';
+
+.user-card.mat-expansion-panel {
+  margin-bottom: 1em !important;
+  box-shadow: none !important;
+  border: 1px solid #d5d5d5;
+  border-radius: 5px !important;
+
+  .mat-expansion-panel-header {
+    padding: 10px 24px !important;
+  }
+
+  .mat-content{
+    display: block !important;
+  }
+  .float-left {
+    width: 90%;
+  }
+
+  .initialcircle {
+    vertical-align: text-bottom;
+    span {
+      background-color: #000000;
+      color: #ffffff;
+      display: block;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 2.5;
+    }
+  }
+
+  .status-label {
+    color: #fff;
+    font: 500 10px / 12px Lato;
+    padding: 4px 2px 4px 8px;
+    border-radius: 12px;
+
+    .mat-icon {
+      width: 16px;
+      height: 16px;
+      vertical-align: middle;
+      font-size: 13px;
+      margin-left: 4px;
+    }
+  }
+
+  .status-label.verified {
+    background: #1D8923;
+  }
+  .status-label.nonverified {
+    background: #D13924;
+  }
+
+ .button {
+    color: #1B4CA1;
+    border: 1px solid #1B4CA1;
+    padding: 2px 10px;
+    border-radius: 6px;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      vertical-align: sub;
+    }
+  }
+}
+
+// .mat-expansion-panel-body {
+//   padding: 0 !important;
+
+  .panel-body {
+    padding: 10px 0;
+  }
+// }
+.mat-expanded {
+  border: 1px solid #1B4CA1 !important;
+}
+
+.appr-text-field{
+  width: 272px;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px;
+  padding: 9px;
+  font-family: 'Lato';
+  font-size: 14px;
+  font-weight: 400;
+  font: 400 14px Lato;
+}
+
+.appr-text-label{
+  width: 100%;
+  padding-bottom: 10px;
+  margin-bottom: 0;
+  color: #000000;
+  display: block;
+  font: 700 14px Lato;
+}
+
+.view-text-label {
+  width: 100%;
+  padding-bottom: 10px;
+  margin-bottom: 0;
+  color: rgba(0, 0, 0, 0.6);
+  display: block;
+  font: 500 13px Lato;
+}
+
+.infoicon {
+  font-size: 18px !important;
+  width: 20px;
+  height: 20px;
+  vertical-align: bottom;
+  margin-left: 5px;
+}
+
+::ng-deep.mat-figure {
+  display: block !important;
+}
+
+.roleslist {
+  padding-left: 0 !important;
+  margin: 0 !important;
+  li {
+    float: left;
+    margin: 0 16px 4px;
+  }
+}
+
+.tagslist {
+  padding-left: 0 !important;
+  list-style-type: none !important;
+  margin: 0 !important;
+  li {
+    float: left;
+    margin: 0 4px 4px;
+    background: #e0e0e0;
+    padding: 2px 10px;
+    border-radius: 14px;
+  }
+}

@@ -31,7 +31,7 @@ import { RouterModule } from '@angular/router'
 import { HomeRoutingModule } from './home.rounting.module'
 import { HomeComponent } from './routes/home/home.component'
 import { UsersViewComponent } from './routes/users-view/users-view.component'
-import { AvatarPhotoModule, BreadcrumbsOrgModule, LeftMenuModule, UIORGTableModule, ScrollspyLeftMenuModule } from '@sunbird-cb/collection'
+import { AvatarPhotoModule, BreadcrumbsOrgModule, UIORGTableModule, ScrollspyLeftMenuModule } from '@sunbird-cb/collection'
 import { AboutComponent } from './routes/about/about.component'
 import { RolesAccessComponent } from './routes/roles-access/roles-access.component'
 import { ApprovalsComponent } from './routes/approvals/approvals.component'
@@ -68,6 +68,8 @@ import { TrainingPlanDashboardService } from './services/training-plan-dashboard
 import { AdminsTableComponent } from './routes/admins-table/admins-table.component'
 import { ReportsVideoComponent } from './routes/reports-video/reports-video.component'
 import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk-upload/profle-approval-bulk-upload.component'
+import { LeftMenuModule } from '../../head/left-menu/left-menu.module'
+import { UserCardComponent } from './components/user-cards/user-card.component'
 @NgModule({
   declarations: [
     HomeComponent,
@@ -95,6 +97,7 @@ import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk
     AdminsTableComponent,
     ReportsVideoComponent,
     ProfleApprovalBulkUploadComponent,
+    UserCardComponent,
   ],
   imports: [
     CommonModule,
@@ -103,7 +106,6 @@ import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk
     WidgetResolverModule,
     ReactiveFormsModule,
     HomeRoutingModule,
-    LeftMenuModule,
     FormsModule,
     RouterModule,
     MatGridListModule,
@@ -149,6 +151,7 @@ import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk
     UsersModule,
     MatDatepickerModule,
     PipeDurationTransformModule,
+    LeftMenuModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -156,6 +159,7 @@ import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk
     BudgetschemepopupComponent,
     BudgetproofspopupComponent,
     ReportsVideoComponent,
+    UserCardComponent,
   ],
   providers: [
     // CKEditorService,
