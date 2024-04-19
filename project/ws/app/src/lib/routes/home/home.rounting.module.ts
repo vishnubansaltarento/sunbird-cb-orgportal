@@ -61,7 +61,7 @@ const routes: Routes = [
       },
       {
         path: 'users',
-        redirectTo: 'users/active',
+        redirectTo: 'users/allusers',
         component: UsersViewComponent,
         resolve: {
           usersList: UsersListResolve,

@@ -49,6 +49,12 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   activeUsersData!: any[]
   verifiedUsersData!: any[]
   nonverifiedUsersData!: any[]
+  notmyuserUsersData!: any[]
+
+  activeUsersDataCount?: number | 0
+  verifiedUsersDataCount?: number | 0
+  nonverifiedUsersDataCount?: number | 0
+  notmyuserUsersDataCount?: number | 0
   content: NsContent.IContent = {} as NsContent.IContent
   isMdoAdmin = false
 
@@ -68,7 +74,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     needUserMenus: true,
   }
   currentOffset = 0
-  userDataTotalCount?: number | 0
   limit = 20
   pageIndex = 0
   searchQuery = ''
@@ -105,26 +110,28 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.rootOrgId = _.get(this.route.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
-    this.currentFilter = this.route.snapshot.params['tab'] || 'active'
+    this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
     this.searchQuery = ''
     if (this.configSvc.unMappedUser && this.configSvc.unMappedUser.roles) {
       this.isMdoAdmin = this.configSvc.unMappedUser.roles.includes('MDO_ADMIN')
     }
     this.filterData('')
 
+    this.activeUsers('')
+    this.verifiedUsers('')
+    this.inActiveUsers('')
+    this.notmyUsers('')
+
     this.reportsNoteList = [
-      // tslint:disable-next-line: max-line-length
       `Easily create users individually or in bulk.`,
-      // tslint:disable-next-line: max-line-length
       `Edit any user profile within your organization.`,
-      // tslint:disable-next-line: max-line-length
       `Verified Users: Users with all their primary fields approved.`,
       // tslint:disable-next-line: max-line-length
       `Non-Verified Users: Users whose one or more primary fields are yet to be approved. You can help by reviewing and approving their requests.`,
-      // tslint:disable-next-line: max-line-length
       `Not My User: Remove a user from your organization with a simple click.`,
     ]
   }
+
   sanitizeHtml(html: string): SafeHtml {
     return this.sanitizer.bypassSecurityTrustHtml(html)
   }
@@ -163,36 +170,40 @@ export class UsersViewComponent implements OnInit, OnDestroy {
 
   get dataForTable() {
     switch (this.currentFilter) {
-      case 'active':
+      case 'allusers':
         return this.activeUsersData
       case 'verified':
         return this.verifiedUsersData
       case 'nonverified':
         return this.nonverifiedUsersData
+      case 'notmyuser':
+        return this.notmyuserUsersData
       // case 'blocked':
       //   return this.blockedUsers()
       default:
         return []
     }
-
   }
+
   filterData(query: string) {
-    if (this.currentFilter === 'active') {
+    if (this.currentFilter === 'allusers') {
       this.activeUsers(query)
     } else if (this.currentFilter === 'verified') {
       this.verifiedUsers(query)
     } else if (this.currentFilter === 'nonverified') {
       this.inActiveUsers(query)
+    } else if (this.currentFilter === 'notmyuser') {
+      this.notmyUsers(query)
     }
   }
 
   activeUsers(query: string) {
     this.loaderService.changeLoad.next(true)
     const activeUsersData: any[] = []
-    const status = this.currentFilter === 'active' ? 1 : 0
+    const status = this.currentFilter === 'allusers' ? 1 : 0
     this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
     this.usersService.getAllKongUsers(this.rootOrgId, status, this.limit, this.currentOffset, query).subscribe(data => {
-      this.userDataTotalCount = data.result.response.count
+      this.activeUsersDataCount = data.result.response.count
       this.usersData = data.result.response
       if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
         _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
@@ -244,10 +255,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   verifiedUsers(query: string) {
     this.loaderService.changeLoad.next(true)
     const verifiedUsers: any[] = []
-    const status = this.currentFilter === 'active' ? 1 : 0
+    const status = this.currentFilter === 'allusers' ? 1 : 0
     this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
     this.usersService.getAllKongUsers(this.rootOrgId, status, this.limit, this.currentOffset, query).subscribe(data => {
-      this.userDataTotalCount = data.result.response.count
+      this.verifiedUsersDataCount = data.result.response.count
       this.usersData = data.result.response
       if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
         _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
@@ -275,11 +286,11 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   inActiveUsers(query: string) {
     this.loaderService.changeLoad.next(true)
     const inactiveUsersData: any[] = []
-    const status = this.currentFilter === 'active' ? 1 : 0
+    const status = this.currentFilter === 'allusers' ? 1 : 0
     this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
     this.usersService.getAllKongUsers(this.rootOrgId, status, this.limit, this.currentOffset, query).subscribe(
       data => {
-        this.userDataTotalCount = data.result.response.count
+        this.nonverifiedUsersDataCount = data.result.response.count
         this.usersData = data.result.response
         if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
           _.filter(this.usersData.content, { isDeleted: true }).forEach((user: any) => {
@@ -305,28 +316,39 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         this.nonverifiedUsersData = inactiveUsersData
         return this.nonverifiedUsersData
       })
-    // if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
-    //   _.filter(this.usersData.content, { isDeleted: true }).forEach((user: any) => {
-    //     // tslint:disable-next-line
-    //     const org = { roles: _.get(_.first(_.filter(user.organisations,
-    // { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') || [] }
-    //     inactiveUsersData.push({
-    //       fullname: user ? `${user.firstName} ` : null,
-    //       // fullname: user ? `${user.firstName} ${user.lastName}` : null,
-    //       email: user.personalDetails && user.personalDetails.primaryEmail ?
-    //         this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
-    //       role: org.roles || [],
-    //       userId: user.id,
-    //       active: !user.isDeleted,
-    //       blocked: user.blocked,
-    //       roles: _.join(_.map((org.roles || []), i => `<li>${i}</li>`), ''),
-    //       orgId: user.rootOrgId,
-    //       orgName: user.rootOrgName,
-    //       allowEditUser: this.showEditUser(org.roles),
-    //     })
-    //   })
-    // }
-    // return inactiveUsersData
+  }
+  notmyUsers(query: string) {
+    this.loaderService.changeLoad.next(true)
+    const notmyuserUsersData: any[] = []
+    const status = this.currentFilter === 'allusers' ? 1 : 0
+    this.currentOffset = this.limit * ((this.pageIndex + 1) - 1)
+    this.usersService.getAllKongUsers('', status, this.limit, this.currentOffset, query).subscribe(
+      data => {
+        this.notmyuserUsersDataCount = data.result.response.count
+        this.usersData = data.result.response
+        if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
+          _.filter(this.usersData.content, { isDeleted: true }).forEach((user: any) => {
+            // tslint:disable-next-line
+            const org = { roles: _.get(_.first(_.filter(user.organisations, { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
+            notmyuserUsersData.push({
+              fullname: user ? `${user.firstName}` : null,
+              // fullname: user ? `${user.firstName} ${user.lastName}` : null,
+              email: user.personalDetails && user.personalDetails.primaryEmail ?
+                this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
+              role: org.roles || [],
+              userId: user.id,
+              active: !user.isDeleted,
+              blocked: user.blocked,
+              roles: _.join(_.map((org.roles || []), i => `<li>${i}</li>`), ''),
+              orgId: user.rootOrgId,
+              orgName: user.rootOrgName,
+              allowEditUser: this.showEditUser(org.roles),
+            })
+          })
+        }
+        this.notmyuserUsersData = notmyuserUsersData
+        return this.nonverifiedUsersData
+      })
   }
 
   showEditUser(roles: any): boolean {

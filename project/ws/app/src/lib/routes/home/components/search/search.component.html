@@ -1,0 +1,27 @@
+<div class="flex flex-1 flex-row margin-top-m margin-bottom-m">
+    <div class="search flex margin-right-m" [ngClass]="{'disable': isContentLive}">
+        <div class="rsearch flex w-full"><mat-icon
+                class="color-60 search-icon mat-icon notranslate material-icons mat-icon-no-color">search</mat-icon>
+            <input class="sinput color-60 w-full" [(ngModel)]="searchText" (keyup.enter)="searchData()" label=""
+                placeholder="Select" type="Standard" [ngClass]="{'disable': isContentLive}">
+        </div>
+    </div>
+    <div class="filter-section flex" *ngIf="!(tpdsSvc?.trainingPlanAssigneeData?.category === 'Designation'
+        || tpdsSvc?.trainingPlanAssigneeData?.category === 'AllUser') || from === 'content'"
+        [ngClass]="{'disable': isContentLive}">
+        <button mat-button type="button" (click)="sort()" class="apply-filter margin-right-s">
+            <mat-icon class="margin-right-xs">sort</mat-icon> Sort
+        </button>
+    </div>
+    <div class="filter-section flex" *ngIf="!(tpdsSvc?.trainingPlanAssigneeData?.category === 'Designation'
+    || tpdsSvc?.trainingPlanAssigneeData?.category === 'AllUser') || from === 'content'"
+        [ngClass]="{'disable': isContentLive}">
+        <button mat-button type="button" (click)="openFilter()" class="apply-filter margin-right-s">
+            Apply Filter <mat-icon class="margin-right-xs">filter_list</mat-icon>
+        </button>
+    </div>
+    <div class="flex flex-end">
+        <button mat-button type="button" class="search-btn" (click)="createUser()"
+            [ngClass]="{'disable': isContentLive}">Create user</button>
+    </div>
+</div>

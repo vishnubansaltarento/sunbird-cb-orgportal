@@ -70,6 +70,7 @@ import { ReportsVideoComponent } from './routes/reports-video/reports-video.comp
 import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk-upload/profle-approval-bulk-upload.component'
 import { LeftMenuModule } from '../../head/left-menu/left-menu.module'
 import { UserCardComponent } from './components/user-cards/user-card.component'
+import { SearchComponent } from './components/search/search.component'
 @NgModule({
   declarations: [
     HomeComponent,
@@ -98,6 +99,7 @@ import { UserCardComponent } from './components/user-cards/user-card.component'
     ReportsVideoComponent,
     ProfleApprovalBulkUploadComponent,
     UserCardComponent,
+    SearchComponent,
   ],
   imports: [
     CommonModule,
@@ -160,6 +162,7 @@ import { UserCardComponent } from './components/user-cards/user-card.component'
     BudgetproofspopupComponent,
     ReportsVideoComponent,
     UserCardComponent,
+    SearchComponent,
   ],
   providers: [
     // CKEditorService,
