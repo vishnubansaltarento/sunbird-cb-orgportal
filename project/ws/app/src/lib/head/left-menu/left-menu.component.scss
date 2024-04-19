@@ -65,10 +65,11 @@
     .mat-list-item-content {
       padding: 12px 16px 12px 32px !important;
     }
-
-
   }
+}
 
+.main-menuitem {
+  background: transparent !important;
 }
 
 .mat-nav-list a:not(:first-child) {
@@ -91,6 +92,11 @@
 //   margin: unset !important;
 // }
 
+::ng-deep  .mat-expansion-panel:not([class*=mat-elevation-z]) {
+    background: rgba(0, 0, 0, 0.02) !important;
+    margin-bottom: 8px !important;
+}
+
 ::ng-deep .menuPannel.mat-expansion-panel {
   border-radius: unset !important;
   box-shadow: none !important;
@@ -110,9 +116,10 @@
 }
 
 ::ng-deep .menuPannel .mat-expansion-panel-header {
-  padding: 8px 16px !important;
+  padding: 8px 24px !important;
   height: unset !important;
   background: rgba(0, 0, 0, 0.04);
+  font: 400 16px/24px Lato !important;
 }
 
 ::ng-deep .menuPannel .mat-expansion-panel-header .mat-expansion-panel-header-title {
