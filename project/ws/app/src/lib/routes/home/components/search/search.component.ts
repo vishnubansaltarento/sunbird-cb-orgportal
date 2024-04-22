@@ -93,4 +93,6 @@ export class SearchComponent implements OnInit {
     this.pageIndex = 0
     this.pageSize = 20
   }
+
+  createUser() { }
 }
