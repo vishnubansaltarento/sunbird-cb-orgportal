@@ -1,3 +1,7 @@
+<div class="searchfilter">
+  <ws-app-searchuser (handleApiData)="onSearch($event)"></ws-app-searchuser>
+</div>
+
 <div>
   <mat-accordion>
     <mat-expansion-panel class="user-card" *ngFor="let user of usersData.content">
@@ -11,9 +15,19 @@
           <div class="username display-inline-block" *ngIf="user.profileDetails && user.profileDetails.personalDetails">
             <div class="mat-subheading-2 display-inline-block margin-remove">
               {{user.profileDetails.personalDetails.firstname}}
-              <span class="status-label margin-left-s verified">Verified <mat-icon>check_circle</mat-icon></span>
+              <span class="status-label margin-left-s verified" *ngIf="currentFilter !== 'nonverified'">Verified
+                <mat-icon>check_circle</mat-icon></span>
+              <span class="status-label margin-left-s nonverified" *ngIf="currentFilter === 'nonverified'">Non-verified
+                <mat-icon>check_circle</mat-icon></span>
             </div>
-            <div class="mat-body-2 ws-mat-black40-text">Product Manager</div>
+            <div class="mat-body-2 ws-mat-black40-text">{{user.profileDetails && user.profileDetails.professionalDetails
+              &&
+              user.profileDetails.professionalDetails.designation ?
+              user.profileDetails.professionalDetails.designation : '-'}}</div>
+            <!-- <div class="mat-body-2 ws-mat-black40-text" *ngIf="currentFilter !== 'nonverified'">Verified date:
+              19/04/2024</div>
+            <div class="mat-body-2 ws-mat-black40-text" *ngIf="currentFilter === 'nonverified'">Non-verified date:
+              19/04/2024</div> -->
           </div>
           <div class="username display-inline-block" *ngIf="!user.profileDetails">
             <div class="mat-subheading-2 display-inline-block margin-remove">
@@ -23,19 +37,26 @@
               <span class="status-label margin-left-s nonverified" *ngIf="currentFilter === 'nonverified'">Non-verified
                 <mat-icon>check_circle</mat-icon></span>
             </div>
-            <div class="mat-body-2 ws-mat-black40-text">Product Manager</div>
+            <div class="mat-body-2 ws-mat-black40-text">{{user.profileDetails && user.profileDetails.professionalDetails
+              &&
+              user.profileDetails.professionalDetails.designation ?
+              user.profileDetails.professionalDetails.designation : '-'}}</div>
+            <!-- <div class="mat-body-2 ws-mat-black40-text" *ngIf="currentFilter !== 'nonverified'">Verified date:
+              19/04/2024</div>
+            <div class="mat-body-2 ws-mat-black40-text" *ngIf="currentFilter === 'nonverified'">Non-verified date:
+              19/04/2024</div> -->
           </div>
         </div>
-        <!-- <div class="float-right">
+        <div class="float-right">
           <div class="button margin-top-xs mat-body" (click)="editUser(user)"><mat-icon>edit</mat-icon> Edit</div>
-        </div> -->
+        </div>
       </mat-expansion-panel-header>
 
       <div class="panel-body" *ngIf="user.editUser">
         <div class="inner-body">
           Primary Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
           <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="2" rowHeight="100px">
+            <mat-grid-list cols="2" rowHeight="60px">
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Designation</label>
                 <mat-select class="appr-text-field" #designation formControlName="designation" i18n-placeholder
@@ -64,7 +85,7 @@
           Other Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
 
           <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="3" rowHeight="100px">
+            <mat-grid-list cols="3" rowHeight="60px">
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label requird">Employee ID</label>
                 <input type="text" [value]="" [disabled]="true" class="appr-text-field">
@@ -246,17 +267,19 @@
             <span class="font-bold">Primary Details</span> <mat-icon
               class="ws-mat-black40-text infoicon">info_outline</mat-icon>
           </div>
-          <mat-grid-list cols="2" rowHeight="100px">
+          <mat-grid-list cols="2" rowHeight="60px">
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Designation</label>
-              <p>{{user.profileDetails && user.profileDetails.professionalDetails ?
+              <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
+                user.profileDetails.professionalDetails.designation ?
                 user.profileDetails.professionalDetails.designation : '-'}}</p>
 
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Group</label>
-              <p>{{user.profileDetails && user.profileDetails.additionalProperties ?
+              <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
+                user.profileDetails.additionalProperties.group ?
                 user.profileDetails.additionalProperties.group : '-'}}</p>
 
             </mat-grid-tile>
@@ -269,7 +292,7 @@
               class="ws-mat-black40-text infoicon">info_outline</mat-icon>
           </div>
 
-          <mat-grid-list cols="4" rowHeight="100px">
+          <mat-grid-list cols="4" rowHeight="60px">
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Employee ID</label>
               <p>{{user.empID ? user.empID : '-'}}</p>
@@ -289,38 +312,44 @@
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Gender</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails ?
+              <p>{{user.profileDetails && user.profileDetails.personalDetails &&
+                user.profileDetails.personalDetails.gender ?
                 user.profileDetails.personalDetails.gender : '-'}}</p>
 
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Date Of Birth</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails ? user.profileDetails.personalDetails.dob
+              <p>{{user.profileDetails && user.profileDetails.personalDetails && user.profileDetails.personalDetails.dob
+                ? user.profileDetails.personalDetails.dob
                 : '-'}}</p>
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Mother Tongue</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails ?
+              <p>{{user.profileDetails && user.profileDetails.personalDetails &&
+                user.profileDetails.personalDetails.domicileMedium ?
                 user.profileDetails.personalDetails.domicileMedium : '-'}}</p>
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Category</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails ?
+              <p>{{user.profileDetails && user.profileDetails.personalDetails &&
+                user.profileDetails.personalDetails.category ?
                 user.profileDetails.personalDetails.category : '-'}}</p>
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Pay Band</label>
-              <p>{{user.profileDetails && user.profileDetails.employmentDetails ?
+              <p>{{user.profileDetails && user.profileDetails.employmentDetails &&
+                user.profileDetails.employmentDetails.payType ?
                 user.profileDetails.employmentDetails.payType : '-'}}</p>
             </mat-grid-tile>
 
             <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Office Pin Code</label>
-              <p>{{user.profileDetails && user.profileDetails.employmentDetails ?
+              <p>{{user.profileDetails && user.profileDetails.employmentDetails &&
+                user.profileDetails.employmentDetails.pinCode ?
                 user.profileDetails.employmentDetails.pinCode : '-'}}</p>
             </mat-grid-tile>
 
@@ -332,6 +361,7 @@
             <mat-grid-tile [colspan]="2" [rowspan]="1" class="input-wrapper">
               <label class="view-text-label">Tags</label>
               <div *ngIf="user.profileDetails && user.profileDetails.additionalProperties &&
+              user.profileDetails.additionalProperties.tag &&
               user.profileDetails.additionalProperties.tag.length > 0">
                 <ul class="tagslist">
                   <li *ngFor="let t of user.profileDetails.additionalProperties.tag">{{t}}</li>
@@ -355,4 +385,9 @@
       </div>
     </mat-expansion-panel>
   </mat-accordion>
+</div>
+
+<div class="flex flex-row justify-center">
+  <mat-paginator [pageSize]="pageSize" [length]="totalRecords" [pageSizeOptions]="[20,30,40]"
+    (page)="onChangePage($event)"></mat-paginator>
 </div>

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
-import { MatChipInputEvent } from '@angular/material'
+import { MatChipInputEvent, MatPaginator, PageEvent } from '@angular/material'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import _ from 'lodash'
@@ -20,6 +20,14 @@ export class UserCardComponent implements OnInit {
   @Input() totalRecords: any
   @Input() tabChangeIndex: any
   @Input() currentFilter: any
+
+  @Output() paginationData = new EventEmitter()
+  @Output() searchByEnterKey = new EventEmitter()
+
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator | any
+  startIndex = 0
+  lastIndex = 20
+  pageSize = 20
 
   userStatus: any
   rolesList: any = []
@@ -48,7 +56,7 @@ export class UserCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.currentFilter = this.route.snapshot.params['tab'] || 'active'
+    this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
     // this.init()
   }
 
@@ -66,11 +74,14 @@ export class UserCardComponent implements OnInit {
   }
 
   editUser(user: any) {
-    user.editUser = true
+    this.usersData.content.forEach((u: any) => {
+      if (u.userId === user.userId && user.editUser === false) {
+        u.editUser = !u.editUser
+      }
+    })
   }
 
   getUerData(user: any) {
-    // console.log('user', user)
     user.editUser = false
     const profileDataAll = user
     this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
@@ -80,15 +91,12 @@ export class UserCardComponent implements OnInit {
 
     this.roleservice.getAllRoles().subscribe((data: any) => {
       const parseRoledata = JSON.parse(data.result.response.value)
-      // console.log('parseRoledata', parseRoledata)
       this.orgTypeList = parseRoledata.orgTypeList
-      // console.log('this.orgTypeList', this.orgTypeList)
 
       // New code for roles
       for (let i = 0; i < this.orgTypeList.length; i += 1) {
         if (this.orgTypeList[i].name === 'MDO') {
           _.each(this.orgTypeList[i].roles, rolesObject => {
-            // console.log('------------------------', rolesObject)
             if (this.isMdoAdmin) {
               if (rolesObject === 'PUBLIC') {
                 this.uniqueRoles.push({
@@ -112,23 +120,17 @@ export class UserCardComponent implements OnInit {
           })
         }
       }
-
-      // console.log('uniqueRoles', this.uniqueRoles)
-
       this.uniqueRoles.forEach((role: any) => {
         if (!this.rolesList.some((item: any) => item.roleName === role.roleName)) {
           this.rolesList.push(role)
         }
       })
-      // console.log('rolesList', this.rolesList)
       const usrRoles = profileDataAll.roles
       usrRoles.forEach((role: any) => {
         this.orguserRoles.push(role)
         this.modifyUserRoles(role)
       })
-      // console.log('orguserRoles', this.orguserRoles)
     })
-
   }
 
   getUseravatarName(user: any) {
@@ -190,5 +192,16 @@ export class UserCardComponent implements OnInit {
       }
       newobj.push(reqObj)
     })
+  }
+
+  onChangePage(pe: PageEvent) {
+    this.startIndex = (pe.pageIndex) * pe.pageSize
+    this.lastIndex = pe.pageSize
+    this.paginationData.emit({ pageIndex: this.startIndex, pageSize: pe.pageSize })
+    // this.startIndex = this.pageIndex
+  }
+
+  onSearch(event: any) {
+    this.searchByEnterKey.emit(event)
   }
 }
