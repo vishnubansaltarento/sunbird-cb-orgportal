@@ -71,6 +71,8 @@ import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk
 import { LeftMenuModule } from '../../head/left-menu/left-menu.module'
 import { UserCardComponent } from './components/user-cards/user-card.component'
 import { SearchComponent } from './components/search/search.component'
+import { FilterComponent } from './components/filter/filter.component'
+import { FilterSearchPipeModule } from '../pipes/filter-search/filter-search.module'
 @NgModule({
   declarations: [
     HomeComponent,
@@ -100,6 +102,7 @@ import { SearchComponent } from './components/search/search.component'
     ProfleApprovalBulkUploadComponent,
     UserCardComponent,
     SearchComponent,
+    FilterComponent,
   ],
   imports: [
     CommonModule,
@@ -154,6 +157,7 @@ import { SearchComponent } from './components/search/search.component'
     MatDatepickerModule,
     PipeDurationTransformModule,
     LeftMenuModule,
+    FilterSearchPipeModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -163,6 +167,7 @@ import { SearchComponent } from './components/search/search.component'
     ReportsVideoComponent,
     UserCardComponent,
     SearchComponent,
+    FilterComponent,
   ],
   providers: [
     // CKEditorService,
