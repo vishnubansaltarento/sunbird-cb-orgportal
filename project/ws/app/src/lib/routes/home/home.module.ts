@@ -70,6 +70,9 @@ import { ReportsVideoComponent } from './routes/reports-video/reports-video.comp
 import { ProfleApprovalBulkUploadComponent } from './routes/profle-approval-bulk-upload/profle-approval-bulk-upload.component'
 import { LeftMenuModule } from '../../head/left-menu/left-menu.module'
 import { UserCardComponent } from './components/user-cards/user-card.component'
+import { SearchComponent } from './components/search/search.component'
+import { FilterComponent } from './components/filter/filter.component'
+import { FilterSearchPipeModule } from '../pipes/filter-search/filter-search.module'
 @NgModule({
   declarations: [
     HomeComponent,
@@ -98,6 +101,8 @@ import { UserCardComponent } from './components/user-cards/user-card.component'
     ReportsVideoComponent,
     ProfleApprovalBulkUploadComponent,
     UserCardComponent,
+    SearchComponent,
+    FilterComponent,
   ],
   imports: [
     CommonModule,
@@ -152,6 +157,7 @@ import { UserCardComponent } from './components/user-cards/user-card.component'
     MatDatepickerModule,
     PipeDurationTransformModule,
     LeftMenuModule,
+    FilterSearchPipeModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -160,6 +166,8 @@ import { UserCardComponent } from './components/user-cards/user-card.component'
     BudgetproofspopupComponent,
     ReportsVideoComponent,
     UserCardComponent,
+    SearchComponent,
+    FilterComponent,
   ],
   providers: [
     // CKEditorService,

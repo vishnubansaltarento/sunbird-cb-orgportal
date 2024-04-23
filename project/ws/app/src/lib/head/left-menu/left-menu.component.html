@@ -14,28 +14,39 @@
     </a>
   </div>
 </div>
-<mat-accordion [multi]="true">
-  <ng-container *ngFor="let menu of menulist; let mi = index">
-    <mat-expansion-panel class="menuPannel bg-gray-accordian" hideToggle="true" [expanded]="true" #example>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-panel-description>
-            <p class="margin-remove">{{menu?.menuCategory}}</p>
-            <mat-icon *ngIf="!example.expanded">arrow_drop_down</mat-icon>
-            <mat-icon *ngIf="example.expanded">arrow_drop_up</mat-icon>
-          </mat-panel-description>
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <mat-nav-list class="nav-list-menu flex-1">
-        <ng-container *ngFor="let tab of menu?.subMenu; let i = index">
-          <ng-container>
-            <a mat-list-item disableRipple class="flex outline-1 menu-item-a" [attr.data-index]="i"
-              [routerLink]="[tab.routerLink]" [queryParamsHandling]="preserve" routerLinkActive="ws-active-route-men">
-              <span class="padding-left-xs">{{tab?.name}}</span>
-            </a>
+<ng-container *ngFor="let menu of menulist; let mi = index">
+  <ng-container *ngIf="menu.subMenu">
+    <mat-accordion [multi]="true" class="custom-leftmenu">
+      <mat-expansion-panel class="menuPannel bg-gray-accordian" hideToggle="true" [expanded]="false" #example>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-panel-description>
+              <p class="margin-remove">{{menu?.menuCategory}}</p>
+              <mat-icon *ngIf="!example.expanded">arrow_drop_down</mat-icon>
+              <mat-icon *ngIf="example.expanded">arrow_drop_up</mat-icon>
+            </mat-panel-description>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list class="nav-list-menu flex-1">
+          <ng-container *ngFor="let tab of menu?.subMenu; let i = index">
+            <ng-container>
+              <a mat-list-item disableRipple class="flex outline-1 menu-item-a" [attr.data-index]="i"
+                [routerLink]="[tab.routerLink]" [queryParamsHandling]="preserve" routerLinkActive="ws-active-route-men">
+                <span class="padding-left-xs">{{tab?.name}}</span>
+              </a>
+            </ng-container>
           </ng-container>
-        </ng-container>
-      </mat-nav-list>
-    </mat-expansion-panel>
+        </mat-nav-list>
+      </mat-expansion-panel>
+    </mat-accordion>
   </ng-container>
-</mat-accordion>
+
+  <ng-container *ngIf="!menu.subMenu">
+    <mat-nav-list class="nav-list-menu flex-1">
+      <a mat-list-item disableRipple class="flex outline-1 main-menuitem" [attr.data-index]="mi"
+        [routerLink]="[menu.routerLink]" [queryParamsHandling]="preserve" routerLinkActive="ws-active-route-men">
+        <span class="padding-left-xs">{{menu?.menuCategory}}</span>
+      </a>
+    </mat-nav-list>
+  </ng-container>
+</ng-container>

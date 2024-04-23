@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { Observable } from 'rxjs'
+import { Observable, Subject } from 'rxjs'
 import { map, retry } from 'rxjs/operators'
 // tslint:disable
 import _ from 'lodash'
@@ -36,6 +36,7 @@ const API_END_POINTS = {
   providedIn: 'root',
 })
 export class UsersService {
+  handleContentPageChange = new Subject()
   constructor(private http: HttpClient) { }
   getAllUsers(filter: object): Observable<any> {
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, filter).pipe(map(res => _.get(res, 'result.response')))
