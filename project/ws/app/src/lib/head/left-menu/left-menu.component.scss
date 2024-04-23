@@ -92,7 +92,7 @@
 //   margin: unset !important;
 // }
 
-::ng-deep  .mat-expansion-panel:not([class*=mat-elevation-z]) {
+::ng-deep .custom-leftmenu .mat-expansion-panel:not([class*=mat-elevation-z]) {
     background: rgba(0, 0, 0, 0.02) !important;
     margin-bottom: 8px !important;
 }
