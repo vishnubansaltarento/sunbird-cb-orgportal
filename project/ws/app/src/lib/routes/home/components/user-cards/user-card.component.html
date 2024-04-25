@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="float-right">
-          <div class="button margin-top-xs mat-body" (click)="editUser(user)"><mat-icon>edit</mat-icon> Edit</div>
+          <div class="button margin-top-xs mat-body" (click)="onEditUser(user)"><mat-icon>edit</mat-icon> Edit</div>
         </div>
       </mat-expansion-panel-header>
 
@@ -56,7 +56,7 @@
         <div class="inner-body">
           Primary Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
           <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="2" rowHeight="60px">
+            <mat-grid-list cols="2" rowHeight="100px">
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Designation</label>
                 <mat-select class="appr-text-field" #designation formControlName="designation" i18n-placeholder
@@ -71,9 +71,9 @@
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Group</label>
                 <mat-select class="appr-text-field" #group formControlName="group" i18n-placeholder
-                  placeholder="--Select--" (selectionChange)="otherDropDownChange(designation.value, 'designation')">
-                  <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
-                    {{designation.name}}
+                  placeholder="--Select--">
+                  <mat-option [value]="g" *ngFor="let g of groupsList">
+                    {{g.name}}
                   </mat-option>
                 </mat-select>
               </mat-grid-tile>
@@ -85,7 +85,7 @@
           Other Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
 
           <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="3" rowHeight="60px">
+            <mat-grid-list cols="3" rowHeight="80px">
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label requird">Employee ID</label>
                 <input type="text" [value]="" [disabled]="true" class="appr-text-field">
@@ -94,6 +94,13 @@
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Email</label>
                 <input type="text" [value]="" class="appr-text-field">
+
+                <input id="primaryEmail" name="primaryEmailField" type="email" matInput placeholder="Email"
+                  #primaryEmail formControlName="primaryEmail" i18n-aria-label aria-label="Primary Email readonly input"
+                  maxlength="320">
+                <mat-error [hidden]="false" i18n="Primary Email Error|Explains name is required">
+                  {{'userProfile.primaryEmailMandatory' | translate }}
+                </mat-error>
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
@@ -108,96 +115,96 @@
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Mother Tongue</label>
-                <mat-select class="appr-text-field" #group formControlName="group" i18n-placeholder
-                  placeholder="--Select--" (selectionChange)="otherDropDownChange(designation.value, 'designation')">
-                  <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
-                    {{designation.name}}
+                <mat-form-field appearance="outline" class="margin-top-xs">
+                  <input id="language" matInput type="text" placeholder="Mother Tongue" i18n-placeholder="Mother Tongue"
+                    formControlName="domicileMedium" [matAutocomplete]="motherTongueAuto" i18n-aria-label
+                    aria-label="Domicile Medium (Mother Tongue)" #motherTongue maxlength="30" />
+                  <mat-error *ngIf="updateUserDataForm?.controls['domicileMedium'].errors?.forbiddenNames"
+                    i18n-aria-label aria-label="Please choose a value from the list provided above.">
+                    Please choose a value from the list provided above
+                  </mat-error>
+                </mat-form-field>
+                <mat-autocomplete #motherTongueAuto="matAutocomplete" autoActiveFirstOption="true">
+                  <mat-option *ngFor="let option of masterLanguages | async" [value]="option.name">
+                    {{ option.name }}
                   </mat-option>
-                </mat-select>
+                </mat-autocomplete>
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Gender</label>
-                <mat-select class="appr-text-field" #group formControlName="group" i18n-placeholder
-                  placeholder="--Select--" (selectionChange)="otherDropDownChange(designation.value, 'designation')">
-                  <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
-                    {{designation.name}}
+                <mat-select class="appr-text-field" #gender formControlName="gender" i18n-placeholder
+                  placeholder="--Select--">
+                  <mat-option [value]="gender" *ngFor="let gender of genderList">
+                    {{gender}}
                   </mat-option>
                 </mat-select>
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Office Pin Code</label>
-                <input type="text" [value]="" class="appr-text-field">
+                <input id="pinCode" #pincode class="appr-text-field" type="text" matInput placeholder="Pin code"
+                  formControlName="pincode" i18n-aria-label aria-label="Pin Code input field" autocomplete="off"
+                  (keypress)="numericOnly($event)" maxlength="6">
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">eHRMS ID</label>
+                <label class="appr-text-label">eHRMS ID</label>
                 <input type="text" [value]="" [disabled]="true" class="appr-text-field">
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Category</label>
-                <mat-select class="appr-text-field" #group formControlName="group" i18n-placeholder
-                  placeholder="--Select--" (selectionChange)="otherDropDownChange(designation.value, 'designation')">
-                  <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
-                    {{designation.name}}
+                <mat-select class="appr-text-field" #category formControlName="category" i18n-placeholder
+                  placeholder="--Select--">
+                  <mat-option [value]="ctg" *ngFor="let ctg of categoryList">
+                    {{ctg}}
                   </mat-option>
                 </mat-select>
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="10" class="input-wrapper">
-                <mat-card id="roles" *ngIf="!isMdoAdmin"
-                  class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m ws-mat-accent-border">
-                  <div class="flex-custom">
-                    <mat-card-content class="margin-top-m margin-bottom-m margin-left-m margin-right-m">
-                      <span class="mat-subheading-1 flex-4 mobile-margin appr-section-heading" role="link" tabindex="0">
-                        Update roles
-                      </span>
-                      <div class="margin-top-xl new-mobile">
-                        <div class="flex flex-wrap mobile-break">
-                          <div class="w-full profile-cols-full bg-grey">
-                            <ng-container>
-                              <form [formGroup]="updateUserDataForm">
-                                <div class="input-wrapper margin-top-s">
-                                  <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
-                                    aria-label="Roles label"
-                                    i18n="Role label|Label which explains the user to select the roles">
-                                    Role
-                                  </label>
-                                  <mat-selection-list id="roles" formControlName="roles" #roles>
-                                    <mat-list-option *ngFor="let role of rolesList"
-                                      (click)="modifyUserRoles(role.roleName)" [selected]="userRoles.has(role.roleName)"
-                                      [value]="role.roleName">
-                                      {{role.roleName}}
-                                    </mat-list-option>
-                                  </mat-selection-list>
-                                </div>
-                                <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, 'Roles')"
-                                  class="margin-top-m text-white btn-success btn-responsive"
-                                  [disabled]="updateUserDataForm?.invalid">
-                                  <span class="text-white" i18n>
-                                    Update
-                                  </span>
-                                </button>
-                                <button mat-raised-button type="submit" (click)="resetRoles()"
-                                  class="margin-top-m text-white btn-success btn-responsive"
-                                  [disabled]="updateUserDataForm?.invalid">
-                                  <span class="text-white" i18n>
-                                    Cancel
-                                  </span>
-                                </button>
-                              </form>
-                            </ng-container>
+                <div id="roles" *ngIf="!isMdoAdmin"
+                  class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
+                  <div class="flex flex-wrap mobile-break">
+                    <div class="w-full profile-cols-full bg-grey">
+                      <ng-container>
+                        <form [formGroup]="updateUserDataForm">
+                          <div class="input-wrapper margin-top-s">
+                            <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
+                              aria-label="Roles label"
+                              i18n="Role label|Label which explains the user to select the roles">
+                              Role
+                            </label>
+                            <mat-selection-list id="roles" formControlName="roles" #roles>
+                              <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
+                                [selected]="userRoles.has(role.roleName)" [value]="role.roleName">
+                                {{role.roleName}}
+                              </mat-list-option>
+                            </mat-selection-list>
                           </div>
-                        </div>
-                      </div>
-                    </mat-card-content>
+                          <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, 'Roles')"
+                            class="margin-top-m text-white btn-success btn-responsive"
+                            [disabled]="updateUserDataForm?.invalid">
+                            <span class="text-white" i18n>
+                              Update
+                            </span>
+                          </button>
+                          <button mat-raised-button type="submit" (click)="resetRoles()"
+                            class="margin-top-m text-white btn-success btn-responsive"
+                            [disabled]="updateUserDataForm?.invalid">
+                            <span class="text-white" i18n>
+                              Cancel
+                            </span>
+                          </button>
+                        </form>
+                      </ng-container>
+                    </div>
                   </div>
-                </mat-card>
+                </div>
 
-                <mat-card id="roles" *ngIf="isMdoAdmin"
-                  class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m ws-mat-accent-border">
+                <div id="roles" *ngIf="isMdoAdmin"
+                  class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
                   <div class="flex-custom">
                     <mat-card-content class="margin-top-m margin-bottom-m margin-left-m margin-right-m">
                       <span class="mat-subheading-1 flex-4 mobile-margin appr-section-heading" role="link" tabindex="0">
@@ -216,7 +223,7 @@
                       </div>
                     </mat-card-content>
                   </div>
-                </mat-card>
+                </div>
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="10" class="input-wrapper">

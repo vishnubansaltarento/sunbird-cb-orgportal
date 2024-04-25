@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, ChangeDetectorRef } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
 import { MatChipInputEvent, MatPaginator, PageEvent } from '@angular/material'
@@ -7,6 +7,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import _ from 'lodash'
 import { RolesService } from '../../../users/services/roles.service'
 import { ActivatedRoute } from '@angular/router'
+import { Observable } from 'rxjs'
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators'
 
 @Component({
   selector: 'ws-widget-user-card',
@@ -39,29 +41,41 @@ export class UserCardComponent implements OnInit {
   isMdoLeader = false
   updateUserDataForm: FormGroup
   designationsMeta: any = []
+  groupsList: any = []
   selectedtags: any[] = []
   reqbody: any
   isTagsEdited = false
   separatorKeysCodes: number[] = [ENTER, COMMA]
   namePatern = `^[a-zA-Z ]*$`
   orgTypeList: any = []
+  masterLanguages: Observable<any[]> | undefined
+  masterLanguagesEntries: any
+  genderList = ['Male', 'Female', 'Others']
+  categoryList = ['General', 'OBC', 'SC', 'ST', 'Others']
 
-  constructor(private usersSvc: UsersService, private roleservice: RolesService, private route: ActivatedRoute) {
+  constructor(private usersSvc: UsersService, private roleservice: RolesService,
+    private route: ActivatedRoute, private cdref: ChangeDetectorRef) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', []),
       tags: new FormControl('', [Validators.pattern(this.namePatern)]),
       roles: new FormControl('', [Validators.required]),
+      domicileMedium: new FormControl('', []),
+      gender: new FormControl('', []),
+      category: new FormControl('', []),
+      primaryEmail: new FormControl('', [Validators.required]),
     })
   }
 
   ngOnInit() {
     this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
-    // this.init()
+    this.init()
   }
 
   async init() {
     await this.loadDesignations()
+    await this.loadGroups()
+    await this.loadLangauages()
   }
 
   async loadDesignations() {
@@ -73,16 +87,75 @@ export class UserCardComponent implements OnInit {
       })
   }
 
-  editUser(user: any) {
-    this.usersData.content.forEach((u: any) => {
-      if (u.userId === user.userId && user.editUser === false) {
-        u.editUser = !u.editUser
-      }
-    })
+  async loadGroups() {
+    await this.usersSvc.getGroups().subscribe(
+      (data: any) => {
+        const res = data.result.response
+        res.map((value: any) => {
+          this.groupsList.push({ name: value })
+        })
+      },
+      (_err: any) => {
+      })
+  }
+
+  async loadLangauages() {
+    await this.usersSvc.getMasterLanguages().subscribe(
+      (data: any) => {
+        this.masterLanguagesEntries = data.languages
+        this.onChangesLanuage()
+      },
+      (_err: any) => {
+      })
+  }
+
+  otherDropDownChange(value: any, field: string) {
+    if (field === 'designation' && value !== 'Other') {
+      this.updateUserDataForm.controls['designation'].setValue(value)
+
+      console.log('this.updateUserDataForm', this.updateUserDataForm)
+    }
+  }
+
+  onChangesLanuage(): void {
+    // tslint:disable-next-line: no-non-null-assertion
+    this.masterLanguages = this.updateUserDataForm.get('domicileMedium')!.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        startWith(''),
+        map((value: any) => typeof (value) === 'string' ? value : (value && value.name ? value.name : '')),
+        map((name: any) => name ? this.filterLanguage(name) : this.masterLanguagesEntries.slice()),
+      )
+  }
+
+  private filterLanguage(name: string) {
+    if (name) {
+      const filterValue = name.toLowerCase()
+      return this.masterLanguagesEntries.filter((option: any) => option.name.toLowerCase().includes(filterValue))
+    }
+    return this.masterLanguagesEntries
+  }
+
+  numericOnly(event: any): boolean {
+    const pattren = /^([0-9])$/
+    const result = pattren.test(event.key)
+    return result
+  }
+
+  onEditUser(user: any) {
+    // this.usersData.content.forEach((u: any) => {
+    //   if (u.userId === user.userId && user.editUser === false) {
+
+    this.cdref.detectChanges()
+    user.editUser = !user.editUser
+    console.log('user-----', user)
+    //   }
+    // })
   }
 
   getUerData(user: any) {
-    user.editUser = false
+    user.editUser = true
     const profileDataAll = user
     this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
 

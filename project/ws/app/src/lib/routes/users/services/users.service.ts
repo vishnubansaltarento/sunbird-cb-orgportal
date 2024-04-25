@@ -29,6 +29,8 @@ const API_END_POINTS = {
   SEND_OTP: '/apis/proxies/v8/otp/v1/generate',
   RESEND_OTP: '/apis/proxies/v8/otp/v1/generate',
   VERIFY_OTP: '/apis/proxies/v8/otp/v1/verify',
+  getMasterLanguages: '/apis/protected/v8/user/profileRegistry/getMasterLanguages',
+  GET_GROUPS: '/api/user/v1/groups',
   // GET_BULKUPLOAD_DATA: '/apis/protected/v8/admin/userRegistration/bulkUploadData',
 }
 
@@ -220,5 +222,13 @@ export class UsersService {
     }
     return this.http.post(API_END_POINTS.VERIFY_OTP, reqObj)
 
+  }
+
+  getMasterLanguages(): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.getMasterLanguages)
+  }
+
+  getGroups(): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.GET_GROUPS)
   }
 }

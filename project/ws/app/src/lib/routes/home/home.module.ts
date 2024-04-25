@@ -21,6 +21,7 @@ import {
   MatTabsModule,
   MatCheckboxModule,
   MatDatepickerModule,
+  MatAutocompleteModule,
 } from '@angular/material'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatPaginatorModule } from '@angular/material/paginator'
@@ -158,6 +159,7 @@ import { FilterSearchPipeModule } from '../pipes/filter-search/filter-search.mod
     PipeDurationTransformModule,
     LeftMenuModule,
     FilterSearchPipeModule,
+    MatAutocompleteModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
