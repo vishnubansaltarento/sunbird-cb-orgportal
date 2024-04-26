@@ -262,6 +262,8 @@
       </div>
 
       <div class="panel-body" *ngIf="!user.editUser">
+        <button mat-button class="my-4 mr-4" (click)="addRejection()">add reason</button>
+        <button mat-button class="my-4 mr-4" (click)="updateRejection()">update reason</button>
         <div class="inner-body mat-body-2">
           <div class="margin-bottom-m">
             <span class="font-bold">Primary Details</span> <mat-icon
