@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
-import { MatChipInputEvent, MatPaginator, PageEvent } from '@angular/material'
+import { MatChipInputEvent, MatDialog, MatPaginator, PageEvent } from '@angular/material'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import _ from 'lodash'
 import { RolesService } from '../../../users/services/roles.service'
 import { ActivatedRoute } from '@angular/router'
+import { RejectionPopupComponent } from '../rejection-popup/rejection-popup.component'
 
 @Component({
   selector: 'ws-widget-user-card',
@@ -46,7 +47,8 @@ export class UserCardComponent implements OnInit {
   namePatern = `^[a-zA-Z ]*$`
   orgTypeList: any = []
 
-  constructor(private usersSvc: UsersService, private roleservice: RolesService, private route: ActivatedRoute) {
+  constructor(private usersSvc: UsersService, private roleservice: RolesService, private route: ActivatedRoute,
+    private dialog: MatDialog) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', []),
@@ -203,5 +205,90 @@ export class UserCardComponent implements OnInit {
 
   onSearch(event: any) {
     this.searchByEnterKey.emit(event)
+  }
+
+  addRejection() {
+    const rejectinDetails = {
+      header: {
+        headerText: 'Reason of rejection',
+        showEditButton: false,
+      },
+      body: {
+        reason: '',
+        placeholder: 'Type the decription in fewer than 100 characters',
+        showTextArea: true
+      },
+      footer: {
+        showFooter: true,
+        buttons: [
+          {
+            btnType: 'submit',
+            btnText: 'Submit',
+            response: true,
+          },
+          {
+            btnType: 'cancel',
+            btnText: 'Cancel',
+            response: false,
+          }
+        ]
+      }
+    }
+
+    const dialogRef = this.dialog.open(RejectionPopupComponent, {
+      data: rejectinDetails,
+      width: '1100px',
+      disableClose: true,
+      panelClass: 'rejection-modal',
+      autoFocus: false
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.btnResponse) {
+        console.log(result)
+      }
+    })
+  }
+
+  updateRejection() {
+    const rejectinDetails = {
+      header: {
+        headerText: 'Reason of rejection',
+        showEditButton: true,
+      },
+      body: {
+        reason: `You're not in Group C.Please provide the request with the correct entry.`,
+        placeholder: 'Type the decription in fewer than 100 characters',
+        showTextArea: false
+      },
+      footer: {
+        showFooter: false,
+        buttons: [
+          {
+            btnType: 'success',
+            btnText: 'Update',
+            response: true,
+          },
+          {
+            btnType: 'cancel',
+            btnText: 'Cancel',
+            response: false,
+          }
+        ]
+      }
+    }
+
+    const dialogRef = this.dialog.open(RejectionPopupComponent, {
+      data: rejectinDetails,
+      width: '1100px',
+      disableClose: true,
+      panelClass: 'rejection-modal',
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.btnResponse) {
+        console.log(result)
+      }
+    })
   }
 }
