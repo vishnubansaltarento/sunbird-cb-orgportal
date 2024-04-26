@@ -48,7 +48,7 @@ export class UserCardComponent implements OnInit {
   orgTypeList: any = []
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService, private route: ActivatedRoute,
-    private dialog: MatDialog) {
+              private dialog: MatDialog) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', []),
@@ -216,7 +216,7 @@ export class UserCardComponent implements OnInit {
       body: {
         reason: '',
         placeholder: 'Type the decription in fewer than 100 characters',
-        showTextArea: true
+        showTextArea: true,
       },
       footer: {
         showFooter: true,
@@ -230,9 +230,9 @@ export class UserCardComponent implements OnInit {
             btnType: 'cancel',
             btnText: 'Cancel',
             response: false,
-          }
-        ]
-      }
+          },
+        ],
+      },
     }
 
     const dialogRef = this.dialog.open(RejectionPopupComponent, {
@@ -240,12 +240,12 @@ export class UserCardComponent implements OnInit {
       width: '1100px',
       disableClose: true,
       panelClass: 'rejection-modal',
-      autoFocus: false
+      autoFocus: false,
     })
 
     dialogRef.afterClosed().subscribe(result => {
       if (result.btnResponse) {
-        console.log(result)
+        // console.log(result)
       }
     })
   }
@@ -259,7 +259,7 @@ export class UserCardComponent implements OnInit {
       body: {
         reason: `You're not in Group C.Please provide the request with the correct entry.`,
         placeholder: 'Type the decription in fewer than 100 characters',
-        showTextArea: false
+        showTextArea: false,
       },
       footer: {
         showFooter: false,
@@ -273,9 +273,9 @@ export class UserCardComponent implements OnInit {
             btnType: 'cancel',
             btnText: 'Cancel',
             response: false,
-          }
-        ]
-      }
+          },
+        ],
+      },
     }
 
     const dialogRef = this.dialog.open(RejectionPopupComponent, {
@@ -287,7 +287,7 @@ export class UserCardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result.btnResponse) {
-        console.log(result)
+        // console.log(result)
       }
     })
   }

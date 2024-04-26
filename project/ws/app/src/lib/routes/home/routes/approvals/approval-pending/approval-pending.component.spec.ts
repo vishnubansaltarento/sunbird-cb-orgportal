@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { RejectionPopupComponent } from './rejection-popup.component'
+import { ApprovalPendingComponent } from './approval-pending.component'
 
-describe('RejectionPopupComponent', () => {
-  let component: RejectionPopupComponent
-  let fixture: ComponentFixture<RejectionPopupComponent>
+describe('ApprovalPendingComponent', () => {
+  let component: ApprovalPendingComponent
+  let fixture: ComponentFixture<ApprovalPendingComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RejectionPopupComponent],
+      declarations: [ApprovalPendingComponent],
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RejectionPopupComponent)
+    fixture = TestBed.createComponent(ApprovalPendingComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })

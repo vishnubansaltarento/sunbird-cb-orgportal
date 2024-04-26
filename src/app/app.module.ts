@@ -67,6 +67,7 @@ import { environment } from '../environments/environment'
 import { PublicLogoutModule } from './routes/public/public-logout/public-logout.module'
 import { LoaderService } from './services/loader.service'
 import { ConfirmationBoxComponent } from '../../project/ws/app/src/lib/routes/training-plan/components/confirmation-box/confirmation.box.component'
+
 @Injectable()
 export class HammerConfig extends GestureConfig {
   buildHammer(element: HTMLElement) {

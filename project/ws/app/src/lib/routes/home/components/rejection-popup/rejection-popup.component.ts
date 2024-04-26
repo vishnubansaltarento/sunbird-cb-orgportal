@@ -6,12 +6,12 @@ import * as _ from 'lodash'
 @Component({
   selector: 'ws-app-rejection-popup',
   templateUrl: './rejection-popup.component.html',
-  styleUrls: ['./rejection-popup.component.scss']
+  styleUrls: ['./rejection-popup.component.scss'],
 })
 export class RejectionPopupComponent implements OnInit {
 
   rejectionsDetails: any
-  reason: FormControl = new FormControl(null, [Validators.required, Validators.maxLength(100)]);
+  reason: FormControl = new FormControl(null, [Validators.required, Validators.maxLength(100)])
 
   constructor(
     private dialogRef: MatDialogRef<RejectionPopupComponent>,
@@ -37,7 +37,7 @@ export class RejectionPopupComponent implements OnInit {
   onButtonClick(btnDetails: any) {
     const responce = {
       btnResponse: btnDetails.response,
-      reason: this.reason.value
+      reason: this.reason.value,
     }
     if (btnDetails.btnType === 'cancel' || this.reason.valid) {
       this.dialogRef.close(responce)

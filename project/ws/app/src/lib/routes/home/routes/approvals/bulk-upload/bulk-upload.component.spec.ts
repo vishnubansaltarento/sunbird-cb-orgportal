@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { RejectionPopupComponent } from './rejection-popup.component'
+import { BulkUploadComponent } from './bulk-upload.component'
 
-describe('RejectionPopupComponent', () => {
-  let component: RejectionPopupComponent
-  let fixture: ComponentFixture<RejectionPopupComponent>
+describe('BulkUploadComponent', () => {
+  let component: BulkUploadComponent
+  let fixture: ComponentFixture<BulkUploadComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RejectionPopupComponent],
+      declarations: [BulkUploadComponent],
     })
     .compileComponents()
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RejectionPopupComponent)
+    fixture = TestBed.createComponent(BulkUploadComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })
