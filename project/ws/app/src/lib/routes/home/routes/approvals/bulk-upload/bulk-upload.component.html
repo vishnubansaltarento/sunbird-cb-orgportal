@@ -40,50 +40,64 @@
     </div>
   </div>
 
-  <div class="file-container">
-    <div class="flex flex-col gap-4">
-      <div class="flex flex-row justify-between items-center">
-        <div class="flex flex-row gap-1">
-          <div class="font-bold">File Information</div>
-          <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
-        </div>
-        <div class="flex flex-row gap-4 outline-button items-center">
-          <mat-icon>download_2</mat-icon>
-          Download error log
+  <mat-tab-group>
+    <mat-tab label="Recent upload">
+      Recent upload
+    </mat-tab>
+    <mat-tab label="Last uploads">
+      <div class="file-container mt-6" *ngFor="let item of [1, 2, 3]">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-row justify-between items-center">
+            <div class="flex flex-row gap-1">
+              <div class="font-bold">File Information</div>
+              <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
+            </div>
+            <div class="flex flex-row gap-2 outline-button items-center">
+              <mat-icon>download_2</mat-icon>
+              Download error log
+            </div>
+          </div>
+          <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
+            <div class="flex flex-col">
+              <div class="label">Name</div>
+              <div class="value">1710482612470_1710214198937_users-file-upload-sample (15).xlsx</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Status</div>
+              <div class="value">Failed</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Failed Records</div>
+              <div class="value">3</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Success Records</div>
+              <div class="value">0</div>
+            </div>
+          </div>
+          <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
+            <div class="flex flex-col">
+              <div class="label">Total Records</div>
+              <div class="value">3</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Initiated On</div>
+              <div class="value">27 Jul 2023 3:15PM</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Completed ON</div>
+              <div class="value">27 Aug 2023 3:15PM</div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
-        <div class="flex flex-col gap-1">
-          <div class="label">Name</div>
-          <div class="value">1710482612470_1710214198937_users-file-upload-sample (15).xlsx</div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="label">Status</div>
-          <div class="value">Failed</div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="label">Failed Records</div>
-          <div class="value">3</div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="label">Success Records</div>
-          <div class="value">0</div>
-        </div>
+
+      <div class="flex flex-row justify-end mt-4">
+        <mat-paginator [pageSize]="pageSize" [length]="totalRecords" [pageSizeOptions]="[10, 25, 50]"
+          (page)="handleChangePage($event)"></mat-paginator>
       </div>
-      <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
-        <div class="flex flex-col gap-1">
-          <div class="label">Total Records</div>
-          <div class="value">3</div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="label">Initiated On</div>
-          <div class="value">27 Jul 2023 3:15PM</div>
-        </div>
-        <div class="flex flex-col gap-1">
-          <div class="label">Completed ON</div>
-          <div class="value">27 Aug 2023 3:15PM</div>
-        </div>
-      </div>
-    </div>
-  </div>
+    </mat-tab>
+  </mat-tab-group>
+
+
 </div>
