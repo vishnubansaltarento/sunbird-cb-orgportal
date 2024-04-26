@@ -265,7 +265,7 @@ export class UserCardComponent implements OnInit {
         showFooter: false,
         buttons: [
           {
-            btnType: 'success',
+            btnType: 'submit',
             btnText: 'Update',
             response: true,
           },
