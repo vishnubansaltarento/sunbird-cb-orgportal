@@ -36,9 +36,9 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content
-      }, (error: HttpErrorResponse) => {
+      },         (error: HttpErrorResponse) => {
         if (!error.ok) {
-          this.matSnackBar.open("Unable to get Bulk status list")
+          this.matSnackBar.open('Unable to get Bulk status list')
         }
       })
   }
