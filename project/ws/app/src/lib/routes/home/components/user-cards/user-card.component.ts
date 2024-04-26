@@ -48,7 +48,7 @@ export class UserCardComponent implements OnInit {
   orgTypeList: any = []
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService, private route: ActivatedRoute,
-    private dialog: MatDialog) {
+              private dialog: MatDialog) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', []),
