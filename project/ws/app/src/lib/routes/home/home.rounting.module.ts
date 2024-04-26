@@ -20,6 +20,8 @@ import { PageResolve } from '@sunbird-cb/utils'
 import { BlendedApprovalsComponent } from './routes/blended-approvals/blended-approvals.component'
 import { ReportsSectionComponent } from './routes/reports-section/reports-section.component'
 import { TrainingPlanDashboardComponent } from './routes/training-plan-dashboard/training-plan-dashboard.component'
+import { BulkUploadComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
+import { ApprovalPendingComponent } from './routes/approvals/approval-pending/approval-pending.component'
 
 const routes: Routes = [
   {
@@ -94,34 +96,62 @@ const routes: Routes = [
           usersList: UsersListResolve,
         },
       },
-      {
-        path: 'approvals/:tab',
-        component: ApprovalsComponent,
-        data: {
-          pageId: 'approvals',
-          module: 'Approvals',
-          pageType: 'feature',
-          pageKey: 'approval-view',
-        },
-        resolve: {
-          pageData: PageResolve,
-          configService: ConfigResolveService,
-        },
-      },
+      // {
+      //   path: 'approvals/:tab',
+      //   component: ApprovalsComponent,
+      //   data: {
+      //     pageId: 'approvals',
+      //     module: 'Approvals',
+      //     pageType: 'feature',
+      //     pageKey: 'approval-view',
+      //   },
+      //   resolve: {
+      //     pageData: PageResolve,
+      //     configService: ConfigResolveService,
+      //   },
+      // },
       {
         path: 'approvals',
-        redirectTo: 'approvals/pending',
         component: ApprovalsComponent,
-        resolve: {
-          pageData: PageResolve,
-          configService: ConfigResolveService,
-        },
         data: {
           pageId: 'approvals',
           module: 'Approvals',
           pageType: 'feature',
           pageKey: 'approval-view',
         },
+        resolve: {
+          pageData: PageResolve,
+          configService: ConfigResolveService,
+        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'pending',
+          },
+          {
+            path: 'pending',
+            component: ApprovalPendingComponent,
+            data: {
+              pageId: 'approvals-pending',
+              module: 'Approvals',
+            },
+            resolve: {
+              configService: ConfigResolveService,
+            },
+          },
+          {
+            path: 'bulk-upload',
+            component: BulkUploadComponent,
+            data: {
+              pageId: 'bulk-upload',
+              module: 'Approvals',
+            },
+            resolve: {
+              configService: ConfigResolveService,
+            },
+          },
+        ],
       },
       {
         path: 'workallocation/:tab',

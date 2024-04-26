@@ -73,6 +73,8 @@ import { UserCardComponent } from './components/user-cards/user-card.component'
 import { SearchComponent } from './components/search/search.component'
 import { FilterComponent } from './components/filter/filter.component'
 import { FilterSearchPipeModule } from '../pipes/filter-search/filter-search.module'
+import { ApprovalPendingComponent } from './routes/approvals/approval-pending/approval-pending.component'
+import { BulkUploadComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
 @NgModule({
   declarations: [
     HomeComponent,
@@ -103,6 +105,8 @@ import { FilterSearchPipeModule } from '../pipes/filter-search/filter-search.mod
     UserCardComponent,
     SearchComponent,
     FilterComponent,
+    ApprovalPendingComponent,
+    BulkUploadComponent,
   ],
   imports: [
     CommonModule,
