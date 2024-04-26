@@ -96,20 +96,6 @@ const routes: Routes = [
           usersList: UsersListResolve,
         },
       },
-      // {
-      //   path: 'approvals/:tab',
-      //   component: ApprovalsComponent,
-      //   data: {
-      //     pageId: 'approvals',
-      //     module: 'Approvals',
-      //     pageType: 'feature',
-      //     pageKey: 'approval-view',
-      //   },
-      //   resolve: {
-      //     pageData: PageResolve,
-      //     configService: ConfigResolveService,
-      //   },
-      // },
       {
         path: 'approvals',
         component: ApprovalsComponent,
@@ -137,6 +123,7 @@ const routes: Routes = [
               module: 'Approvals',
             },
             resolve: {
+              pageData: PageResolve,
               configService: ConfigResolveService,
             },
           },
@@ -148,11 +135,26 @@ const routes: Routes = [
               module: 'Approvals',
             },
             resolve: {
+              pageData: PageResolve,
               configService: ConfigResolveService,
             },
           },
         ],
       },
+      // {
+      //   path: 'approvals/:tab',
+      //   component: ApprovalsComponent,
+      //   data: {
+      //     pageId: 'approvals',
+      //     module: 'Approvals',
+      //     pageType: 'feature',
+      //     pageKey: 'approval-view',
+      //   },
+      //   resolve: {
+      //     pageData: PageResolve,
+      //     configService: ConfigResolveService,
+      //   },
+      // },
       {
         path: 'workallocation/:tab',
         data: {
