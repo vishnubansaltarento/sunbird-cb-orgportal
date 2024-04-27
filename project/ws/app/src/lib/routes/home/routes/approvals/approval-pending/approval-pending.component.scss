@@ -1,14 +1,6 @@
-
 @import 'ws-common';
 @import 'ws-vars';
 @import 'ws-mixins';
-
-.container-balanced{
-  min-height: 85vh;
-  max-width: 100%;
-  margin-left: auto!important;
-  margin-right: auto!important;
-}
 
 .buton {
   display: flex;
@@ -33,7 +25,10 @@
 .font-medium {
   font-weight: 500 !important;
 }
-
+.text-center{
+  text-align: center;
+  margin: 10px;
+}
 .bottom-fix {
   bottom: 1.5rem;
   position: absolute;
@@ -68,13 +63,7 @@
   border-radius: 8px;
 }
 
-.sticky {
-  position: sticky;
-  top: calc(#{$mat-toolbar-gt-xs});
-  overflow: hidden;
-  // z-index: 10;
-  // width: 100%;
-}
+
 
 .text-box {
   display: flex;
@@ -296,53 +285,23 @@ a:not([href]):not([tabindex]) {
   box-shadow: none !important;
 }
 
-.appr-text-label{
-  margin: 20px 10px;
-  display: block;
-  font-weight: 700;
+.mat-card-title{
+  // margin-left: -31px !important;
+  font-size: 20px !important;
 }
 
-.field-key{
-  display: block;
-  padding:5px 0;
-  font:400 14px Lato;
-  color: #999999;
-}
+.reportsDemo {
+    .reportsDemoVideo {
+      width: 200px;
+      height: 140px;
+      border-radius: 5px;
+      background-color: #FDEAD5;
+      font-weight: 600;
+      pointer-events: all;
+      cursor: pointer;
 
-.field-name{
-  display: block;
-  padding:5px 0px;
-  font:700 14px Lato;
-
-}
-
-.field-change{
-  display: block;
-  padding:5px 0px;
-  font:400 14px Lato;
-  color: #d9d9d9;
-}
-
-.field-date{
-  display: block;
-  padding:5px 0px;
-  font:400 14px Lato;
-  color: #999999
-
-}
-.change-log-main {
-  border-left: 1px solid #0000000f;
-}
-
-.change-log-wrapper{
-  border-bottom: 1px solid #ebe5e5;
-}
-
-.change-log-text{
-  display: block;
-  font: 700 14px Lato;
-}
-
-::ng-deep.container-balanced .text-capitalize {
-  text-transform: none !important
-}
+      .video_icon {
+        font-size: 32px;
+      }
+    }
+  }

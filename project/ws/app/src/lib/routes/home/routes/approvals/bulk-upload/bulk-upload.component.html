@@ -1,0 +1,103 @@
+<div class="flex flex-col gap-6">
+  <div class="flex flex-row gap-4 items-center">
+    <mat-icon>arrow_back</mat-icon>
+    <div class="flex font-bold">Bulk Profile Update</div>
+  </div>
+
+  <div class="flex flex-col gap-4 bulk-container">
+    <div class="flex font-bold">Bulk Profile Update</div>
+    <div class="flex flex-row gap-8">
+      <div class="flex-1">
+        <div class="flex flex-col gap-6 dashed-card">
+          <div>Open &amp; follow these instruction</div>
+          <div class="flex flex-col gap-4">
+            <ol class="custom-ol">
+              <li>Keep the row of the items you wish to process</li>
+              <li>Keep the row of the items you wish to process</li>
+              <li>Delete the entire row you do not intend to process</li>
+            </ol>
+          </div>
+          <div class="flex flex-row gap-6">
+            <button class="outline-button">Download Sample File</button>
+            <button class="outline-button">Supporting Document</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex flex-col gap-4 dashed-card items-center">
+          <div class="img-div"></div>
+          <div class="flex flex-col items-center">
+            <div class="text-primary cursor-pointer">Browse files</div>
+            <div class="flex">or</div>
+            <div class="flex">Drag file to upload</div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="flex">Max file size: 100 MB</div>
+            <div class="flex">Supported file types: CSV</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Recent upload">
+      Recent upload
+    </mat-tab>
+    <mat-tab label="Last uploads">
+      <div class="file-container mt-6" *ngFor="let list of lastUploadList">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-row justify-between items-center">
+            <div class="flex flex-row gap-1">
+              <div class="font-bold">File Information</div>
+              <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
+            </div>
+            <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
+              <mat-icon>download_2</mat-icon>
+              Download error log
+            </div>
+          </div>
+          <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
+            <div class="flex flex-col">
+              <div class="label">Name</div>
+              <div class="value">{{ list?.filename }}</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Status</div>
+              <div class="value">{{ list?.status }}</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Failed Records</div>
+              <div class="value">{{ list?.failedrecordscount }}</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Success Records</div>
+              <div class="value">{{ list?.successfulrecordscount }}</div>
+            </div>
+          </div>
+          <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
+            <div class="flex flex-col">
+              <div class="label">Total Records</div>
+              <div class="value">{{ list?.totalrecords }}</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Initiated On</div>
+              <div class="value">{{ list?.datecreatedon | date: 'dd MMM yyyy h:mm a' }}</div>
+            </div>
+            <div class="flex flex-col">
+              <div class="label">Completed ON</div>
+              <div class="value">{{ list?.dateupdatedon | date: 'dd MMM yyyy h:mm a' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-row justify-end mt-4">
+        <mat-paginator [pageSize]="pageSize" [length]="totalRecords" [pageSizeOptions]="[10, 25, 50]"
+          (page)="handleChangePage($event)"></mat-paginator>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+
+</div>
