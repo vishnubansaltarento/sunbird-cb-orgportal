@@ -53,82 +53,90 @@
         </div>
       </mat-expansion-panel-header>
 
-      <div class="panel-body" *ngIf="user.enableEdit">
-        <div class="inner-body">
-          Primary Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
-          <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="2" rowHeight="100px">
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Designation</label>
-                <mat-select class="appr-text-field" #designation formControlName="designation" i18n-placeholder
-                  placeholder="--Select--" (selectionChange)="otherDropDownChange(designation.value, 'designation')">
-                  <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
-                    {{designation.name}}
-                  </mat-option>
-                  <mat-option [value]="'Other'">Other</mat-option>
-                </mat-select>
-              </mat-grid-tile>
-
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Group</label>
-                <mat-select class="appr-text-field" #group formControlName="group" i18n-placeholder
-                  placeholder="--Select--">
-                  <mat-option [value]="g" *ngFor="let g of groupsList">
-                    {{g.name}}
-                  </mat-option>
-                </mat-select>
-              </mat-grid-tile>
-            </mat-grid-list>
-          </form>
-        </div>
-        <hr>
-        <div class="inner-body">
-          Other Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
-
-          <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="3" rowHeight="100px">
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label requird">Employee ID</label>
-                <input type="text" [value]="" [disabled]="true" class="appr-text-field">
-              </mat-grid-tile>
-
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Email</label>
-                <input id="primaryEmail" class="appr-text-field" name="primaryEmailField" type="email" matInput
-                  placeholder="Type here" #primaryEmail formControlName="primaryEmail" i18n-aria-label
-                  aria-label="Primary Email readonly input" maxlength="320">
-                <mat-error [hidden]="false" i18n="Primary Email Error|Explains name is required">
-                  Email is mandatory
-                </mat-error>
-              </mat-grid-tile>
-
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Mobile number</label>
-                <div class="flex flex-1">
-                  <mat-form-field appearance="outline" class="margin-top-xs w80 mobile-country-code">
-                    <mat-select formControlName="countryCode" default="+91" i18n-placeholder placeholder="--Select--"
-                      i18n-aria-label aria-label="Mobile Number label">
-                      <mat-option [value]="code" *ngFor="let code of countryCodes">{{code}}</mat-option>
+      <div class="panel-body profile-box" *ngIf="user.enableEdit">
+        <form [formGroup]="updateUserDataForm" class="margin-top-m">
+          <div class="inner-body">
+            Primary Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
+            <div class="flex flex-row margin-top-m">
+              <div class="flex md:w-1/3">
+                <div>
+                  <label class="margin-remove-bottom form-label required">Designation</label>
+                  <mat-form-field appearance="outline">
+                    <mat-select #designation formControlName="designation" i18n-placeholder
+                      placeholder="Select designation"
+                      (selectionChange)="otherDropDownChange(designation.value, 'designation')">
+                      <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
+                        {{designation.name}}
+                      </mat-option>
+                      <mat-option [value]="'Other'">Other</mat-option>
                     </mat-select>
                   </mat-form-field>
-                  <mat-form-field appearance="outline" class="margin-top-xs flex-expand w-minus-w80">
-                    <input id="mobileNumber" #mobile type="text" matInput placeholder="Type here"
-                      formControlName="mobile" i18n-aria-label aria-label="Mobile Number input" maxlength="10"
-                      (keypress)="numericOnly($event)" (paste)="numericOnly($event)">
-                    <mat-error [hidden]="false" i18n="Mobile Number Error | Explains Mobile no is required"
-                      *ngIf="updateUserDataForm?.controls['mobile'].errors?.required" i18n-aria-label
-                      aria-label="Please enter your mobile number">
-                      Please enter your mobile number
-                    </mat-error>
-                    <mat-error [hidden]="false" *ngIf="updateUserDataForm?.controls['mobile'].errors?.pattern"
-                      i18n-aria-label aria-label="Please enter a valid 10 digit mobile number">
-                      Please enter a valid 10 digit mobile number
-                    </mat-error>
-                  </mat-form-field>
-                  <!-- <div class="flex m-auto" *ngIf="isMobileVerified">
-                    <mat-icon class="ws-mat-green-text margin-xs" svgIcon="verified"></mat-icon>
-                  </div> -->
                 </div>
+              </div>
+
+              <div class="flex md:w-1/3">
+                <div>
+                  <label class="margin-remove-bottom form-label required">Group</label>
+                  <mat-form-field appearance="outline">
+                    <mat-select #group formControlName="group" i18n-placeholder placeholder="Select group">
+                      <mat-option [value]="g" *ngFor="let g of groupsList">
+                        {{g.name}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="inner-body">
+            Other Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
+
+            <div class="flex flex-row margin-top-m">
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label">Employee ID</label>
+                <mat-form-field appearance="outline">
+                  <input type="text" matInput #employeeID formControlName="employeeID">
+                </mat-form-field>
+              </div>
+
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Email</label>
+                <mat-form-field appearance="outline">
+                  <input id="primaryEmail" name="primaryEmailField" type="email" matInput placeholder="Type here"
+                    #primaryEmail formControlName="primaryEmail" i18n-aria-label
+                    aria-label="Primary Email readonly input" maxlength="320">
+                  <mat-error [hidden]="false" i18n="Primary Email Error|Explains name is required">
+                    Email is mandatory
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Mobile number</label>
+                <mat-form-field appearance="outline" class="w80 mobile-country-code">
+                  <mat-select formControlName="countryCode" default="+91" i18n-placeholder placeholder="Select code"
+                    i18n-aria-label aria-label="Mobile Number label">
+                    <mat-option [value]="code" *ngFor="let code of countryCodes">{{code}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="flex-expand w-minus-w80">
+                  <input id="mobileNumber" #mobile type="text" matInput placeholder="Type here" formControlName="mobile"
+                    i18n-aria-label aria-label="Mobile Number input" maxlength="10" (keypress)="numericOnly($event)"
+                    (paste)="numericOnly($event)">
+                  <mat-error [hidden]="false" i18n="Mobile Number Error | Explains Mobile no is required"
+                    *ngIf="updateUserDataForm?.controls['mobile'].errors?.required" i18n-aria-label
+                    aria-label="Please enter your mobile number">
+                    Please enter your mobile number
+                  </mat-error>
+                  <mat-error [hidden]="false" *ngIf="updateUserDataForm?.controls['mobile'].errors?.pattern"
+                    i18n-aria-label aria-label="Please enter a valid 10 digit mobile number">
+                    Please enter a valid 10 digit mobile number
+                  </mat-error>
+                </mat-form-field>
+                <!-- <div class="flex m-auto" *ngIf="isMobileVerified">
+                  <mat-icon class="ws-mat-green-text margin-xs" svgIcon="verified"></mat-icon>
+                </div> -->
                 <!-- <div *ngIf="!isMobileVerified" class="flex flex-1">
                   <button *ngIf="!otpSend" mat-raised-button type="button" (click)="sendOtp()"
                     class="text-white btn-success btn-responsive" [disabled]="updateUserDataForm?.mobile?.invalid">
@@ -161,17 +169,27 @@
                     </div>
                   </div>
                 </div> -->
-              </mat-grid-tile>
+              </div>
+            </div>
+            <div class="flex flex-row margin-top-m">
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Date of Birth</label>
+                <mat-form-field appearance="outline">
+                  <input id="birthDate" matInput #dob formControlName="dob" [matDatepicker]="picker" i18n-placeholder
+                    (focus)="picker.open()" placeholder="Choose date of birth" [min]="1/1/1900" [max]="today">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker (closed)="dob.blur()" i18n-aria-label aria-label="Date picker">
+                  </mat-datepicker>
+                  <mat-error [hidden]="false" i18n="Date of Birth Error|Explains name is required">
+                    Date of birth is mandatory
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Date of Birth</label>
-                <input type="text" [value]="" class="appr-text-field">
-              </mat-grid-tile>
-
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Mother Tongue</label>
-                <mat-form-field appearance="outline" class="margin-top-xs">
-                  <input id="language" matInput type="text" placeholder="Mother Tongue" i18n-placeholder="Mother Tongue"
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Mother Tongue</label>
+                <mat-form-field appearance="outline">
+                  <input id="language" matInput type="text" placeholder="Type here" i18n-placeholder="Mother Tongue"
                     formControlName="domicileMedium" [matAutocomplete]="motherTongueAuto" i18n-aria-label
                     aria-label="Domicile Medium (Mother Tongue)" #motherTongue maxlength="30" />
                   <mat-error *ngIf="updateUserDataForm?.controls['domicileMedium'].errors?.forbiddenNames"
@@ -184,46 +202,63 @@
                     {{ option.name }}
                   </mat-option>
                 </mat-autocomplete>
-              </mat-grid-tile>
+                <mat-error [hidden]="false" i18n="Mother tongue Error | Explains Mother tongue is required">
+                  Mother tongue is mandatory
+                </mat-error>
+              </div>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Gender</label>
-                <mat-select class="appr-text-field" #gender formControlName="gender" i18n-placeholder
-                  placeholder="--Select--">
-                  <mat-option [value]="gender" *ngFor="let gender of genderList">
-                    {{gender}}
-                  </mat-option>
-                </mat-select>
-              </mat-grid-tile>
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Gender</label>
+                <mat-form-field appearance="outline">
+                  <mat-select #gender formControlName="gender" i18n-placeholder placeholder="Select gender">
+                    <mat-option [value]="gender" *ngFor="let gender of genderList">
+                      {{gender}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Office Pin Code</label>
-                <input id="pinCode" #pincode class="appr-text-field" type="text" matInput placeholder="Pin code"
-                  formControlName="pincode" i18n-aria-label aria-label="Pin Code input field" autocomplete="off"
-                  (keypress)="numericOnly($event)" maxlength="6">
-              </mat-grid-tile>
+            <div class="flex flex-row margin-top-m">
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Office Pin Code</label>
+                <mat-form-field appearance="outline">
+                  <input id="pinCode" #pincode type="text" matInput placeholder="Type here" formControlName="pincode"
+                    i18n-aria-label aria-label="Pin Code input field" autocomplete="off"
+                    (keypress)="numericOnly($event)" maxlength="6">
+                  <mat-error [hidden]="false" i18n="Pin code | Explains pin code is required">
+                    Pin code is mandatory
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label">eHRMS ID</label>
-                <input type="text" [value]="" [disabled]="true" class="appr-text-field">
-              </mat-grid-tile>
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label">eHRMS ID</label>
+                <mat-form-field appearance="outline">
+                  <input type="text" matInput #ehrmsID formControlName="ehrmsID" placeholder="Type here">
+                </mat-form-field>
+              </div>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
-                <label class="appr-text-label required">Category</label>
-                <mat-select class="appr-text-field" #category formControlName="category" i18n-placeholder
-                  placeholder="--Select--">
-                  <mat-option [value]="ctg" *ngFor="let ctg of categoryList">
-                    {{ctg}}
-                  </mat-option>
-                </mat-select>
-              </mat-grid-tile>
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label">Category</label>
+                <mat-form-field appearance="outline">
+                  <mat-select #category formControlName="category" i18n-placeholder placeholder="Select category">
+                    <mat-option [value]="ctg" *ngFor="let ctg of categoryList">
+                      {{ctg}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
 
-              <mat-grid-tile [colspan]="2" [rowspan]="2" class="input-wrapper">
-                <label class="appr-text-label">Tags</label>
+            <div class="flex flex-row margin-top-m">
+              <div class="md:w-1/2">
+                <label class="margin-remove-bottom form-label required">Tags</label>
+                <!-- <mat-form-field> -->
                 <div class="left-input-div">
                   <div class="flex-col">
-                    <input class="appr-text-field w-full-imp" #tags matInput i18n-placeholder="Type tag here"
-                      placeholder="Type tag here" formControlName="tags" i18n-aria-label aria-label="Enter tag"
+                    <input class="appr-text-field w-full-imp" #tags matInput i18n-placeholder="Type here"
+                      placeholder="Type here" formControlName="tags" i18n-aria-label aria-label="Type here"
                       [matChipInputFor]="chipListTags" autocomplete="off" maxlength="100"
                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                       (matChipInputTokenEnd)="addActivity($event)" />
@@ -238,8 +273,7 @@
                 <div class="right-input-div">
                   <button mat-raised-button type="button" [disabled]="!tags.value"
                     (click)="addActivity({input: tags, value: tags.value})"
-                    [ngStyle]="{'opacity': updateUserDataForm.valid? 1: 0.7}"
-                    class="text-white btn-add-activity btn-responsive">
+                    class="btn-success btn-responsive btn-add-activity">
                     <span class="text-white" i18n>Add tag</span>
                   </button>
                 </div>
@@ -250,71 +284,69 @@
                     <mat-icon matChipRemove>cancel</mat-icon>
                   </mat-chip>
                 </mat-chip-list>
-              </mat-grid-tile>
+                <!-- </mat-form-field> -->
+              </div>
+            </div>
 
-              <mat-grid-tile [colspan]="2" [rowspan]="2" class="input-wrapper">
-                <div id="roles"
-                  class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
-                  <div class="flex flex-wrap mobile-break">
-                    <div class="w-full profile-cols-full bg-grey">
-                      <div class="input-wrapper margin-top-s">
-                        <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
-                          aria-label="Roles label" i18n="Role label|Label which explains the user to select the roles">
-                          Role
-                        </label>
-                        <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
-                          <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
-                            [selected]="userRoles.has(role.roleName)" [value]="role.roleName">
-                            {{role.roleName}}
-                          </mat-list-option>
-                        </mat-selection-list>
-                      </div>
+            <div class="flex flex-row margin-top-m">
+              <div class="md:w-1/2" *ngIf="isMdoAdmin">
+                <div class="flex flex-wrap mobile-break">
+                  <div class="w-full profile-cols-full bg-grey">
+                    <div class="input-wrapper margin-top-s">
+                      <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
+                        aria-label="Roles label" i18n="Role label|Label which explains the user to select the roles">
+                        Role
+                      </label>
+                      <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
+                        <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
+                          [selected]="userRoles.has(role.roleName)" [value]="role.roleName">
+                          {{role.roleName}}
+                        </mat-list-option>
+                      </mat-selection-list>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, 'Roles')"
-                    class="margin-top-m text-white btn-success btn-responsive">
-                    <span class="text-white" i18n>
-                      Update
+              <div class="md:w-1/2" *ngIf="!isMdoAdmin"
+                class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
+                <div class="flex-custom">
+                  <mat-card-content class="margin-top-m margin-bottom-m margin-left-m margin-right-m">
+                    <span class="mat-subheading-1 flex-4 mobile-margin appr-section-heading" role="link" tabindex="0">
+                      Roles
                     </span>
-                  </button>
-                  <button mat-raised-button type="submit" (click)="resetRoles()"
-                    class="margin-top-m text-white btn-success btn-responsive">
-                    <span class="text-white" i18n>
-                      Cancel
-                    </span>
-                  </button>
-                </div>
-
-                <!-- <div id="roles" *ngIf="isMdoAdmin"
-                  class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
-                  <div class="flex-custom">
-                    <mat-card-content class="margin-top-m margin-bottom-m margin-left-m margin-right-m">
-                      <span class="mat-subheading-1 flex-4 mobile-margin appr-section-heading" role="link" tabindex="0">
-                        Roles
-                      </span>
-                      <div class="margin-top-l new-mobile">
-                        <div class="flex flex-wrap mobile-break">
-                          <div class="w-full profile-cols-full bg-grey">
-                            <ng-container>
-                              <ul class="roles-list margin-0">
-                                <li *ngFor="let role of orguserRoles" class="margin-bottom-s">{{role}}</li>
-                              </ul>
-                            </ng-container>
-                          </div>
+                    <div class="margin-top-l new-mobile">
+                      <div class="flex flex-wrap mobile-break">
+                        <div class="w-full profile-cols-full bg-grey">
+                          <ng-container>
+                            <ul class="roles-list margin-0">
+                              <li *ngFor="let role of orguserRoles" class="margin-bottom-s">{{role}}</li>
+                            </ul>
+                          </ng-container>
                         </div>
                       </div>
-                    </mat-card-content>
-                  </div>
-                </div> -->
-              </mat-grid-tile>
+                    </div>
+                  </mat-card-content>
+                </div>
+              </div>
+            </div>
 
-
-            </mat-grid-list>
-          </form>
-        </div>
+            <div class="flex flex-row margin-top-l">
+              <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, user)"
+                class="margin-right-m btn-success btn-responsive successbtn" [disabled]="updateUserDataForm?.invalid">
+                <span class="text-white" i18n>
+                  Update
+                </span>
+              </button>
+              <button mat-raised-button type="submit" (click)="resetRoles()"
+                class="btn-success btn-responsive cancelbtn">
+                <span i18n>
+                  Cancel
+                </span>
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
 
       <div class="panel-body" *ngIf="!user.enableEdit">

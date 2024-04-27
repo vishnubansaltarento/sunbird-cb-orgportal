@@ -1,23 +1,28 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
-import { MatChipInputEvent, MatDialog, MatExpansionPanel, MatPaginator, MatSnackBar, PageEvent } from '@angular/material'
+import { DateAdapter, MAT_DATE_FORMATS, MatChipInputEvent, MatDialog, MatExpansionPanel, MatPaginator, MatSnackBar, PageEvent } from '@angular/material'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import _ from 'lodash'
 import { RolesService } from '../../../users/services/roles.service'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { Observable, Subscription, interval } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { OtpService } from '../../../users/services/otp.service'
 import { ConfigurationsService } from '@sunbird-cb/utils'
 import { RejectionPopupComponent } from '../rejection-popup/rejection-popup.component'
+import { APP_DATE_FORMATS, AppDateAdapter } from '../../../events/routes/format-datepicker'
 
 @Component({
   selector: 'ws-widget-user-card',
   templateUrl: './user-card.component.html',
   styleUrls: ['./user-card.component.scss'],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+  ]
 })
 export class UserCardComponent implements OnInit {
   @Input() userId: any
@@ -70,14 +75,19 @@ export class UserCardComponent implements OnInit {
   timeLeftforOTP = 0
   isMobileVerified = false
   disableVerifyBtn = false
+  qpParam: any
+  department: any
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private configSvc: ConfigurationsService, private dialog: MatDialog,
+    private configSvc: ConfigurationsService, private dialog: MatDialog, private router: Router,
     private route: ActivatedRoute, private otpService: OtpService,
     private snackBar: MatSnackBar) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', []),
+      employeeID: new FormControl({ value: '', disabled: true }, []),
+      ehrmsID: new FormControl({ value: '', disabled: true }, []),
+      dob: new FormControl('', [Validators.required]),
       primaryEmail: new FormControl('', [Validators.required]),
       countryCode: new FormControl('+91', [Validators.required]),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
@@ -90,6 +100,7 @@ export class UserCardComponent implements OnInit {
     })
 
     const fullProfile = _.get(this.route.snapshot, 'data.configService')
+    this.department = fullProfile.unMappedUser.rootOrgId
 
     if (fullProfile.unMappedUser && fullProfile.unMappedUser.roles) {
       this.isMdoAdmin = fullProfile.unMappedUser.roles.includes('MDO_ADMIN')
@@ -165,8 +176,6 @@ export class UserCardComponent implements OnInit {
   otherDropDownChange(value: any, field: string) {
     if (field === 'designation' && value !== 'Other') {
       this.updateUserDataForm.controls['designation'].setValue(value)
-
-      console.log('this.updateUserDataForm', this.updateUserDataForm)
     }
   }
 
@@ -197,7 +206,9 @@ export class UserCardComponent implements OnInit {
   }
 
   onEditUser(user: any) {
-    user.enableEdit = false
+    setTimeout(() => {
+      user.enableEdit = false
+    }, 5000)
     // this.cdref.detectChanges()
   }
 
@@ -251,6 +262,49 @@ export class UserCardComponent implements OnInit {
         this.modifyUserRoles(role)
       })
     })
+
+    if (user && user.profileDetails) {
+      // this.updateUserDataForm.controls['employeeID'].setValue('')
+      // this.updateUserDataForm.controls['ehrmsID'].setValue('')
+      if (user.profileDetails.professionalDetails) {
+        if (user.profileDetails.professionalDetails.designation) {
+          this.updateUserDataForm.controls['designation'].setValue(user.profileDetails.professionalDetails.designation)
+        }
+      }
+
+      if (user.profileDetails.additionalProperties) {
+        if (user.profileDetails.additionalProperties.group) {
+          this.updateUserDataForm.controls['group'].setValue(user.profileDetails.additionalProperties.group)
+        }
+      }
+
+      if (user.profileDetails.personalDetails) {
+        if (user.profileDetails.personalDetails.primaryEmail) {
+          this.updateUserDataForm.controls['primaryEmail'].setValue(user.profileDetails.personalDetails.primaryEmail)
+        }
+        if (user.profileDetails.personalDetails.mobile) {
+          this.updateUserDataForm.controls['mobile'].setValue(user.profileDetails.personalDetails.mobile)
+        }
+        if (user.profileDetails.personalDetails.gender) {
+          this.updateUserDataForm.controls['gender'].setValue(user.profileDetails.personalDetails.mobile)
+        }
+        if (user.profileDetails.personalDetails.dob) {
+          this.updateUserDataForm.controls['dob'].setValue(user.profileDetails.personalDetails.dob)
+        }
+        if (user.profileDetails.personalDetails.domicileMedium) {
+          this.updateUserDataForm.controls['domicileMedium'].setValue(user.profileDetails.personalDetails.domicileMedium)
+        }
+        if (user.profileDetails.personalDetails.category) {
+          this.updateUserDataForm.controls['category'].setValue(user.profileDetails.personalDetails.category)
+        }
+      }
+
+      if (user.profileDetails.employmentDetails) {
+        if (user.profileDetails.employmentDetails.pinCode) {
+          this.updateUserDataForm.controls['pincode'].setValue(user.profileDetails.employmentDetails.pincode)
+        }
+      }
+    }
   }
 
   getUseravatarName(user: any) {
@@ -508,6 +562,98 @@ export class UserCardComponent implements OnInit {
       if (result.btnResponse) {
         // console.log(result)
       }
+    })
+  }
+
+  onSubmit(form: any, user: any) {
+    // console.log('user -------', user)
+    // console.log('form *******', form)
+    if (form.valid) {
+      const tags = user.profileDetails && user.profileDetails.additionalProperties && user.profileDetails.additionalProperties.tags ?
+        user.profileDetails.additionalProperties.tags : []
+      if (tags !== this.selectedtags) {
+        this.reqbody = {
+          request: {
+            userId: user.userId,
+            profileDetails: {
+              personalDetails: {
+                dob: this.updateUserDataForm.controls['dob'].value,
+                domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value,
+                gender: this.updateUserDataForm.controls['gender'].value,
+                category: this.updateUserDataForm.controls['category'].value,
+                mobile: this.updateUserDataForm.controls['mobile'].value,
+                primaryEmail: this.updateUserDataForm.controls['primaryEmail'].value,
+              },
+              professionalDetails: [
+                {
+                  designation: this.updateUserDataForm.controls['designation'].value,
+                  group: this.updateUserDataForm.controls['group'].value,
+                },
+              ],
+              additionalProperties: {
+                tag: this.selectedtags,
+              },
+              employmentDetails: {
+                pinCode: this.updateUserDataForm.controls['pinCode'].value,
+              }
+            },
+          },
+        }
+      } else {
+        this.reqbody = {
+          request: {
+            userId: user.userId,
+            profileDetails: {
+              professionalDetails: [
+                {
+                  designation: this.updateUserDataForm.controls['designation'].value,
+                },
+              ],
+            },
+          },
+        }
+      }
+      this.usersSvc.updateUserDetails(this.reqbody).subscribe(dres => {
+        if (dres) {
+          this.openSnackbar('User updated Successfully')
+          if (this.qpParam === 'MDOinfo') {
+            this.router.navigate(['/app/home/mdoinfo/leadership'])
+          } else {
+            this.router.navigate(['/app/home/users'])
+          }
+        }
+      })
+    } else {
+      if (form.value.roles !== this.orguserRoles) {
+        const dreq = {
+          request: {
+            organisationId: this.department,
+            userId: user.userId,
+            roles: Array.from(this.userRoles),
+          },
+        }
+
+        this.usersSvc.addUserToDepartment(dreq).subscribe(dres => {
+          if (dres) {
+            this.updateUserDataForm.reset({ roles: '' })
+            this.openSnackbar('User role updated Successfully')
+            if (this.qpParam === 'MDOinfo') {
+              this.router.navigate(['/app/home/mdoinfo/leadership'])
+            } else {
+              this.router.navigate(['/app/home/users'])
+            }
+          }
+        })
+      } else {
+        this.openSnackbar('Select new roles')
+      }
+    }
+
+  }
+
+  private openSnackbar(primaryMsg: string, duration: number = 5000) {
+    this.snackBar.open(primaryMsg, 'X', {
+      duration,
     })
   }
 }

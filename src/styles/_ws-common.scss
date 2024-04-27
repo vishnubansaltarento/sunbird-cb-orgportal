@@ -119,3 +119,32 @@ $color-red: #D13924;
   background-color: $color-blue;
   border: 1px solid $color-blue;
 }
+
+.successbtn {
+  background: #1B4CA1 !important;
+}
+
+.cancelbtn {
+  border: 1px solid #1B4CA1;
+  color: #1B4CA1 !important;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.w80 {
+  width: 95px !important;
+}
+
+.w-minus-w80 {
+  max-width: calc(100% - 80px) !important;
+}
+
+.w-minus-w50 {
+  max-width: calc(100% - 50%) !important;
+}
