@@ -31,6 +31,8 @@ const API_END_POINTS = {
   VERIFY_OTP: '/apis/proxies/v8/otp/v1/verify',
   getMasterLanguages: '/apis/protected/v8/user/profileRegistry/getMasterLanguages',
   GET_GROUPS: '/api/user/v1/groups',
+  getMasterNationlity: '/apis/protected/v8/user/profileRegistry/getMasterNationalities',
+  editProfileDetails: '/apis/proxies/v8/user/v1/extPatch',
   // GET_BULKUPLOAD_DATA: '/apis/protected/v8/admin/userRegistration/bulkUploadData',
 }
 
@@ -230,5 +232,13 @@ export class UsersService {
 
   getGroups(): Observable<any> {
     return this.http.get<any>(API_END_POINTS.GET_GROUPS)
+  }
+
+  getMasterNationlity(): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.getMasterNationlity)
+  }
+
+  editProfileDetails(data: any) {
+    return this.http.post<any>(API_END_POINTS.editProfileDetails, data)
   }
 }

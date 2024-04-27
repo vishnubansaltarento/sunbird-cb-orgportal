@@ -82,7 +82,7 @@
 }
 
 .appr-text-field{
-  width: 272px;
+  width: 80%;
   border: 1px solid #DDDDDD;
   border-radius: 4px;
   padding: 9px;
@@ -98,7 +98,7 @@
   margin-bottom: 0;
   color: #000000;
   display: block;
-  font: 700 14px Lato;
+  font: 600 13px/16px Lato;
 }
 
 .view-text-label {
@@ -146,4 +146,12 @@
 
 .username {
   width: 88%;
+}
+
+mat-selection-list.roles-list {
+    display: inline-flex;
+}
+
+label {
+  display: block;
 }

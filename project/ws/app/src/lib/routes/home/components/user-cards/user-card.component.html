@@ -3,8 +3,9 @@
 </div>
 
 <div>
-  <mat-accordion>
-    <mat-expansion-panel class="user-card" *ngFor="let user of usersData.content">
+  <mat-accordion [multi]="true">
+    <mat-expansion-panel class="user-card" *ngFor="let user of usersData.content" #panel
+      (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user)">
         <div class="float-left">
           <div class="initialcircle display-inline-block margin-right-s">
@@ -52,7 +53,7 @@
         </div>
       </mat-expansion-panel-header>
 
-      <div class="panel-body" *ngIf="user.editUser">
+      <div class="panel-body" *ngIf="user.enableEdit">
         <div class="inner-body">
           Primary Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
           <form [formGroup]="updateUserDataForm" class="margin-top-m">
@@ -85,7 +86,7 @@
           Other Details <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
 
           <form [formGroup]="updateUserDataForm" class="margin-top-m">
-            <mat-grid-list cols="3" rowHeight="80px">
+            <mat-grid-list cols="3" rowHeight="100px">
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label requird">Employee ID</label>
                 <input type="text" [value]="" [disabled]="true" class="appr-text-field">
@@ -93,19 +94,73 @@
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Email</label>
-                <input type="text" [value]="" class="appr-text-field">
-
-                <input id="primaryEmail" name="primaryEmailField" type="email" matInput placeholder="Email"
-                  #primaryEmail formControlName="primaryEmail" i18n-aria-label aria-label="Primary Email readonly input"
-                  maxlength="320">
+                <input id="primaryEmail" class="appr-text-field" name="primaryEmailField" type="email" matInput
+                  placeholder="Type here" #primaryEmail formControlName="primaryEmail" i18n-aria-label
+                  aria-label="Primary Email readonly input" maxlength="320">
                 <mat-error [hidden]="false" i18n="Primary Email Error|Explains name is required">
-                  {{'userProfile.primaryEmailMandatory' | translate }}
+                  Email is mandatory
                 </mat-error>
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
                 <label class="appr-text-label required">Mobile number</label>
-                <input type="text" [value]="" class="appr-text-field">
+                <div class="flex flex-1">
+                  <mat-form-field appearance="outline" class="margin-top-xs w80 mobile-country-code">
+                    <mat-select formControlName="countryCode" default="+91" i18n-placeholder placeholder="--Select--"
+                      i18n-aria-label aria-label="Mobile Number label">
+                      <mat-option [value]="code" *ngFor="let code of countryCodes">{{code}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" class="margin-top-xs flex-expand w-minus-w80">
+                    <input id="mobileNumber" #mobile type="text" matInput placeholder="Type here"
+                      formControlName="mobile" i18n-aria-label aria-label="Mobile Number input" maxlength="10"
+                      (keypress)="numericOnly($event)" (paste)="numericOnly($event)">
+                    <mat-error [hidden]="false" i18n="Mobile Number Error | Explains Mobile no is required"
+                      *ngIf="updateUserDataForm?.controls['mobile'].errors?.required" i18n-aria-label
+                      aria-label="Please enter your mobile number">
+                      Please enter your mobile number
+                    </mat-error>
+                    <mat-error [hidden]="false" *ngIf="updateUserDataForm?.controls['mobile'].errors?.pattern"
+                      i18n-aria-label aria-label="Please enter a valid 10 digit mobile number">
+                      Please enter a valid 10 digit mobile number
+                    </mat-error>
+                  </mat-form-field>
+                  <!-- <div class="flex m-auto" *ngIf="isMobileVerified">
+                    <mat-icon class="ws-mat-green-text margin-xs" svgIcon="verified"></mat-icon>
+                  </div> -->
+                </div>
+                <!-- <div *ngIf="!isMobileVerified" class="flex flex-1">
+                  <button *ngIf="!otpSend" mat-raised-button type="button" (click)="sendOtp()"
+                    class="text-white btn-success btn-responsive" [disabled]="updateUserDataForm?.mobile?.invalid">
+                    <a class="text-white" i18n>
+                      Send OTP
+                    </a>
+                  </button>
+                  <div *ngIf="otpSend" class="flex flex-1 flex-column">
+                    <div class="flex flex-1 flex-row margin-bottom-m">
+                      <mat-form-field appearance="outline" class="margin-top-xs flex-expand w-minus-w50">
+                        <input id="mobileNumber" #otp type="number" matInput placeholder="Enter OTP" i18n-aria-label
+                          aria-label="OTP input" onKeyPress="if(this.value.length === 8) return false;">
+                        <mat-hint *ngIf="timeLeftforOTP > 0 ">
+                          <span>Resend OTP after {{timeLeftforOTP | pipeDurationTransform:
+                            'hms2M'}}</span>
+                        </mat-hint>
+                        <mat-hint *ngIf="timeLeftforOTP <= 0 ">
+                          <span class="cursor-pointer ws-mat-default-text" (click)="resendOTP()">
+                            Resend OTP
+                          </span>
+                        </mat-hint>
+                      </mat-form-field>
+                      <button mat-raised-button type="button" (click)="verifyOtp(otp)"
+                        class="text-white btn-success btn-responsive margin-top-s otp"
+                        [disabled]="updateUserDataForm?.mobile?.invalid  || disableVerifyBtn">
+                        <span class="text-white" i18n>
+                          Verify OTP
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div> -->
               </mat-grid-tile>
 
               <mat-grid-tile [colspan]="1" [rowspan]="1" class="input-wrapper">
@@ -163,47 +218,77 @@
                 </mat-select>
               </mat-grid-tile>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="10" class="input-wrapper">
-                <div id="roles" *ngIf="!isMdoAdmin"
+              <mat-grid-tile [colspan]="2" [rowspan]="2" class="input-wrapper">
+                <label class="appr-text-label">Tags</label>
+                <div class="left-input-div">
+                  <div class="flex-col">
+                    <input class="appr-text-field w-full-imp" #tags matInput i18n-placeholder="Type tag here"
+                      placeholder="Type tag here" formControlName="tags" i18n-aria-label aria-label="Enter tag"
+                      [matChipInputFor]="chipListTags" autocomplete="off" maxlength="100"
+                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                      (matChipInputTokenEnd)="addActivity($event)" />
+                    <p class="margin-left-xs">
+                      <mat-error class="hintErr" *ngIf="updateUserDataForm.controls['tags'].errors?.pattern"
+                        i18n="name Error|Explains name is required">
+                        Only space and alphabets are supported
+                      </mat-error>
+                    </p>
+                  </div>
+                </div>
+                <div class="right-input-div">
+                  <button mat-raised-button type="button" [disabled]="!tags.value"
+                    (click)="addActivity({input: tags, value: tags.value})"
+                    [ngStyle]="{'opacity': updateUserDataForm.valid? 1: 0.7}"
+                    class="text-white btn-add-activity btn-responsive">
+                    <span class="text-white" i18n>Add tag</span>
+                  </button>
+                </div>
+                <mat-chip-list #chipListTags>
+                  <mat-chip *ngFor="let tag of selectedtags" [selectable]="true" [removable]="true"
+                    (removed)="removeActivity(tag)">
+                    {{ tag }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                </mat-chip-list>
+              </mat-grid-tile>
+
+              <mat-grid-tile [colspan]="2" [rowspan]="2" class="input-wrapper">
+                <div id="roles"
                   class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
                   <div class="flex flex-wrap mobile-break">
                     <div class="w-full profile-cols-full bg-grey">
-                      <ng-container>
-                        <form [formGroup]="updateUserDataForm">
-                          <div class="input-wrapper margin-top-s">
-                            <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
-                              aria-label="Roles label"
-                              i18n="Role label|Label which explains the user to select the roles">
-                              Role
-                            </label>
-                            <mat-selection-list id="roles" formControlName="roles" #roles>
-                              <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
-                                [selected]="userRoles.has(role.roleName)" [value]="role.roleName">
-                                {{role.roleName}}
-                              </mat-list-option>
-                            </mat-selection-list>
-                          </div>
-                          <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, 'Roles')"
-                            class="margin-top-m text-white btn-success btn-responsive"
-                            [disabled]="updateUserDataForm?.invalid">
-                            <span class="text-white" i18n>
-                              Update
-                            </span>
-                          </button>
-                          <button mat-raised-button type="submit" (click)="resetRoles()"
-                            class="margin-top-m text-white btn-success btn-responsive"
-                            [disabled]="updateUserDataForm?.invalid">
-                            <span class="text-white" i18n>
-                              Cancel
-                            </span>
-                          </button>
-                        </form>
-                      </ng-container>
+                      <div class="input-wrapper margin-top-s">
+                        <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
+                          aria-label="Roles label" i18n="Role label|Label which explains the user to select the roles">
+                          Role
+                        </label>
+                        <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
+                          <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
+                            [selected]="userRoles.has(role.roleName)" [value]="role.roleName">
+                            {{role.roleName}}
+                          </mat-list-option>
+                        </mat-selection-list>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div id="roles" *ngIf="isMdoAdmin"
+                <div>
+                  <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, 'Roles')"
+                    class="margin-top-m text-white btn-success btn-responsive">
+                    <span class="text-white" i18n>
+                      Update
+                    </span>
+                  </button>
+                  <button mat-raised-button type="submit" (click)="resetRoles()"
+                    class="margin-top-m text-white btn-success btn-responsive">
+                    <span class="text-white" i18n>
+                      Cancel
+                    </span>
+                  </button>
+                </div>
+
+                <!-- <div id="roles" *ngIf="isMdoAdmin"
                   class="flex flex-1 flex-column margin-top-m margin-bottom-m margin-left-m margin-right-m">
                   <div class="flex-custom">
                     <mat-card-content class="margin-top-m margin-bottom-m margin-left-m margin-right-m">
@@ -223,52 +308,16 @@
                       </div>
                     </mat-card-content>
                   </div>
-                </div>
+                </div> -->
               </mat-grid-tile>
 
-              <mat-grid-tile [colspan]="1" [rowspan]="10" class="input-wrapper">
 
-              </mat-grid-tile>
-
-              <mat-grid-tile [colspan]="1" [rowspan]="10" class="input-wrapper">
-                <label class="appr-text-label">Tags</label>
-                <div class="left-input-div">
-                  <div class="flex-col">
-                    <input class="appr-text-field w-full-imp" #tags matInput i18n-placeholder="Type tag here"
-                      placeholder="Type tag here" formControlName="tags" i18n-aria-label aria-label="Enter tag"
-                      [matChipInputFor]="chipListTags" autocomplete="off" maxlength="100"
-                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                      (matChipInputTokenEnd)="addActivity($event)" />
-                    <p class="margin-left-xs">
-                      <mat-error class="hintErr" *ngIf="updateUserDataForm.controls['tags'].errors?.pattern"
-                        i18n="name Error|Explains name is required">
-                        Only space and alphabets are supported
-                      </mat-error>
-                    </p>
-                  </div>
-                </div>
-                <div class="right-input-div">
-                  <button mat-raised-button type="button" [disabled]="!tags.value || !updateUserDataForm.valid"
-                    (click)="addActivity({input: tags, value: tags.value})"
-                    [ngStyle]="{'opacity': updateUserDataForm.valid? 1: 0.7}"
-                    class="text-white btn-add-activity btn-responsive">
-                    <span class="text-white" i18n>Add tag</span>
-                  </button>
-                </div>
-                <mat-chip-list #chipListTags>
-                  <mat-chip *ngFor="let tag of selectedtags" [selectable]="true" [removable]="true"
-                    (removed)="removeActivity(tag)">
-                    {{ tag }}
-                    <mat-icon matChipRemove>cancel</mat-icon>
-                  </mat-chip>
-                </mat-chip-list>
-              </mat-grid-tile>
             </mat-grid-list>
           </form>
         </div>
       </div>
 
-      <div class="panel-body" *ngIf="!user.editUser">
+      <div class="panel-body" *ngIf="!user.enableEdit">
         <div class="inner-body mat-body-2">
           <div class="margin-bottom-m">
             <span class="font-bold">Primary Details</span> <mat-icon
