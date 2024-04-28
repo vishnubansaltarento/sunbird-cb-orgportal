@@ -65,6 +65,7 @@ export class UserCardComponent implements OnInit {
   categoryList = ['General', 'OBC', 'SC', 'ST', 'Others']
 
   phoneNumberPattern = '^((\\+91-?)|0)?[0-9]{10}$'
+  emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
 
@@ -83,20 +84,20 @@ export class UserCardComponent implements OnInit {
     private route: ActivatedRoute, private otpService: OtpService,
     private snackBar: MatSnackBar) {
     this.updateUserDataForm = new FormGroup({
-      designation: new FormControl('', []),
-      group: new FormControl('', []),
+      designation: new FormControl('', [Validators.required]),
+      group: new FormControl('', [Validators.required]),
       employeeID: new FormControl({ value: '', disabled: true }, []),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', [Validators.required]),
-      primaryEmail: new FormControl('', [Validators.required]),
+      primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
       countryCode: new FormControl('+91', [Validators.required]),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
-      tags: new FormControl('', [Validators.pattern(this.namePatern)]),
+      tags: new FormControl('', [Validators.required, Validators.pattern(this.namePatern)]),
       roles: new FormControl('', [Validators.required]),
-      domicileMedium: new FormControl('', []),
-      gender: new FormControl('', []),
-      category: new FormControl('', []),
-      pincode: new FormControl('', []),
+      domicileMedium: new FormControl('', [Validators.required]),
+      gender: new FormControl('', [Validators.required]),
+      category: new FormControl('', [Validators.required]),
+      pincode: new FormControl('', [Validators.required]),
     })
 
     const fullProfile = _.get(this.route.snapshot, 'data.configService')
@@ -228,26 +229,26 @@ export class UserCardComponent implements OnInit {
       for (let i = 0; i < this.orgTypeList.length; i += 1) {
         if (this.orgTypeList[i].name === 'MDO') {
           _.each(this.orgTypeList[i].roles, rolesObject => {
-            if (this.isMdoAdmin) {
-              if (rolesObject === 'PUBLIC') {
-                this.uniqueRoles.push({
-                  roleName: rolesObject, description: rolesObject,
-                })
-              }
-              if (rolesObject === 'MDO_DASHBOARD_USER') {
-                this.uniqueRoles.push({
-                  roleName: rolesObject, description: rolesObject,
-                })
-              }
-            } else {
-              if (this.isMdoLeader) {
-                if (rolesObject !== 'MDO_LEADER') {
-                  this.uniqueRoles.push({
-                    roleName: rolesObject, description: rolesObject,
-                  })
-                }
-              }
+            // if (this.isMdoAdmin) {
+            //   if (rolesObject === 'PUBLIC') {
+            //     this.uniqueRoles.push({
+            //       roleName: rolesObject, description: rolesObject,
+            //     })
+            //   }
+            //   if (rolesObject === 'MDO_DASHBOARD_USER') {
+            //     this.uniqueRoles.push({
+            //       roleName: rolesObject, description: rolesObject,
+            //     })
+            //   }
+            // } else {
+            // if (this.isMdoLeader) {
+            if (rolesObject !== 'MDO_LEADER') {
+              this.uniqueRoles.push({
+                roleName: rolesObject, description: rolesObject,
+              })
+              // }
             }
+            // }
           })
         }
       }
@@ -256,7 +257,7 @@ export class UserCardComponent implements OnInit {
           this.rolesList.push(role)
         }
       })
-      const usrRoles = profileDataAll.roles
+      const usrRoles = profileDataAll.organisations[0].roles
       usrRoles.forEach((role: any) => {
         this.orguserRoles.push(role)
         this.modifyUserRoles(role)
@@ -616,39 +617,29 @@ export class UserCardComponent implements OnInit {
       this.usersSvc.updateUserDetails(this.reqbody).subscribe(dres => {
         if (dres) {
           this.openSnackbar('User updated Successfully')
-          if (this.qpParam === 'MDOinfo') {
-            this.router.navigate(['/app/home/mdoinfo/leadership'])
+
+          if (form.value.roles !== this.orguserRoles) {
+            const dreq = {
+              request: {
+                organisationId: this.department,
+                userId: user.userId,
+                roles: Array.from(this.userRoles),
+              },
+            }
+
+            this.usersSvc.addUserToDepartment(dreq).subscribe(dres => {
+              if (dres) {
+                this.updateUserDataForm.reset({ roles: '' })
+                this.openSnackbar('User role updated Successfully')
+                this.router.navigate(['/app/home/users/allusers'])
+              }
+            })
           } else {
-            this.router.navigate(['/app/home/users'])
+            this.openSnackbar('Select new roles')
           }
         }
       })
-    } else {
-      if (form.value.roles !== this.orguserRoles) {
-        const dreq = {
-          request: {
-            organisationId: this.department,
-            userId: user.userId,
-            roles: Array.from(this.userRoles),
-          },
-        }
-
-        this.usersSvc.addUserToDepartment(dreq).subscribe(dres => {
-          if (dres) {
-            this.updateUserDataForm.reset({ roles: '' })
-            this.openSnackbar('User role updated Successfully')
-            if (this.qpParam === 'MDOinfo') {
-              this.router.navigate(['/app/home/mdoinfo/leadership'])
-            } else {
-              this.router.navigate(['/app/home/users'])
-            }
-          }
-        })
-      } else {
-        this.openSnackbar('Select new roles')
-      }
     }
-
   }
 
   private openSnackbar(primaryMsg: string, duration: number = 5000) {

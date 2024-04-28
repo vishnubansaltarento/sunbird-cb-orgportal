@@ -136,11 +136,16 @@ $color-red: #D13924;
 .w-full {
     width: 100%;
 }
-
+.w-48p {
+    width: 48% !important;
+}
 .w80 {
   width: 95px !important;
 }
 
+.w82 {
+  width: 82px !important;
+}
 .w-minus-w80 {
   max-width: calc(100% - 80px) !important;
 }
