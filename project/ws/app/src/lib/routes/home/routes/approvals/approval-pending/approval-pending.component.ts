@@ -22,7 +22,7 @@ import { ApprovalsService } from '../../../services/approvals.service'
 export class ApprovalPendingComponent implements OnInit, OnDestroy {
 
   data: any = []
-  currentFilter = 'pending'
+  currentFilter = 'profileverification'
   discussionList!: any
   discussProfileData!: any
   departName = ''
@@ -66,9 +66,9 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.currentFilter = this.route.snapshot.params['tab']
-    this.currentFilter = this.currentFilter === 'upload' ? 'uploadApprovals' : 'pending'
-    if (this.currentFilter === 'pending') {
+    // this.currentFilter = this.route.snapshot.params['tab']
+    // this.currentFilter = this.currentFilter === 'upload' ? 'uploadApprovals' : 'pending'
+    if (this.currentFilter === 'profileverification') {
       this.fetchApprovals()
     }
 
@@ -101,7 +101,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   filter(key: string | 'timestamp' | 'best' | 'saved') {
     if (key) {
       this.currentFilter = key
-      if (key === 'pending') {
+      if (key === 'profileverification') {
         this.fetchApprovals()
       }
     }

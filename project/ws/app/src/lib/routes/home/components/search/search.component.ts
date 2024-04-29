@@ -12,6 +12,7 @@ import { UsersService } from '../../../users/services/users.service'
 })
 export class SearchComponent implements OnInit {
   @Input() from: any = ''
+  @Input() isApprovals: any
   @Output() handleApiData = new EventEmitter()
   searchText = ''
   filterVisibilityFlag = false

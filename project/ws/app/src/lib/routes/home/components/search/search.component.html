@@ -16,7 +16,7 @@
             Apply Filter <mat-icon class="margin-right-xs">filter_list</mat-icon>
         </button>
     </div>
-    <div class="flex flex-end">
+    <div class="flex flex-end" *ngIf="!isApprovals">
         <button mat-button type="button" class="search-btn" (click)="createUser()"
             [ngClass]="{'disable': isContentLive}">Create user</button>
     </div>

@@ -1,17 +1,20 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
-import { DateAdapter, MAT_DATE_FORMATS, MatChipInputEvent, MatDialog, MatExpansionPanel, MatPaginator, MatSnackBar, PageEvent } from '@angular/material'
+import {
+  DateAdapter, MAT_DATE_FORMATS, MatChipInputEvent, MatDialog,
+  MatExpansionPanel, MatPaginator, MatSnackBar, PageEvent,
+} from '@angular/material'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import _ from 'lodash'
 import { RolesService } from '../../../users/services/roles.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable, Subscription, interval } from 'rxjs'
+import { Observable, Subscription } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators'
 import { environment } from '../../../../../../../../../src/environments/environment'
-import { OtpService } from '../../../users/services/otp.service'
-import { ConfigurationsService } from '@sunbird-cb/utils'
+// import { OtpService } from '../../../users/services/otp.service'
+// import { ConfigurationsService } from '@sunbird-cb/utils'
 import { RejectionPopupComponent } from '../rejection-popup/rejection-popup.component'
 import { APP_DATE_FORMATS, AppDateAdapter } from '../../../events/routes/format-datepicker'
 
@@ -22,7 +25,7 @@ import { APP_DATE_FORMATS, AppDateAdapter } from '../../../events/routes/format-
   providers: [
     { provide: DateAdapter, useClass: AppDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
-  ]
+  ],
 })
 export class UserCardComponent implements OnInit {
   @Input() userId: any
@@ -31,6 +34,7 @@ export class UserCardComponent implements OnInit {
   @Input() totalRecords: any
   @Input() tabChangeIndex: any
   @Input() currentFilter: any
+  @Input() isApprovals: any
 
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
@@ -50,6 +54,7 @@ export class UserCardComponent implements OnInit {
   isMdoAdmin = false
   isMdoLeader = false
   updateUserDataForm: FormGroup
+  approveUserDataForm: FormGroup
   designationsMeta: any = []
   groupsList: any = []
   selectedtags: any[] = []
@@ -78,11 +83,11 @@ export class UserCardComponent implements OnInit {
   disableVerifyBtn = false
   qpParam: any
   department: any
+  approvalData: any
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private configSvc: ConfigurationsService, private dialog: MatDialog, private router: Router,
-    private route: ActivatedRoute, private otpService: OtpService,
-    private snackBar: MatSnackBar) {
+              private dialog: MatDialog, private router: Router,
+              private route: ActivatedRoute, private snackBar: MatSnackBar) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -92,12 +97,17 @@ export class UserCardComponent implements OnInit {
       primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
       countryCode: new FormControl('+91', [Validators.required]),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
-      tags: new FormControl('', [Validators.required, Validators.pattern(this.namePatern)]),
+      tags: new FormControl('', [Validators.pattern(this.namePatern)]),
       roles: new FormControl('', [Validators.required]),
       domicileMedium: new FormControl('', [Validators.required]),
       gender: new FormControl('', [Validators.required]),
       category: new FormControl('', [Validators.required]),
       pincode: new FormControl('', [Validators.required]),
+    })
+
+    this.approveUserDataForm = new FormGroup({
+      approveDesignation: new FormControl('', []),
+      approveGroup: new FormControl('', []),
     })
 
     const fullProfile = _.get(this.route.snapshot, 'data.configService')
@@ -111,7 +121,25 @@ export class UserCardComponent implements OnInit {
 
   ngOnInit() {
     this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
-    this.init()
+
+    if (this.isApprovals && this.usersData && this.usersData.length > 0) {
+      this.approvalData = this.usersData
+      this.getUserMappedData(this.approvalData)
+    } else {
+      this.init()
+    }
+  }
+
+  // for approvals
+  async getUserMappedData(approvalData: any) {
+    approvalData.forEach((data: any) => {
+      const id = data.userWorkflow.userInfo.wid
+      this.usersSvc.getUserById(id).subscribe((res: any) => {
+        if (res) {
+          data.user = res
+        }
+      })
+    })
   }
 
   async init() {
@@ -162,7 +190,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-      (_err: any) => {
+                                                  (_err: any) => {
       })
   }
 
@@ -207,14 +235,15 @@ export class UserCardComponent implements OnInit {
   }
 
   onEditUser(user: any) {
-    setTimeout(() => {
-      user.enableEdit = false
-    }, 5000)
+    user.enableEdit = true
+    // setTimeout(() => {
+    //   user.enableEdit = true
+    // }, 5000)
     // this.cdref.detectChanges()
   }
 
   getUerData(user: any) {
-    user.enableEdit = true
+    user.enableEdit = false
     const profileDataAll = user
     this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
 
@@ -381,105 +410,102 @@ export class UserCardComponent implements OnInit {
     this.searchByEnterKey.emit(event)
   }
 
-  sendOtp() {
-    const mob = this.updateUserDataForm.get('mobile')
-    if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-      this.otpService.sendOtp(mob.value).subscribe(() => {
-        this.otpSend = true
-        alert('An OTP has been sent to your mobile number')
-        this.startCountDown()
-        // tslint:disable-next-line: align
-      }, (error: any) => {
-        this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
-      })
-    } else {
-      this.snackBar.open('Please enter a valid mobile number')
-    }
-  }
-  resendOTP() {
-    const mob = this.updateUserDataForm.get('mobile')
-    if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-      this.otpService.resendOtp(mob.value).subscribe((res: any) => {
-        if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
-          this.otpSend = true
-          this.disableVerifyBtn = false
-          alert('An OTP has been sent to your mobile number')
-          this.startCountDown()
-        }
-        // tslint:disable-next-line: align
-      }, (error: any) => {
-        this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
-      })
-    } else {
-      this.snackBar.open('Please enter a valid mobile number')
-    }
-  }
-  verifyOtp(otp: any) {
-    // console.log(otp)
-    const mob = this.updateUserDataForm.get('mobile')
-    if (otp && otp.value) {
-      if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
-        this.otpService.verifyOTP(otp.value, mob.value).subscribe((res: any) => {
-          if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
-            this.otpVerified = true
-            const reqUpdates = {
-              request: {
-                userId: this.configSvc.unMappedUser.id,
-                profileDetails: {
-                  personalDetails: {
-                    mobile: mob.value,
-                    phoneVerified: true,
-                  },
-                },
-              },
-            }
-            this.usersSvc.editProfileDetails(reqUpdates).subscribe((updateRes: any) => {
+  // sendOtp() {
+  //   const mob = this.updateUserDataForm.get('mobile')
+  //   if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
+  //     this.otpService.sendOtp(mob.value).subscribe(() => {
+  //       this.otpSend = true
+  //       alert('An OTP has been sent to your mobile number')
+  //       this.startCountDown()
+  //       // tslint:disable-next-line: align
+  //     }, (error: any) => {
+  //       this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+  //     })
+  //   } else {
+  //     this.snackBar.open('Please enter a valid mobile number')
+  //   }
+  // }
+  // resendOTP() {
+  //   const mob = this.updateUserDataForm.get('mobile')
+  //   if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
+  //     this.otpService.resendOtp(mob.value).subscribe((res: any) => {
+  //       if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
+  //         this.otpSend = true
+  //         this.disableVerifyBtn = false
+  //         alert('An OTP has been sent to your mobile number')
+  //         this.startCountDown()
+  //       }
+  //       // tslint:disable-next-line: align
+  //     }, (error: any) => {
+  //       this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+  //     })
+  //   } else {
+  //     this.snackBar.open('Please enter a valid mobile number')
+  //   }
+  // }
+  // verifyOtp(otp: any) {
+  //   const mob = this.updateUserDataForm.get('mobile')
+  //   if (otp && otp.value) {
+  //     if (mob && mob.value && Math.floor(mob.value) && mob.valid) {
+  //       this.otpService.verifyOTP(otp.value, mob.value).subscribe((res: any) => {
+  //         if ((_.get(res, 'result.response')).toUpperCase() === 'SUCCESS') {
+  //           this.otpVerified = true
+  //           const reqUpdates = {
+  //             request: {
+  //               userId: this.configSvc.unMappedUser.id,
+  //               profileDetails: {
+  //                 personalDetails: {
+  //                   mobile: mob.value,
+  //                   phoneVerified: true,
+  //                 },
+  //               },
+  //             },
+  //           }
+  //           this.usersSvc.editProfileDetails(reqUpdates).subscribe((updateRes: any) => {
 
-              if (updateRes) {
-                this.isMobileVerified = true
-              }
-              // tslint:disable-next-line:align
-            }, (error: any) => {
+  //             if (updateRes) {
+  //               this.isMobileVerified = true
+  //             }
+  //             // tslint:disable-next-line:align
+  //           }, (error: any) => {
 
-              this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
-            }
-            )
-          }
-          // tslint:disable-next-line: align
-        }, (error: any) => {
-          this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
-          if (error.error && error.error.result) {
-            this.disableVerifyBtn = error.error.result.remainingAttempt === 0 ? true : false
-          }
-        })
-      }
-    }
-  }
-  startCountDown() {
-    const startTime = Date.now()
-    this.timeLeftforOTP = this.OTP_TIMER
-    // && this.primaryCategory !== this.ePrimaryCategory.PRACTICE_RESOURCE
-    if (this.OTP_TIMER > 0
-    ) {
-      this.timerSubscription = interval(1000)
-        .pipe(
-          map(
-            () =>
-              startTime + this.OTP_TIMER - Date.now(),
-          ),
-        )
-        .subscribe((_timeRemaining: any) => {
-          this.timeLeftforOTP -= 1
-          if (this.timeLeftforOTP < 0) {
-            this.timeLeftforOTP = 0
-            if (this.timerSubscription) {
-              this.timerSubscription.unsubscribe()
-            }
-            // this.submitQuiz()
-          }
-        })
-    }
-  }
+  //             this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+  //           }
+  //           )
+  //         }
+  //         // tslint:disable-next-line: align
+  //       }, (error: any) => {
+  //         this.snackBar.open(_.get(error, 'error.params.errmsg') || 'Please try again later')
+  //         if (error.error && error.error.result) {
+  //           this.disableVerifyBtn = error.error.result.remainingAttempt === 0 ? true : false
+  //         }
+  //       })
+  //     }
+  //   }
+  // }
+  // startCountDown() {
+  //   const startTime = Date.now()
+  //   this.timeLeftforOTP = this.OTP_TIMER
+  //   if (this.OTP_TIMER > 0
+  //   ) {
+  //     this.timerSubscription = interval(1000)
+  //       .pipe(
+  //         map(
+  //           () =>
+  //             startTime + this.OTP_TIMER - Date.now(),
+  //         ),
+  //       )
+  //       .subscribe((_timeRemaining: any) => {
+  //         this.timeLeftforOTP -= 1
+  //         if (this.timeLeftforOTP < 0) {
+  //           this.timeLeftforOTP = 0
+  //           if (this.timerSubscription) {
+  //             this.timerSubscription.unsubscribe()
+  //           }
+  //         }
+  //       })
+  //   }
+  // }
 
   addRejection() {
     const rejectinDetails = {
@@ -595,8 +621,8 @@ export class UserCardComponent implements OnInit {
                 tag: this.selectedtags,
               },
               employmentDetails: {
-                pinCode: this.updateUserDataForm.controls['pinCode'].value,
-              }
+                pinCode: this.updateUserDataForm.controls['pincode'].value,
+              },
             },
           },
         }
@@ -627,8 +653,8 @@ export class UserCardComponent implements OnInit {
               },
             }
 
-            this.usersSvc.addUserToDepartment(dreq).subscribe(dres => {
-              if (dres) {
+            this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
+              if (res) {
                 this.updateUserDataForm.reset({ roles: '' })
                 this.openSnackbar('User role updated Successfully')
                 this.router.navigate(['/app/home/users/allusers'])

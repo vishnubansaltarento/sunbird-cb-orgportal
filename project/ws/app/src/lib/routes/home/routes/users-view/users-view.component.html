@@ -78,28 +78,40 @@
               </ws-widget-org-user-table-v2> -->
 
       <ng-container *ngIf="usersData && currentFilter === 'allusers'">
-        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
-          [totalRecords]="activeUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        <div *ngIf="usersData.count > 0">
+          <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
+            [totalRecords]="activeUsersDataCount" [tabChangeIndex]="pageIndex" [isApprovals]="false"
+            (searchByEnterKey)="onEnterkySearch($event)"
+            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        </div>
+        <p class="text-center" *ngIf="usersData.count === 0">No users found</p>
       </ng-container>
       <ng-container *ngIf="usersData && currentFilter === 'verified'">
-        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
-          [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        <div *ngIf="usersData.count > 0">
+          <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
+            [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
+            (searchByEnterKey)="onEnterkySearch($event)"
+            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        </div>
+        <p class="text-center" *ngIf="usersData.count === 0">No users found</p>
       </ng-container>
       <ng-container *ngIf="usersData && currentFilter === 'nonverified'">
-        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
-          [totalRecords]="nonverifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        <div *ngIf="usersData.count > 0">
+          <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
+            [totalRecords]="nonverifiedUsersDataCount" [tabChangeIndex]="pageIndex"
+            (searchByEnterKey)="onEnterkySearch($event)"
+            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        </div>
+        <p class="text-center" *ngIf="usersData.count === 0">No users found</p>
       </ng-container>
       <ng-container *ngIf="usersData && currentFilter === 'notmyuser'">
-        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
-          [totalRecords]="notmyuserUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        <div *ngIf="usersData.count > 0">
+          <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="usersData"
+            [totalRecords]="notmyuserUsersDataCount" [tabChangeIndex]="pageIndex"
+            (searchByEnterKey)="onEnterkySearch($event)"
+            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        </div>
+        <p class="text-center" *ngIf="usersData.count === 0">No users found</p>
       </ng-container>
 
       <ng-container *ngIf="currentFilter === 'upload'">
