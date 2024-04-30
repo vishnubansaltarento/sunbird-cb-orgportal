@@ -4,7 +4,7 @@
 
 <div *ngIf="!isApprovals">
   <mat-accordion [multi]="true">
-    <mat-expansion-panel class="user-card" *ngFor="let user of usersData.content" #panel
+    <mat-expansion-panel class="user-card" *ngFor="let user of usersData?.content" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user)">
         <div class="float-left" (click)="$event.stopPropagation();">
@@ -15,25 +15,26 @@
           </div>
           <div class="username display-inline-block">
             <div class="mat-subheading-2 margin-remove"
-              *ngIf="user.profileDetails && user.profileDetails.personalDetails">
-              {{user.profileDetails.personalDetails.firstname}}
+              *ngIf="user?.profileDetails && user?.profileDetails?.personalDetails">
+              {{user?.profileDetails?.personalDetails?.firstname}}
               <span class="status-label margin-left-s verified" *ngIf="currentFilter !== 'nonverified'">Verified
                 <mat-icon>check_circle</mat-icon></span>
               <span class="status-label margin-left-s nonverified" *ngIf="currentFilter === 'nonverified'">Non-verified
                 <mat-icon>check_circle</mat-icon></span>
             </div>
 
-            <div class="mat-subheading-2 display-inline-block margin-remove" *ngIf="!user.profileDetails">
-              {{user.firstName}}
+            <div class="mat-subheading-2 display-inline-block margin-remove" *ngIf="!user?.profileDetails">
+              {{user?.firstName}}
               <span class="status-label margin-left-s verified" *ngIf="currentFilter !== 'nonverified'">Verified
                 <mat-icon>check_circle</mat-icon></span>
               <span class="status-label margin-left-s nonverified" *ngIf="currentFilter === 'nonverified'">Non-verified
                 <mat-icon>check_circle</mat-icon></span>
             </div>
-            <div class="mat-body-2 ws-mat-black40-text">{{user.profileDetails && user.profileDetails.professionalDetails
+            <div class="mat-body-2 ws-mat-black40-text">{{user?.profileDetails &&
+              user?.profileDetails?.professionalDetails
               &&
-              user.profileDetails.professionalDetails.designation ?
-              user.profileDetails.professionalDetails.designation : '-'}}</div>
+              user?.profileDetails?.professionalDetails?.designation ?
+              user?.profileDetails?.professionalDetails?.designation : '-'}}</div>
             <!-- <div class="mat-body-2 ws-mat-black40-text" *ngIf="currentFilter !== 'nonverified'">Verified date:
               19/04/2024</div>
             <div class="mat-body-2 ws-mat-black40-text" *ngIf="currentFilter === 'nonverified'">Non-verified date:
