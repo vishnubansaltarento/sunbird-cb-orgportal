@@ -48,7 +48,7 @@
         </div>
       </mat-expansion-panel-header>
 
-      <div class="panel-body profile-box" *ngIf="user.enableEdit">
+      <div class="panel-body profile-box" *ngIf="user?.enableEdit">
         <form [formGroup]="updateUserDataForm" class="margin-top-m">
           <div class="inner-body">
             Primary Details <mat-icon class="ws-mat-black40-text custominfo">info_outline</mat-icon>
@@ -59,9 +59,9 @@
                 <mat-form-field appearance="outline">
                   <mat-select #designation formControlName="designation" i18n-placeholder
                     placeholder="Select designation"
-                    (selectionChange)="otherDropDownChange(designation.value, 'designation')">
-                    <mat-option [value]="designation.name" *ngFor="let designation of designationsMeta">
-                      {{designation.name}}
+                    (selectionChange)="otherDropDownChange(designation?.value, 'designation')">
+                    <mat-option [value]="designation?.name" *ngFor="let designation of designationsMeta">
+                      {{designation?.name}}
                     </mat-option>
                     <mat-option [value]="'Other'">Other</mat-option>
                   </mat-select>
@@ -279,7 +279,7 @@
                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                       (matChipInputTokenEnd)="addActivity($event)" />
                     <p class="margin-left-xs">
-                      <mat-error class="hintErr" *ngIf="updateUserDataForm.controls['tags'].errors?.pattern"
+                      <mat-error class="hintErr" *ngIf="updateUserDataForm?.controls['tags'].errors?.pattern"
                         i18n="name Error|Explains name is required">
                         Only space and alphabets are supported
                       </mat-error>
@@ -312,7 +312,7 @@
                 </label>
                 <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
                   <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
-                    [selected]="userRoles.has(role.roleName)" [value]="role.roleName">
+                    [selected]="userRoles.has(role.roleName)" [value]="role?.roleName">
                     {{role.roleName}}
                   </mat-list-option>
                 </mat-selection-list>
@@ -320,13 +320,13 @@
 
               <div class="md:w-1/2" *ngIf="isMdoAdmin">
                 <label class="view-text-label">Roles</label>
-                <div *ngIf="user.organisations && user.organisations[0].roles.length > 0">
+                <div *ngIf="user?.organisations && user?.organisations[0].roles.length > 0">
                   <ul class="roleslist">
-                    <li *ngFor="let t of user.organisations[0].roles">{{t}}
+                    <li *ngFor="let t of user?.organisations[0]?.roles">{{t}}
                     </li>
                   </ul>
                 </div>
-                <p *ngIf="user.organisations && user.organisations[0].roles.length === 0">-</p>
+                <p *ngIf="user?.organisations && user?.organisations[0]?.roles.length === 0">-</p>
               </div>
             </div>
 
@@ -348,7 +348,7 @@
         </form>
       </div>
 
-      <div class="panel-body" *ngIf="!user.enableEdit">
+      <div class="panel-body" *ngIf="!user?.enableEdit">
         <!-- <button mat-button class="my-4 mr-4" (click)="addRejection()">add reason</button>
         <button mat-button class="my-4 mr-4" (click)="updateRejection()">update reason</button> -->
         <div class="inner-body mat-body-2">
@@ -485,12 +485,13 @@
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(appData.user)">
         <div class="float-left" (click)="$event.stopPropagation();">
-          <div class="initialcircle display-inline-block margin-right-s" *ngIf="appData.user">
-            <ws-widget-avatar-photo [name]="getUseravatarName(appData.user)" [photoUrl]="appData.user?.photo" size="m">
+          <div class="initialcircle display-inline-block margin-right-s" *ngIf="appData?.user">
+            <ws-widget-avatar-photo [name]="getUseravatarName(appData?.user)" [photoUrl]="appData?.user?.photo"
+              size="m">
             </ws-widget-avatar-photo>
           </div>
-          <div class="initialcircle display-inline-block margin-right-s" *ngIf="!appData.user">
-            <ws-widget-avatar-photo [name]="appData.userWorkflow.userInfo.first_name" [photoUrl]="" size="m">
+          <div class="initialcircle display-inline-block margin-right-s" *ngIf="!appData?.user">
+            <ws-widget-avatar-photo [name]="appData?.userWorkflow?.userInfo?.first_name" [photoUrl]="" size="m">
             </ws-widget-avatar-photo>
           </div>
           <div class="username display-inline-block">
@@ -629,31 +630,31 @@
 
             <div class="md:w-1/2">
               <label class="view-text-label">Tags</label>
-              <div *ngIf="appData.user.profileDetails && appData.user.profileDetails.additionalProperties &&
-                    appData.user.profileDetails.additionalProperties.tag &&
-                    appData.user.profileDetails.additionalProperties.tag.length > 0">
+              <div *ngIf="appData?.user?.profileDetails && appData?.user?.profileDetails?.additionalProperties &&
+                    appData?.user?.profileDetails?.additionalProperties?.tag &&
+                    appData?.user?.profileDetails?.additionalProperties?.tag.length > 0">
                 <ul class="tagslist">
-                  <li *ngFor="let t of appData.user.profileDetails.additionalProperties.tag">{{t}}</li>
+                  <li *ngFor="let t of appData?.user?.profileDetails?.additionalProperties.tag">{{t}}</li>
                 </ul>
               </div>
-              <p *ngIf="appData.user.profileDetails && !appData.user.profileDetails.additionalProperties">-</p>
+              <p *ngIf="appData?.user?.profileDetails && !appData?.user?.profileDetails?.additionalProperties">-</p>
             </div>
           </div>
           <div class="flex flex-row margin-top-m">
             <div class="md:w-1/1">
               <label class="view-text-label">Roles</label>
-              <div *ngIf="appData.user.organisations && appData.user.organisations[0].roles.length > 0">
+              <div *ngIf="appData?.user?.organisations && appData?.user?.organisations[0]?.roles.length > 0">
                 <ul class="roleslist">
-                  <li *ngFor="let t of appData.user.organisations[0].roles">{{t}}
+                  <li *ngFor="let t of appData?.user?.organisations[0]?.roles">{{t}}
                   </li>
                 </ul>
               </div>
-              <p *ngIf="appData.user.organisations && appData.user.organisations[0].roles.length === 0">-</p>
+              <p *ngIf="appData?.user?.organisations && appData?.user?.organisations[0].roles.length === 0">-</p>
             </div>
           </div>
         </div>
       </div>
-      <div class="panel-body" *ngIf="!appData.user">
+      <div class="panel-body" *ngIf="!appData?.user">
         <p class="text-center">No user data</p>
       </div>
     </mat-expansion-panel>
