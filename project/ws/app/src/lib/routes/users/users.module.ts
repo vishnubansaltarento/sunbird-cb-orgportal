@@ -19,6 +19,7 @@ import { FileService } from './services/upload.service'
 import { UsersUploadComponent } from './components/users-upload/users-upload.component'
 import { PipeEmailModule } from '../pipes/pipe-email/pipe-email.module'
 import { PipeDurationTransformModule } from '@sunbird-cb/utils'
+import { OtpService } from './services/otp.service'
 
 @NgModule({
   declarations: [CreateUserComponent, ViewUserComponent, UsersUploadComponent],
@@ -30,7 +31,7 @@ import { PipeDurationTransformModule } from '@sunbird-cb/utils'
     MatExpansionModule, MatDividerModule, MatPaginatorModule, MatTableModule, WidgetResolverModule, MatSortModule, PipeEmailModule,
     UIORGTableModule, MatChipsModule, PipeDurationTransformModule,
   ],
-  providers: [RolesService, FileService, DatePipe],
+  providers: [RolesService, FileService, DatePipe, OtpService],
   exports: [UsersUploadComponent],
 })
 export class UsersModule { }

@@ -55,6 +55,13 @@
     background: #D13924;
   }
 
+  .verified-icon {
+    color: #1D8923;
+  }
+  .nonverified-icon {
+    color: #D13924;
+  }
+
  .button {
     color: #1B4CA1;
     border: 1px solid #1B4CA1;
@@ -70,19 +77,15 @@
   }
 }
 
-// .mat-expansion-panel-body {
-//   padding: 0 !important;
-
-  .panel-body {
-    padding: 10px 0;
-  }
-// }
+.panel-body {
+  padding: 10px 0;
+}
 .mat-expanded {
   border: 1px solid #1B4CA1 !important;
 }
 
 .appr-text-field{
-  width: 272px;
+  width: 80%;
   border: 1px solid #DDDDDD;
   border-radius: 4px;
   padding: 9px;
@@ -92,13 +95,13 @@
   font: 400 14px Lato;
 }
 
-.appr-text-label{
+.form-label{
   width: 100%;
   padding-bottom: 10px;
   margin-bottom: 0;
   color: #000000;
   display: block;
-  font: 700 14px Lato;
+  font: 600 13px/16px Lato;
 }
 
 .view-text-label {
@@ -146,4 +149,104 @@
 
 .username {
   width: 88%;
+}
+
+// mat-selection-list.roles-list {
+//     // display: inline-flex;
+// }
+
+label {
+  display: block;
+}
+.btn-success:disabled,
+.btn-success[disabled] {
+  opacity: 0.6;
+}
+
+.btn-danger {
+  height: 30px;
+  width: 30px
+}
+
+.text_hint {
+  margin-top: -20px;
+  color: rgba($color: #000000, $alpha: .4);
+}
+
+.left-input-div {
+  width: auto;
+  display: inline-flex;
+}
+.right-input-div {
+  // width: 14%;
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.btn-add-activity {
+  background: no-repeat padding-box #0074b6 !important;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin: 4px 16px 0 16px !important;
+  line-height: 28px;
+  height: 36px;
+}
+
+.mat-chip-list {
+  margin-top: 2px;
+  display: flex;
+}
+
+.roles-list {
+  list-style: none;
+  padding: 0;
+}
+::ng-deep .profile-box {
+  .mobile-country-code .mat-select-value {
+    text-overflow: inherit !important;
+  }
+
+  .mat-select-arrow-wrapper {
+      transform: translateY(0%) !important;
+  }
+
+  .mat-form-field-appearance-outline .mat-form-field-infix {
+      padding: 0 0 0.5em 0 !important;
+      width: 15em !important;
+  }
+
+  .mat-form-field-disabled {
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    opacity: 0.8 !important;
+  }
+   .mat-list-base .mat-list-option {
+    border: 1px solid #dedede !important;
+    border-radius: 4px !important;
+    margin-right: 12px;
+    height: auto;
+    padding: 0.7em 0;
+  }
+
+  .mat-form-field-disabled .mat-form-field-outline {
+    background-color: #ededed;
+  }
+
+  .custominfo {
+    font-size: 18px;
+    height: 20px;
+    width: 20px;
+    vertical-align: middle;
+    margin-left: 1px;
+  }
+
+  .customdob {
+    width: 16.5em !important;
+  }
+  .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+    background-color: rgba(29, 137, 35) !important;
+  }
+  .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+    background-color: rgba(29, 137, 35, 0.54) !important;
+  }
 }

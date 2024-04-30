@@ -21,6 +21,8 @@ import {
   MatTabsModule,
   MatCheckboxModule,
   MatDatepickerModule,
+  MatAutocompleteModule,
+  MatSlideToggleModule,
 } from '@angular/material'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatPaginatorModule } from '@angular/material/paginator'
@@ -165,6 +167,8 @@ import { RejectionPopupComponent } from './components/rejection-popup/rejection-
     PipeDurationTransformModule,
     LeftMenuModule,
     FilterSearchPipeModule,
+    MatAutocompleteModule,
+    MatSlideToggleModule,
   ],
   entryComponents: [
     AdduserpopupComponent,

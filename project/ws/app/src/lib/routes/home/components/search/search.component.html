@@ -1,9 +1,10 @@
 <div class="flex flex-1 flex-row margin-top-m margin-bottom-m">
     <div class="search flex margin-right-m" [ngClass]="{'disable': isContentLive}">
-        <div class="rsearch flex w-full"><mat-icon
+        <div class="rsearch flex w-full">
+            <mat-icon
                 class="color-60 search-icon mat-icon notranslate material-icons mat-icon-no-color">search</mat-icon>
             <input class="sinput color-60 w-full" [(ngModel)]="searchText" (keyup.enter)="searchData($event)" label=""
-                placeholder="Select" type="Standard" [ngClass]="{'disable': isContentLive}">
+                placeholder="Search" type="Standard" [ngClass]="{'disable': isContentLive}">
         </div>
     </div>
     <div class="filter-section flex">
@@ -16,7 +17,7 @@
             Apply Filter <mat-icon class="margin-right-xs">filter_list</mat-icon>
         </button>
     </div>
-    <div class="flex flex-end">
+    <div class="flex flex-end" *ngIf="!isApprovals">
         <button mat-button type="button" class="search-btn" (click)="createUser()"
             [ngClass]="{'disable': isContentLive}">Create user</button>
     </div>
