@@ -86,8 +86,8 @@ export class UserCardComponent implements OnInit {
   approvalData: any
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private router: Router,
-    private route: ActivatedRoute, private snackBar: MatSnackBar) {
+              private dialog: MatDialog, private router: Router,
+              private route: ActivatedRoute, private snackBar: MatSnackBar) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -190,7 +190,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-      (_err: any) => {
+                                                  (_err: any) => {
       })
   }
 
