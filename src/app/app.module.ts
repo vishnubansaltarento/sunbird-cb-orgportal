@@ -74,6 +74,7 @@ export class HammerConfig extends GestureConfig {
     return new GestureConfig({ touchAction: 'pan-y' }).buildHammer(element)
   }
 }
+
 const appInitializer = (initSvc: InitService, logger: LoggerService) => async () => {
   try {
     await initSvc.init()
@@ -192,4 +193,5 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     LoaderService,
   ],
 })
+
 export class AppModule { }

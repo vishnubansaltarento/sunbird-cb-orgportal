@@ -2,7 +2,8 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core'
 import { MatSnackBar, PageEvent } from '@angular/material'
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
-
+// tslint:disable-next-line
+import _ from 'lodash'
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
 
@@ -18,13 +19,15 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
   lastUploadList: any[] = []
   private destroySubject$ = new Subject()
   @Input() totalRecords = 100
+  rootOrgId: any
   pageSize = 20
   constructor(
     private fileService: FileService,
     private matSnackBar: MatSnackBar,
     private router: ActivatedRoute
   ) {
-    this.router.data.subscribe((_data: any) => { })
+    // this.router.data.subscribe((_data: any) => { })
+    this.rootOrgId = _.get(this.router.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
   }
 
   ngOnInit() {
@@ -32,11 +35,11 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
   }
 
   getBulkStatusList(): void {
-    this.fileService.getBulkApprovalUploadDataV1()
+    this.fileService.getBulkUploadDataV1(this.rootOrgId)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open('Unable to get Bulk status list')
         }
