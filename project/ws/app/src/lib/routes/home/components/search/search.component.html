@@ -18,7 +18,7 @@
         </button>
     </div>
     <div class="flex flex-end" *ngIf="!isApprovals">
-        <button mat-button type="button" class="search-btn" (click)="createUser()"
+        <button mat-button type="button" class="search-btn" [routerLink]="['/app/home/users/bulk-upload']"
             [ngClass]="{'disable': isContentLive}">Create user</button>
     </div>
 </div>
