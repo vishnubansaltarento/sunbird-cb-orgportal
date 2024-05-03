@@ -69,6 +69,8 @@ import { ApprovalPendingComponent } from './routes/approvals/approval-pending/ap
 import { RejectionPopupComponent } from './components/rejection-popup/rejection-popup.component'
 import { AllUsersComponent } from './routes/users-view/all-users/all-users.component'
 import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload.component'
+import { VerifyOtpComponent } from './routes/users-view/verify-otp/verify-otp.component'
+import { FileProgressComponent } from './routes/users-view/file-progress/file-progress.component'
 
 @NgModule({
   declarations: [
@@ -104,6 +106,8 @@ import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload
     BulkUploadComponent,
     RejectionPopupComponent,
     AllUsersComponent,
+    VerifyOtpComponent,
+    FileProgressComponent,
   ],
   imports: [
     CommonModule,
@@ -170,6 +174,8 @@ import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload
     SearchComponent,
     FilterComponent,
     RejectionPopupComponent,
+    VerifyOtpComponent,
+    FileProgressComponent,
   ],
   providers: [
     InitResolver,

@@ -5,7 +5,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core'
   templateUrl: './users-view.component.html',
   styleUrls: ['./users-view.component.scss'],
   /* tslint:disable */
-  host: { class: 'flex flex-1 margin-top-l' },
+  host: { class: 'flex flex-col' },
   /* tslint:enable */
 })
 export class UsersViewComponent implements OnInit, OnDestroy {

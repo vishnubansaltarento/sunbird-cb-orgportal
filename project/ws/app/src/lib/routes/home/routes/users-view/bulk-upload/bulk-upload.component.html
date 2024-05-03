@@ -18,16 +18,22 @@
             </ol>
           </div>
           <div class="flex flex-row gap-6">
-            <button class="outline-button">Download Sample File</button>
+            <button class="outline-button" (click)="handleDownloadSampleFile()">Download Sample File</button>
             <button class="outline-button">Supporting Document</button>
           </div>
         </div>
       </div>
       <div class="flex-1">
-        <div class="flex flex-col gap-4 dashed-card items-center">
-          <div class="img-div"></div>
+        <div class="flex flex-col gap-2 dashed-card items-center">
+          <div class="flex cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
+            <img src="/assets/icons/csv-file.svg" alt="CSV file logo" />
+          </div>
           <div class="flex flex-col items-center">
-            <div class="text-primary cursor-pointer">Browse files</div>
+            <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
+              Browse files</div>
+            <input hidden type="file" #fileInput (click)="handleFileClick($event)" (change)="handleOnFileChange($event)"
+              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx, .xls" />
             <div class="flex">or</div>
             <div class="flex">Drag file to upload</div>
           </div>

@@ -1,0 +1,24 @@
+<div class="verify-otp-dialog">
+  <div class="flex flex-col gap-4">
+    <div class="text-base font-semibold text-center mb-4">
+      Enter the OTP sent to your {{ data.type === 'phone' ? 'mobile number' : 'email address' }}
+    </div>
+    <div class="flex flex-col gap-1">
+      <div class="text-sm font-bold">Enter OTP</div>
+      <input type="text" class="input-text" placeholder="Enter the OTP" maxlength="6" [(ngModel)]="otpEntered" />
+    </div>
+    <div class="flex flex-row gap-2 items-center justify-center timer-div" *ngIf="!showResendOTP">
+      <div class="flex flex-row gap-1 time-remaining text-sm ">
+        Time remaining to resend OTP: <div #timerDiv></div>
+      </div>
+    </div>
+    <div class="flex justify-end" *ngIf="showResendOTP">
+      <div class="resend-otp" (click)="handleResendOTP()">Resend OTP</div>
+    </div>
+
+    <div class="flex flex-row justify-between">
+      <button class="outline-button" (click)="handleCloseModal()">Cancel</button>
+      <button class="action-button" (click)="handleVerifyOTP()">Submit</button>
+    </div>
+  </div>
+</div>
