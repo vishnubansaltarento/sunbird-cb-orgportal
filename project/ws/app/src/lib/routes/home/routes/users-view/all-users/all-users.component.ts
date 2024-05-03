@@ -1,21 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { ActivatedRoute, Router } from '@angular/router'
-import { PageEvent } from '@angular/material'
-import { EventService } from '@sunbird-cb/utils'
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 /* tslint:disable */
 import _ from 'lodash'
 /* tslint:enable */
-
+// import { environment } from 'src/environments/environment'
+import { PageEvent } from '@angular/material'
+import { EventService } from '@sunbird-cb/utils'
 import { NsContent } from '@sunbird-cb/collection'
-import { ReportsVideoComponent } from '../../reports-video/reports-video.component'
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { NSProfileDataV2 } from '../../../models/profile-v2.model'
-import { TelemetryEvents } from '../../../../../head/_services/telemetry.event.model'
-
 import { UsersService } from '../../../../users/services/users.service'
 import { LoaderService } from '../../../../../../../../../../src/app/services/loader.service'
+import { TelemetryEvents } from '../../../../../head/_services/telemetry.event.model'
 import { ProfileV2UtillService } from '../../../services/home-utill.service'
+import { ReportsVideoComponent } from '../../reports-video/reports-video.component'
+
+// import * as XLSX from 'xlsx'
 
 @Component({
   selector: 'ws-all-users',
@@ -26,10 +27,10 @@ import { ProfileV2UtillService } from '../../../services/home-utill.service'
   host: { class: 'flex flex-1 margin-top-l' },
   /* tslint:enable */
 })
-
 export class AllUsersComponent implements OnInit, OnDestroy {
-
-  // Math: any
+  /* tslint:disable */
+  Math: any
+  /* tslint:enable */
   currentFilter = 'allusers'
   filterPath = '/app/home/users'
   discussionList!: any
@@ -38,6 +39,7 @@ export class AllUsersComponent implements OnInit, OnDestroy {
   userDetails: any
   location!: string | null
   tabs: any
+  // tabsData: NSProfileDataV2.IProfileTab[]
   currentUser!: any
   connectionRequests!: any[]
   data: any = []
@@ -66,17 +68,32 @@ export class AllUsersComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
+    // private snackBar: MatSnackBar,
     private events: EventService,
     private loaderService: LoaderService,
     private profileUtilSvc: ProfileV2UtillService,
     private sanitizer: DomSanitizer,
+    // private telemetrySvc: TelemetryService,
+    // private configSvc: ConfigurationsService,
+    // private discussService: DiscussService,
+    // private configSvc: ConfigurationsService,
+    // private networkV2Service: NetworkV2Service,
+    // private profileV2Svc: ProfileV2Service
     private usersService: UsersService
   ) {
-    // this.Math = Math
+    this.Math = Math
     this.configSvc = this.route.parent && this.route.parent.snapshot.data.configService
     this.currentUser = this.configSvc.userProfile && this.configSvc.userProfile.userId
+
+    // this.usersData = _.get(this.route, 'snapshot.data.usersList.data') || {}
+    // this.filterData()
   }
 
+  ngOnDestroy() {
+    // if (this.tabs) {
+    //   this.tabs.unsubscribe()
+    // }
+  }
   ngOnInit() {
     this.rootOrgId = _.get(this.route.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
     this.searchQuery = ''
@@ -159,7 +176,9 @@ export class AllUsersComponent implements OnInit, OnDestroy {
     if (this.isMdoAdmin) {
       if (roles && roles.length > 0) {
         return true
+        //   return (roles.includes('PUBLIC') && roles.length === 1)
       }
+      // return false
     }
     return true
   }
@@ -187,8 +206,25 @@ export class AllUsersComponent implements OnInit, OnDestroy {
   getUsers(query: string, currentFilter: any) {
     this.loaderService.changeLoad.next(true)
     const usersData: any[] = []
-    const status = currentFilter === 'allusers' ? 1 : 1
-    this.usersService.getAllKongUsers(this.rootOrgId, status, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    let filtreq = {}
+    if (currentFilter === 'allusers') {
+      filtreq = {
+        'rootOrgId': this.rootOrgId,
+        'status': 1,
+      }
+    } else if (currentFilter === 'verified') {
+      filtreq = {
+        'rootOrgId': this.rootOrgId,
+        'profileDetails.profileStatus': 'VERIFIED'
+      }
+    } else if (currentFilter === 'nonverified') {
+      filtreq = {
+        'rootOrgId': this.rootOrgId,
+        'profileDetails.profileStatus': 'NOT-VERIFIED'
+      }
+    }
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       this.usersData = data.result.response
       if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
         _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
@@ -278,8 +314,5 @@ export class AllUsersComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex
     this.limit = event.pageSize
     this.filterData(this.searchQuery)
-  }
-
-  ngOnDestroy() {
   }
 }
