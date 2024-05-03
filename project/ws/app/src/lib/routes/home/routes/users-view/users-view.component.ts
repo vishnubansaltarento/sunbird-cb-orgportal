@@ -206,8 +206,25 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   getUsers(query: string, currentFilter: any) {
     this.loaderService.changeLoad.next(true)
     const usersData: any[] = []
-    const status = currentFilter === 'allusers' ? 1 : 1
-    this.usersService.getAllKongUsers(this.rootOrgId, status, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    let filtreq = {}
+    if (currentFilter === 'allusers') {
+      filtreq = {
+        'rootOrgId': this.rootOrgId,
+        'status': 1,
+      }
+    } else if (currentFilter === 'verified') {
+      filtreq = {
+        'rootOrgId': this.rootOrgId,
+        'profileDetails.profileStatus': 'VERIFIED'
+      }
+    } else if (currentFilter === 'nonverified') {
+      filtreq = {
+        'rootOrgId': this.rootOrgId,
+        'profileDetails.profileStatus': 'NOT-VERIFIED'
+      }
+    }
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       this.usersData = data.result.response
       if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
         _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
