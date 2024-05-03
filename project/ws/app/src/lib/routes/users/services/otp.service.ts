@@ -70,7 +70,7 @@ export class OtpService {
     return this.http.post(API_ENDPOINTS.sendEmailOtp, reqObj)
   }
 
-  verifyEmailOTP(otp: any, email: number) {
+  verifyEmailOTP(otp: any, email: any) {
     const reqObj = {
       request: {
         otp: otp.toString(),

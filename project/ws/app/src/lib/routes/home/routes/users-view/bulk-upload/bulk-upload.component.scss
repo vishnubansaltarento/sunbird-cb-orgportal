@@ -38,6 +38,12 @@
   }
 }
 
+.error-msg {
+  color: $color-red;
+  font-weight: 600;
+  font-size: 14px;
+}
+
 ::ng-deep .common-modal {
   width: 420px;
   padding: 0px;

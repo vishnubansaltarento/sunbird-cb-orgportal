@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-6">
   <div class="flex flex-row gap-4 items-center">
-    <mat-icon>arrow_back</mat-icon>
+    <mat-icon class="cursor-pointer" [routerLink]="['/app/home/users/all-users']">arrow_back</mat-icon>
     <div class="flex font-bold">Bulk Profile Update</div>
   </div>
 
@@ -19,7 +19,6 @@
           </div>
           <div class="flex flex-row gap-6">
             <button class="outline-button" (click)="handleDownloadSampleFile()">Download Sample File</button>
-            <button class="outline-button">Supporting Document</button>
           </div>
         </div>
       </div>
@@ -28,14 +27,15 @@
           <div class="flex cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
             <img src="/assets/icons/csv-file.svg" alt="CSV file logo" />
           </div>
+          <div *ngIf="showFileError" class="error-msg">Upload CSV format file only</div>
           <div class="flex flex-col items-center">
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
               Browse files</div>
             <input hidden type="file" #fileInput (click)="handleFileClick($event)" (change)="handleOnFileChange($event)"
               name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();"
               accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx, .xls" />
-            <div class="flex">or</div>
-            <div class="flex">Drag file to upload</div>
+            <!-- <div class="flex">or</div>
+            <div class="flex">Drag file to upload</div> -->
           </div>
           <div class="flex flex-col items-center">
             <div class="flex">Max file size: 100 MB</div>
@@ -46,64 +46,60 @@
     </div>
   </div>
 
-  <mat-tab-group>
-    <mat-tab label="Recent upload">
-      Recent upload
-    </mat-tab>
-    <mat-tab label="Last uploads">
-      <div class="file-container mt-6" *ngFor="let list of lastUploadList">
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-row justify-between items-center">
-            <div class="flex flex-row gap-1">
-              <div class="font-bold">File Information</div>
-              <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
-            </div>
-            <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
-              <mat-icon>download_2</mat-icon>
-              Download error log
-            </div>
+  <div class="text-base font-bold">File logs</div>
+  <div class="flex flex-col gap-6">
+    <div class="file-container" *ngFor="let list of lastUploadList | slice:startIndex:lastIndex">
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-row justify-between items-center">
+          <div class="flex flex-row gap-1">
+            <div class="font-bold">File Information</div>
+            <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
           </div>
-          <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
-            <div class="flex flex-col">
-              <div class="label">Name</div>
-              <div class="value">{{ list?.fileName }}</div>
-            </div>
-            <div class="flex flex-col">
-              <div class="label">Status</div>
-              <div class="value">{{ list?.status }}</div>
-            </div>
-            <div class="flex flex-col">
-              <div class="label">Failed Records</div>
-              <div class="value">{{ list?.failedRecordsCount }}</div>
-            </div>
-            <div class="flex flex-col">
-              <div class="label">Success Records</div>
-              <div class="value">{{ list?.successfulRecordsCount }}</div>
-            </div>
+          <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
+            <mat-icon>download_2</mat-icon>
+            Download error log
           </div>
-          <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
-            <div class="flex flex-col">
-              <div class="label">Total Records</div>
-              <div class="value">{{ list?.totalRecords }}</div>
-            </div>
-            <div class="flex flex-col">
-              <div class="label">Initiated On</div>
-              <div class="value">{{ list?.dateCreatedOn | date: 'dd MMM yyyy h:mm a' }}</div>
-            </div>
-            <div class="flex flex-col">
-              <div class="label">Completed ON</div>
-              <div class="value">{{ list?.dateUpdatedOn | date: 'dd MMM yyyy h:mm a' }}</div>
-            </div>
+        </div>
+        <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
+          <div class="flex flex-col">
+            <div class="label">Name</div>
+            <div class="value">{{ list?.fileName }}</div>
+          </div>
+          <div class="flex flex-col">
+            <div class="label">Status</div>
+            <div class="value">{{ list?.status }}</div>
+          </div>
+          <div class="flex flex-col">
+            <div class="label">Failed Records</div>
+            <div class="value">{{ list?.failedRecordsCount }}</div>
+          </div>
+          <div class="flex flex-col">
+            <div class="label">Success Records</div>
+            <div class="value">{{ list?.successfulRecordsCount }}</div>
+          </div>
+        </div>
+        <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">
+          <div class="flex flex-col">
+            <div class="label">Total Records</div>
+            <div class="value">{{ list?.totalRecords }}</div>
+          </div>
+          <div class="flex flex-col">
+            <div class="label">Initiated On</div>
+            <div class="value">{{ list?.dateCreatedOn | date: 'dd MMM yyyy h:mm a' }}</div>
+          </div>
+          <div class="flex flex-col">
+            <div class="label">Completed ON</div>
+            <div class="value">{{ list?.dateUpdatedOn | date: 'dd MMM yyyy h:mm a' }}</div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="flex flex-row justify-end mt-4">
-        <mat-paginator [pageSize]="pageSize" [length]="totalRecords" [pageSizeOptions]="[10, 25, 50]"
-          (page)="handleChangePage($event)"></mat-paginator>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+  <div class="flex flex-row justify-end mt-4">
+    <mat-paginator [pageSize]="pageSize" [length]="lastUploadList.length" [pageSizeOptions]="sizeOptions"
+      (page)="handleChangePage($event)"></mat-paginator>
+  </div>
 
 
 </div>

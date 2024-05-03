@@ -1,18 +1,19 @@
 import { Component, OnInit, Inject, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
-// import { HttpErrorResponse } from '@angular/common/http'
+import { HttpErrorResponse } from '@angular/common/http'
 import { MatSnackBar } from '@angular/material'
 
 import { Subject } from 'rxjs'
-// import { takeUntil } from 'rxjs/operators'
+import { takeUntil } from 'rxjs/operators'
 /* tslint:disable */
 import * as _ from 'lodash'
-
+/* tslint:enable */
+import { OtpService } from '../../../../users/services/otp.service'
 
 @Component({
   selector: 'ws-verify-otp',
   templateUrl: './verify-otp.component.html',
-  styleUrls: ['./verify-otp.component.scss']
+  styleUrls: ['./verify-otp.component.scss'],
 })
 export class VerifyOtpComponent implements OnInit, OnDestroy {
 
@@ -29,6 +30,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<VerifyOtpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private matSnackbar: MatSnackBar,
+    private otpService: OtpService
   ) { }
 
   ngOnInit() {
@@ -44,11 +46,11 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
         clearInterval(this.interval)
         this.showResendOTP = true
       }
-    }, 1000)
+    },                          1000)
   }
 
   handleCloseModal(): void {
-    this.dialogRef.close(true)
+    this.dialogRef.close()
   }
 
   handleResendOTP(): void {
@@ -59,7 +61,37 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   }
 
   handleVerifyOTP(): void {
-    this.matSnackbar.open("Working on handle Verify OTP")
+    if (this.data.type === 'email') {
+      this.verifyEmailOTP()
+    } else {
+      this.verifyMobileOTP()
+    }
+  }
+
+  verifyEmailOTP(): void {
+    this.otpService.verifyEmailOTP(this.otpEntered, this.data.email)
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe((_res: any) => {
+        this.handleCloseModal()
+        this.otpVerified.emit(true)
+      },         (error: HttpErrorResponse) => {
+        if (!error.ok) {
+          this.matSnackbar.open('Unable to verify OTP, please try again later!')
+        }
+      })
+  }
+
+  verifyMobileOTP(): void {
+    this.otpService.verifyOTP(Number(this.otpEntered), this.data.mobile)
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe((_res: any) => {
+        this.handleCloseModal()
+        this.otpVerified.emit(true)
+      },         (error: HttpErrorResponse) => {
+        if (!error.ok) {
+          this.matSnackbar.open('Unable to verify OTP, please try again later!')
+        }
+      })
   }
 
   ngOnDestroy(): void {

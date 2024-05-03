@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core'
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core'
 import { MatSnackBar, PageEvent, MatDialog } from '@angular/material'
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
@@ -17,19 +17,24 @@ import { FileProgressComponent } from '../file-progress/file-progress.component'
   templateUrl: './bulk-upload.component.html',
   styleUrls: ['./bulk-upload.component.scss'],
 })
-export class BulkUploadComponent implements OnInit, OnDestroy {
+export class BulkUploadComponent implements OnInit, AfterViewInit, OnDestroy {
 
   lastUploadList: any[] = []
   private destroySubject$ = new Subject()
-  @Input() totalRecords = 100
   downloadSampleFilePath = ''
   downloadAsFileName = ''
   rootOrgId: any
-  pageSize = 20
+
   showFileError = false
   public fileName: any
   fileSelected!: any
   userProfile: any
+  fileUploadDialogInstance: any
+
+  sizeOptions = [10, 20]
+  startIndex = 0
+  lastIndex: any
+  pageSize = 10
 
   constructor(
     private fileService: FileService,
@@ -38,9 +43,9 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private usersService: UsersService
   ) {
-    // this.router.data.subscribe((_data: any) => { })
     this.rootOrgId = _.get(this.router.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
     this.userProfile = _.get(this.router.snapshot.parent, 'data.configService.userProfileV2')
+
     this.router.data.subscribe(data => {
       if (data && data.pageData) {
         this.downloadSampleFilePath = data.pageData.data.downloadSampleFilePath
@@ -51,7 +56,10 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getBulkStatusList()
-    this.showFileUploadProgress()
+  }
+
+  ngAfterViewInit(): void {
+    this.lastIndex = this.sizeOptions[0]
   }
 
   getBulkStatusList(): void {
@@ -59,7 +67,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open('Unable to get Bulk status list')
         }
@@ -67,7 +75,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
   }
 
   showFileUploadProgress(): void {
-    this.dialog.open(FileProgressComponent, {
+    this.fileUploadDialogInstance = this.dialog.open(FileProgressComponent, {
       data: {},
       disableClose: true,
       panelClass: 'progress-modal',
@@ -75,7 +83,7 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
   }
 
   handleDownloadFile(listObj: any): void {
-    const filePath = `/apis/proxies/v8/workflow/admin/bulkuploadfile/download/${listObj.filename}`
+    const filePath = `/apis/proxies/v8/workflow/admin/bulkuploadfile/download/${listObj.fileName}`
     window.open(filePath, '_blank')
   }
 
@@ -88,19 +96,20 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
   }
 
   sendOTP(): void {
-    this.generateAndVerifyOTP(this.userProfile.mobile ? 'phone' : 'email')
+    this.generateAndVerifyOTP(this.userProfile.email ? 'email' : 'phone')
   }
 
   generateAndVerifyOTP(contactType: string, resendFlag?: string): void {
-    this.usersService.sendOtp(this.userProfile.mobile, contactType)
+    const postValue = contactType === 'email' ? this.userProfile.email : this.userProfile.mobile
+    this.usersService.sendOtp(postValue, contactType)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((_res: any) => {
         this.matSnackBar.open(`An OTP has been sent to your ${contactType === 'phone' ? 'Mobile number'
           : 'Email address'}, (Valid for 15 min's)`)
-        if (resendFlag) {
+        if (!resendFlag) {
           this.verifyOTP(contactType)
         }
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open(_.get(error, 'error.params.errmsg') || `Unable to send OTP to your ${contactType}, please try again later!`)
         }
@@ -120,24 +129,49 @@ export class BulkUploadComponent implements OnInit, OnDestroy {
 
   verifyOTP(contactType: string): void {
     const dialogRef = this.dialog.open(VerifyOtpComponent, {
-      data: { type: contactType },
+      data: { type: contactType, email: this.userProfile.email, mobile: this.userProfile.mobile },
       disableClose: true,
       panelClass: 'common-modal',
     })
 
-    dialogRef.componentInstance.resendOTP.subscribe((data: any) => {
-      this.generateAndVerifyOTP(data.type, 'resend')
+    dialogRef.componentInstance.resendOTP.subscribe((_cType: any) => {
+      this.generateAndVerifyOTP(_cType, 'resend')
     })
 
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.showFileUploadProgress()
-      }
+    dialogRef.componentInstance.otpVerified.subscribe((_data: boolean) => {
+      this.showFileUploadProgress()
+      this.uploadCSVFile()
     })
   }
 
-  handleChangePage(_event: PageEvent): void {
+  uploadCSVFile(): void {
+    if (this.fileService.validateFile(this.fileName)) {
+      if (this.fileSelected) {
+        const formData: FormData = new FormData()
+        formData.append('data', this.fileSelected, this.fileName)
+        this.fileService.upload(this.fileName, formData)
+          .pipe(takeUntil(this.destroySubject$))
+          .subscribe((_res: any) => {
+            this.fileUploadDialogInstance.close()
+            this.matSnackBar.open('File uploaded successfully!')
+            this.fileName = ''
+            this.fileSelected = ''
+            this.getBulkStatusList()
+          }, (_err: HttpErrorResponse) => {
+            if (!_err.ok) {
+              this.matSnackBar.open('Uploading CSV file failed due to some error, please try again later!')
+            }
+          })
+      }
+    } else {
+      this.showFileError = true
+    }
+  }
 
+  handleChangePage(_event: PageEvent): void {
+    this.pageSize = _event.pageSize
+    this.startIndex = (_event.pageIndex) * _event.pageSize
+    this.lastIndex = this.startIndex + _event.pageSize
   }
 
   ngOnDestroy(): void {

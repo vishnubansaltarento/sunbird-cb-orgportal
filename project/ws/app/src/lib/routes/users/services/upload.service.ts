@@ -5,12 +5,9 @@ import { HttpClient } from '@angular/common/http'
 import * as fileSaver from 'file-saver'
 
 const API_ENDPOINTS = {
-  // bulkUpload: `/apis/protected/v8/admin/userRegistration/bulkUpload`,
   bulkUpload: `/apis/proxies/v8/user/v1/bulkupload`,
   downloadReport: `/apis/protected/v8/admin/userRegistration/bulkUploadReport`,
-  // getBulkUploadData: '/apis/protected/v8/admin/userRegistration/bulkUploadData',
   getBulkUploadData: '/apis/proxies/v8/user/v1/bulkupload',
-  // downloadfile: '/apis/proxies/v8/user/v1/bulkuser/download',
   getBulkApproval: '/apis/proxies/v8/workflow/admin/bulkupdate/getstatus',
   bulkApprovalUpload: `/apis/proxies/v8/workflow/admin/transition/bulkupdate`,
 }
@@ -35,12 +32,7 @@ export class FileService {
   }
 
   public download(filePath: string, downloadAsFileName: string): void {
-    // const httpOptions = {
-    //   headers: new HttpHeaders({ responseType:  'blob',
-    //   'Content-Type':  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),
-    // }
     this.http.get(filePath, { responseType: 'blob' }).subscribe((res: any) => {
-      // window.open(window.URL.createObjectURL(res))
       fileSaver.saveAs(res, downloadAsFileName)
     })
   }
@@ -65,11 +57,6 @@ export class FileService {
   public list(): Observable<string[]> {
     return this.fileList$
   }
-
-  // private addFileToList(fileName: string): void {
-  //   this.fileList.push(fileName)
-  //   this.fileList$.next(this.fileList)
-  // }
 
   validateFile(name: String) {
     const allowedFormats = ['xlsx', 'csv']
@@ -99,8 +86,4 @@ export class FileService {
     return this.http.post<any>(API_ENDPOINTS.bulkApprovalUpload, fileContent)
       .pipe(finalize(() => this.displayLoader$.next(false)))
   }
-
-  // public downloadFile(filename: string) {
-  //   return this.http.get(`${API_ENDPOINTS.downloadfile}/${filename}`)
-  // }
 }
