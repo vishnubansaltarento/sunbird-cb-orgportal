@@ -14,7 +14,7 @@ import * as _ from 'lodash'
   templateUrl: './verify-otp.component.html',
   styleUrls: ['./verify-otp.component.scss']
 })
-export class VerifyOtpComponent implements OnInit {
+export class VerifyOtpComponent implements OnInit, OnDestroy {
 
   private destroySubject$ = new Subject()
   @ViewChild('timerDiv', { static: false }) timerDiv !: any
@@ -59,7 +59,7 @@ export class VerifyOtpComponent implements OnInit {
   }
 
   handleVerifyOTP(): void {
-
+    this.matSnackbar.open("Working on handle Verify OTP")
   }
 
   ngOnDestroy(): void {
