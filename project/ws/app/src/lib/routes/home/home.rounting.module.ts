@@ -1,27 +1,28 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
-// import { InitResolver } from './resol./routes/profile-v2/discuss-all.component'
-import { HomeResolve } from './resolvers/home-resolve'
-import { AboutComponent } from './routes/about/about.component'
+
 import { HomeComponent } from './routes/home/home.component'
+import { AboutComponent } from './routes/about/about.component'
 import { UsersViewComponent } from './routes/users-view/users-view.component'
 import { RolesAccessComponent } from './routes/roles-access/roles-access.component'
-// import { PageResolve } from '@sunbird-cb/utils'
 import { ApprovalsComponent } from './routes/approvals/approvals.component'
 import { WorkallocationComponent } from './routes/workallocation/workallocation.component'
-import { WelcomeComponent } from './routes/welcome/welcome.component'
-import { ConfigResolveService } from './resolvers/config-resolve.service'
-import { UsersListResolve } from './resolvers/users-list-resolve.service'
 import { LeadershipComponent } from './routes/leadership/leadership.component'
 import { StaffComponent } from './routes/staff/staff.component'
-import { BudgetComponent } from './routes/budget/budget.component'
 import { MdoinfoComponent } from './routes/mdoinfo/mdoinfo.component'
-import { PageResolve } from '@sunbird-cb/utils'
+import { BudgetComponent } from './routes/budget/budget.component'
 import { BlendedApprovalsComponent } from './routes/blended-approvals/blended-approvals.component'
 import { ReportsSectionComponent } from './routes/reports-section/reports-section.component'
 import { TrainingPlanDashboardComponent } from './routes/training-plan-dashboard/training-plan-dashboard.component'
-import { BulkUploadComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
 import { ApprovalPendingComponent } from './routes/approvals/approval-pending/approval-pending.component'
+import { WelcomeComponent } from './routes/welcome/welcome.component'
+import { AllUsersComponent } from './routes/users-view/all-users/all-users.component'
+import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload.component'
+
+import { PageResolve } from '@sunbird-cb/utils'
+import { HomeResolve } from './resolvers/home-resolve'
+import { ConfigResolveService } from './resolvers/config-resolve.service'
+import { UsersListResolve } from './resolvers/users-list-resolve.service'
 
 const routes: Routes = [
   {
@@ -33,7 +34,6 @@ const routes: Routes = [
     path: '',
     component: HomeComponent,
     resolve: {
-      // department: DepartmentResolve,
       configService: ConfigResolveService,
       tabs: HomeResolve,
     },
@@ -47,35 +47,65 @@ const routes: Routes = [
         },
       },
       {
-        path: 'users/:tab',
-        component: UsersViewComponent,
-        resolve: {
-          usersList: UsersListResolve,
-          pageData: PageResolve,
-          configService: ConfigResolveService,
-        },
-        data: {
-          pageId: 'users',
-          module: 'User',
-          pageType: 'feature',
-          pageKey: 'users-view',
-        },
-      },
-      {
         path: 'users',
-        redirectTo: 'users/allusers',
         component: UsersViewComponent,
         resolve: {
           usersList: UsersListResolve,
           pageData: PageResolve,
           configService: ConfigResolveService,
         },
-        data: {
-          pageId: 'users',
-          module: 'User',
-          pageType: 'feature',
-          pageKey: 'users-view',
-        },
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'all-users',
+          },
+          {
+            path: 'all-users',
+            component: AllUsersComponent,
+            resolve: {
+              usersList: UsersListResolve,
+              pageData: PageResolve,
+              configService: ConfigResolveService,
+            },
+            data: {
+              pageId: 'users',
+              module: 'User',
+              pageType: 'feature',
+              pageKey: 'users-view',
+            },
+          },
+          {
+            path: 'all-users/:tab',
+            component: AllUsersComponent,
+            resolve: {
+              usersList: UsersListResolve,
+              pageData: PageResolve,
+              configService: ConfigResolveService,
+            },
+            data: {
+              pageId: 'users',
+              module: 'User',
+              pageType: 'feature',
+              pageKey: 'users-view',
+            },
+          },
+          {
+            path: 'bulk-upload',
+            component: BulkUploadComponent,
+            resolve: {
+              usersList: UsersListResolve,
+              pageData: PageResolve,
+              configService: ConfigResolveService,
+            },
+            data: {
+              pageId: 'users',
+              module: 'User',
+              pageType: 'feature',
+              pageKey: 'users-view',
+            },
+          },
+        ],
       },
       {
         path: 'about',
@@ -133,18 +163,8 @@ const routes: Routes = [
             data: {
               pageId: 'approvals-transfers',
               module: 'Approvals',
-            },
-            resolve: {
-              pageData: PageResolve,
-              configService: ConfigResolveService,
-            },
-          },
-          {
-            path: 'bulk-upload',
-            component: BulkUploadComponent,
-            data: {
-              pageId: 'bulk-upload',
-              module: 'Approvals',
+              pageType: 'feature',
+              pageKey: 'approval-view',
             },
             resolve: {
               pageData: PageResolve,
@@ -153,20 +173,20 @@ const routes: Routes = [
           },
         ],
       },
-      // {
-      //   path: 'approvals/:tab',
-      //   component: ApprovalsComponent,
-      //   data: {
-      //     pageId: 'approvals',
-      //     module: 'Approvals',
-      //     pageType: 'feature',
-      //     pageKey: 'approval-view',
-      //   },
-      //   resolve: {
-      //     pageData: PageResolve,
-      //     configService: ConfigResolveService,
-      //   },
-      // },
+      {
+        path: 'approvals/pending/:tab',
+        component: ApprovalsComponent,
+        data: {
+          pageId: 'approvals',
+          module: 'Approvals',
+          pageType: 'feature',
+          pageKey: 'approval-view',
+        },
+        resolve: {
+          pageData: PageResolve,
+          configService: ConfigResolveService,
+        },
+      },
       {
         path: 'workallocation/:tab',
         data: {

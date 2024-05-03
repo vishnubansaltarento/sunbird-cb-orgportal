@@ -1,5 +1,4 @@
 @import 'ws-common';
-// $border-color:
 
 .bulk-container, .file-container {
   box-shadow: 0px 1px 5px 0px #0000001F, 0px 2px 2px 0px #00000024, 0px 3px 1px -2px #00000033;
@@ -33,15 +32,40 @@
     padding-left: 12px;
   }
 
-  .img-div {
-    width: 80px;
-    height: 80px;
-    border: 1px dashed $border-color;
-    border-radius: 4px;
-  }
-
   .text-primary {
     color: $color-blue;
     font-weight: bold;
+  }
+}
+
+.error-msg {
+  color: $color-red;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+::ng-deep .common-modal {
+  width: 420px;
+  padding: 0px;
+
+  .mat-dialog-container {
+    border-radius: 12px;
+    background-color: #EEE !important;
+  }
+}
+
+::ng-deep .progress-modal {
+  width: 920px;
+  height: 420px;
+
+  .mat-dialog-container {
+    border-radius: 4px;
+    background-color: #FFF !important;
+  }
+}
+
+@media screen and (max-width: 641px) {
+  ::ng-deep .common-modal, ::ng-deep .progress-modal {
+    max-width: 90vw !important;
   }
 }
