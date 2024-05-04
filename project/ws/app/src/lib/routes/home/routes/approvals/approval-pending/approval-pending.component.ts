@@ -7,8 +7,6 @@ import { EventService } from '@sunbird-cb/utils'
 /* tslint:disable */
 import _ from 'lodash'
 /* tslint:enable */
-
-import { ITableData } from '@sunbird-cb/collection/lib/ui-org-table/interface/interfaces'
 import { TelemetryEvents } from '../../../../../head/_services/telemetry.event.model'
 import { ReportsVideoComponent } from '../../reports-video/reports-video.component'
 import { ApprovalsService } from '../../../services/approvals.service'
@@ -20,7 +18,6 @@ import { ApprovalsService } from '../../../services/approvals.service'
 })
 
 export class ApprovalPendingComponent implements OnInit, OnDestroy {
-
   data: any = []
   currentFilter = 'profileverification'
   discussionList!: any
@@ -30,22 +27,6 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   limit = 20
   pageIndex = 0
   currentOffset = 0
-  tabledata: ITableData = {
-    // actions: [{ name: 'Approve', label: 'Approve', icon: 'remove_red_eye', type: 'Approve' },
-    // { name: 'Reject', label: 'Reject', icon: 'remove_red_eye', type: 'Reject' }],
-    actions: [],
-    columns: [
-      { displayName: 'Full name', key: 'fullname' },
-      { displayName: 'Requested on', key: 'requestedon' },
-      { displayName: 'Fields', key: 'fields', isList: true },
-      { displayName: 'Tags', key: 'tag', isList: true },
-    ],
-    needCheckBox: false,
-    needHash: false,
-    sortColumn: 'fullname',
-    sortState: 'asc',
-    needUserMenus: false,
-  }
   configSvc: any
   reportsNoteList: string[] = []
 
@@ -66,9 +47,12 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.currentFilter = this.route.snapshot.params['tab']
+    this.currentFilter = this.route.snapshot.params['tab'] || 'profileverification'
     // this.currentFilter = this.currentFilter === 'upload' ? 'uploadApprovals' : 'pending'
     if (this.currentFilter === 'profileverification') {
+      this.fetchApprovals()
+    }
+    if (this.currentFilter !== 'profileverification') {
       this.fetchApprovals()
     }
 
@@ -102,6 +86,9 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
     if (key) {
       this.currentFilter = key
       if (key === 'profileverification') {
+        this.fetchApprovals()
+      }
+      if (key === 'transfers') {
         this.fetchApprovals()
       }
     }
@@ -185,7 +172,6 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
           })
 
           this.data.push({
-
             fullname: approval.userInfo ? `${approval.userInfo.first_name}` : '--',
             // fullname: approval.userInfo ? `${approval.userInfo.first_name} ${approval.userInfo.last_name}` : '--',
             // requestedon: `${currentdate.getDate()}
@@ -201,6 +187,11 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
             fields: this.replaceWords(keys, conditions),
             userWorkflow: approval,
             tag: (approval.userInfo && approval.userInfo.tag) ? `${approval.userInfo.tag}` : '',
+          })
+          this.data.sort((a: any, b: any) => {
+            const textA = a.fullname.toUpperCase()
+            const textB = b.fullname.toUpperCase()
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
           })
         })
       })
@@ -222,7 +213,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    },                           inputString)
+    }, inputString)
   }
 
   onPaginateChange(event: PageEvent) {

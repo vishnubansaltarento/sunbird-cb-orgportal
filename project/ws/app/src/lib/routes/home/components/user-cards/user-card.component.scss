@@ -9,7 +9,7 @@
   border-radius: 5px !important;
 
   .mat-expansion-panel-header {
-    padding: 10px 24px !important;
+    padding: 14px 24px !important;
   }
 
   .mat-content{
@@ -77,14 +77,28 @@
   }
 }
 
-.panel-body {
+::ng-deep .initialcircle .circle-l {
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px !important;
+}
+::ng-deep .panel-body {
   padding: 10px 0;
+
+  .mat-radio-container {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .mat-radio-outer-circle, .mat-radio-inner-circle {
+    height: 16px !important;
+    width: 16px !important;
+  }
 }
 .mat-expanded {
   border: 1px solid #1B4CA1 !important;
 }
 
-.appr-text-field{
+.appr-text-field {
   width: 80%;
   border: 1px solid #DDDDDD;
   border-radius: 4px;
@@ -95,7 +109,7 @@
   font: 400 14px Lato;
 }
 
-.form-label{
+.form-label {
   width: 100%;
   padding-bottom: 10px;
   margin-bottom: 0;
@@ -248,5 +262,63 @@ label {
   }
   .mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
     background-color: rgba(29, 137, 35, 0.54) !important;
+  }
+}
+
+::ng-deep .rejection-modal {
+  .mat-dialog-container {
+    padding: 0px !important;
+  }
+}
+
+.rejection {
+
+  .header {
+    height: 80px;
+    background-color: rgba(27, 76, 161, 1);
+    color: rgba(255, 255, 255, 1);
+    font-size: 24px;
+    font-weight: 700;
+
+    .editBox {
+      width: 24px;
+      cursor: pointer;
+    }
+  }
+
+  .reason-description {
+    padding: 20px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 1);
+  }
+
+  .reason-text-area {
+    height: 170px;
+    resize: none;
+  }
+
+  .footer {
+    height: 75px;
+    background-color: rgba(241, 240, 244, 1);
+
+    // .submit-btn {
+    //   height: 40px;
+    //   padding: 12px, 16px, 12px, 16px;
+    //   background-color: rgba(27, 76, 161, 1);
+    //   color: rgba(255, 255, 255, 1);
+    //   font-size: 14px;
+    //   font-weight: 700;
+    //   border-radius: 4px;
+    // }
+
+    // .cancel-btn {
+    //   height: 40px;
+    //   padding: 12px, 16px, 12px, 16px;
+    //   color: rgba(27, 76, 161, 1);
+    //   border: 1px solid rgba(27, 76, 161, 1);
+    //   font-size: 14px;
+    //   font-weight: 700;
+    //   border-radius: 4px;
+    // }
   }
 }

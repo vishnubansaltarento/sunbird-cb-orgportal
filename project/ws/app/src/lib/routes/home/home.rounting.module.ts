@@ -140,16 +140,28 @@ const routes: Routes = [
           configService: ConfigResolveService,
         },
         children: [
+          // {
+          //   path: '',
+          //   pathMatch: 'full',
+          //   redirectTo: 'profileverification',
+          // },
           {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'pending',
-          },
-          {
-            path: 'pending',
+            path: 'profileverification',
             component: ApprovalPendingComponent,
             data: {
-              pageId: 'approvals-pending',
+              pageId: 'approvals-profileverification',
+              module: 'Approvals',
+            },
+            resolve: {
+              pageData: PageResolve,
+              configService: ConfigResolveService,
+            },
+          },
+          {
+            path: 'transfers',
+            component: ApprovalPendingComponent,
+            data: {
+              pageId: 'approvals-transfers',
               module: 'Approvals',
               pageType: 'feature',
               pageKey: 'approval-view',

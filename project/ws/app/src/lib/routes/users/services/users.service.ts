@@ -117,14 +117,11 @@ export class UsersService {
     return this.http.post<any>(`${API_END_POINTS.NEW_USER_UN_BLOCK_API}`, org)
   }
 
-  getAllKongUsers(depId: string, userStatus: number, pageLimit: number = 20, offsetNum: number = 0, searchText?: string): Observable<any> {
+  getAllKongUsers(filters: any, pageLimit: number = 20, offsetNum: number = 0, searchText?: string): Observable<any> {
     let reqBody
     reqBody = {
       request: {
-        filters: {
-          rootOrgId: depId,
-          status: userStatus,
-        },
+        filters: filters,
         limit: pageLimit,
         offset: offsetNum,
         query: searchText,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core'
+import { Component, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
 import {
@@ -17,6 +17,9 @@ import { environment } from '../../../../../../../../../src/environments/environ
 // import { ConfigurationsService } from '@sunbird-cb/utils'
 import { RejectionPopupComponent } from '../rejection-popup/rejection-popup.component'
 import { APP_DATE_FORMATS, AppDateAdapter } from '../../../events/routes/format-datepicker'
+import { ApprovalsService } from '../../services/approvals.service'
+import { EventService } from '@sunbird-cb/utils'
+import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
 
 @Component({
   selector: 'ws-widget-user-card',
@@ -39,6 +42,10 @@ export class UserCardComponent implements OnInit {
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
   @ViewChildren(MatExpansionPanel) panels!: QueryList<MatExpansionPanel>
+  @ViewChild('approveDialog', { static: false })
+  approveDialog!: TemplateRef<any>
+  @ViewChild('rejectDialog', { static: false })
+  rejectDialog!: TemplateRef<any>
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator | any
   startIndex = 0
@@ -68,6 +75,12 @@ export class UserCardComponent implements OnInit {
   masterLanguagesEntries: any
   genderList = ['Male', 'Female', 'Others']
   categoryList = ['General', 'OBC', 'SC', 'ST', 'Others']
+  needApprovalList: any[] = []
+  profileData: any[] = []
+  userwfData!: any
+  comment = ''
+  listupdateFieldValues: any[] = []
+  actionList: any = []
 
   phoneNumberPattern = '^((\\+91-?)|0)?[0-9]{10}$'
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
@@ -86,8 +99,12 @@ export class UserCardComponent implements OnInit {
   approvalData: any
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private router: Router,
-              private route: ActivatedRoute, private snackBar: MatSnackBar) {
+    private dialog: MatDialog, private router: Router, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
+    // this.route.data.subscribe((data: any) => {
+    //   this.profileData = data.pageData.data.profileData
+    // })
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -125,6 +142,10 @@ export class UserCardComponent implements OnInit {
     if (this.isApprovals && this.usersData && this.usersData.length > 0) {
       this.approvalData = this.usersData
       this.getUserMappedData(this.approvalData)
+
+      this.approvalSvc.getProfileConfig().then((res: any) => {
+        this.profileData = res && res.profileData
+      })
     } else {
       this.init()
     }
@@ -190,7 +211,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-                                                  (_err: any) => {
+      (_err: any) => {
       })
   }
 
@@ -236,19 +257,23 @@ export class UserCardComponent implements OnInit {
 
   onEditUser(user: any) {
     user.enableEdit = true
-    // setTimeout(() => {
-    //   user.enableEdit = true
-    // }, 5000)
-    // this.cdref.detectChanges()
+    this.setUserDetails(user)
   }
 
-  getUerData(user: any) {
+  getUerData(user: any, data: any) {
     user.enableEdit = false
     const profileDataAll = user
     this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
 
     const profileData = profileDataAll.profileDetails
     this.updateTags(profileData)
+
+    if (this.isApprovals) {
+      this.needApprovalList = []
+      this.actionList = []
+      this.comment = ''
+      this.getApprovalList(data)
+    }
 
     this.roleservice.getAllRoles().subscribe((data: any) => {
       const parseRoledata = JSON.parse(data.result.response.value)
@@ -295,7 +320,9 @@ export class UserCardComponent implements OnInit {
         })
       }
     })
+  }
 
+  setUserDetails(user: any) {
     if (user && user.profileDetails) {
       // this.updateUserDataForm.controls['employeeID'].setValue('')
       // this.updateUserDataForm.controls['ehrmsID'].setValue('')
@@ -307,7 +334,10 @@ export class UserCardComponent implements OnInit {
 
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.group) {
-          this.updateUserDataForm.controls['group'].setValue(user.profileDetails.additionalProperties.group)
+          // this.updateUserDataForm.controls['group'].setValue(user.profileDetails.additionalProperties.group)
+          this.updateUserDataForm.patchValue({
+            group: user.profileDetails.additionalProperties.group
+          })
         }
       }
 
@@ -336,6 +366,10 @@ export class UserCardComponent implements OnInit {
         if (user.profileDetails.employmentDetails.pinCode) {
           this.updateUserDataForm.controls['pincode'].setValue(user.profileDetails.employmentDetails.pincode)
         }
+        if (user.profileDetails.employmentDetails.employeeCode) {
+          this.updateUserDataForm.controls['employeeID'].setValue(user.profileDetails.employmentDetails.employeeCode)
+
+        }
       }
     }
   }
@@ -350,8 +384,38 @@ export class UserCardComponent implements OnInit {
     return name
   }
 
-  resetRoles() {
-    this.updateUserDataForm.controls['roles'].setValue(this.orguserRoles)
+  getApprovalList(approvalData: any) {
+    this.userwfData = approvalData
+    if (approvalData.wfInfo && approvalData.wfInfo.length > 0) {
+      approvalData.wfInfo.forEach((wf: any) => {
+        if (typeof wf.updateFieldValues === 'string') {
+          const fields = JSON.parse(wf.updateFieldValues)
+          if (fields.length > 0) {
+            fields.forEach((field: any) => {
+              const labelKey = Object.keys(field.toValue)[0]
+              const feildNameObj = this.profileData.filter(userData => userData.key === labelKey)[0]
+              if (labelKey === 'designation' || labelKey === 'group') {
+                this.needApprovalList.push(
+                  Object.assign({
+                    wf,
+                    feildName: labelKey,
+                    label: feildNameObj ? feildNameObj.name : null,
+                    value: field.toValue[labelKey],
+                    fieldKey: field.fieldKey,
+                    wfId: wf.wfId,
+                  })
+                )
+                console.log('needApprovalList', this.needApprovalList)
+              }
+            })
+          }
+        }
+      })
+    }
+  }
+
+  cancelSubmit() {
+    this.updateUserDataForm.reset()
   }
 
   modifyUserRoles(role: string) {
@@ -510,8 +574,9 @@ export class UserCardComponent implements OnInit {
   //   }
   // }
 
-  addRejection() {
+  addRejection(field: any) {
     const rejectinDetails = {
+      field: field,
       header: {
         headerText: 'Reason of rejection',
         showEditButton: false,
@@ -553,47 +618,47 @@ export class UserCardComponent implements OnInit {
     })
   }
 
-  updateRejection() {
-    const rejectinDetails = {
-      header: {
-        headerText: 'Reason of rejection',
-        showEditButton: true,
-      },
-      body: {
-        reason: `You're not in Group C.Please provide the request with the correct entry.`,
-        placeholder: 'Type the decription in fewer than 100 characters',
-        showTextArea: false,
-      },
-      footer: {
-        showFooter: false,
-        buttons: [
-          {
-            btnType: 'submit',
-            btnText: 'Update',
-            response: true,
-          },
-          {
-            btnType: 'cancel',
-            btnText: 'Cancel',
-            response: false,
-          },
-        ],
-      },
-    }
+  // updateRejection() {
+  //   const rejectinDetails = {
+  //     header: {
+  //       headerText: 'Reason of rejection',
+  //       showEditButton: true,
+  //     },
+  //     body: {
+  //       reason: `You're not in Group C.Please provide the request with the correct entry.`,
+  //       placeholder: 'Type the decription in fewer than 100 characters',
+  //       showTextArea: false,
+  //     },
+  //     footer: {
+  //       showFooter: false,
+  //       buttons: [
+  //         {
+  //           btnType: 'submit',
+  //           btnText: 'Update',
+  //           response: true,
+  //         },
+  //         {
+  //           btnType: 'cancel',
+  //           btnText: 'Cancel',
+  //           response: false,
+  //         },
+  //       ],
+  //     },
+  //   }
 
-    const dialogRef = this.dialog.open(RejectionPopupComponent, {
-      data: rejectinDetails,
-      width: '1100px',
-      disableClose: true,
-      panelClass: 'rejection-modal',
-    })
+  //   const dialogRef = this.dialog.open(RejectionPopupComponent, {
+  //     data: rejectinDetails,
+  //     width: '1100px',
+  //     disableClose: true,
+  //     panelClass: 'rejection-modal',
+  //   })
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result.btnResponse) {
-        // console.log(result)
-      }
-    })
-  }
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     if (result.btnResponse) {
+  //       // console.log(result)
+  //     }
+  //   })
+  // }
 
   onSubmit(form: any, user: any) {
     // console.log('user -------', user)
@@ -675,5 +740,170 @@ export class UserCardComponent implements OnInit {
     this.snackBar.open(primaryMsg, 'X', {
       duration,
     })
+  }
+
+  // for approval & rejection
+  onClickHandleWorkflow(field: any, action: string) {
+    field.action = action
+    const req = {
+      action,
+      comment: '',
+      state: 'SEND_FOR_APPROVAL',
+      userId: field.wf.userId,
+      applicationId: field.wf.applicationId,
+      actorUserId: this.userwfData.userInfo.wid,
+      wfId: field.wf.wfId,
+      serviceName: 'profile',
+      updateFieldValues: JSON.parse(field.wf.updateFieldValues),
+    }
+    if (action === 'APPROVE') {
+      this.actionList.push(req)
+      // this.onApproveOrRejectClick(req)
+    } else {
+      const dialogRef = this.dialog.open(this.rejectDialog, {
+        width: '770px',
+      })
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          // this.onApproveOrRejectClick(req)
+          req.comment = this.comment
+          this.actionList.push(req)
+        } else {
+          dialogRef.close()
+        }
+      })
+    }
+
+    this.events.raiseInteractTelemetry(
+      {
+        type: TelemetryEvents.EnumInteractTypes.CLICK,
+        subType: TelemetryEvents.EnumInteractSubTypes.BTN_CONTENT,
+      },
+      {
+        id: field.wf.applicationId,
+        type: TelemetryEvents.EnumIdtype.APPLICATION,
+      }
+    )
+  }
+
+  // single aprrove or reject
+  onApproveOrRejectClick(req: any) {
+    req.comment = this.comment
+    this.approvalSvc.handleWorkflow(req).subscribe((res: any) => {
+      if (res.result.data) {
+        if (res.result.data.status === 'REJECTED') {
+          this.openSnackbar('Request Rejected Successfully')
+        } else {
+          this.openSnackbar('Request Approved')
+        }
+        this.comment = ''
+        // this.needApprovalList = this.needApprovalList.filter(wf => wf.wfId !== res.result.data.wfIds[0])
+      }
+    })
+  }
+
+  onApprovalSubmit() {
+    // console.log('this.actionList', this.actionList)
+    if (this.actionList.length > 0) {
+      this.actionList.forEach((req: any) => {
+        this.onApproveOrRejectClick(req)
+      })
+    }
+  }
+
+  updateRejection(field: any) {
+    const dialogRef = this.dialog.open(this.rejectDialog, {
+      width: '770px',
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.actionList.forEach((req: any) => {
+          if (req.wfId === field.wfId) {
+            req.comment = this.comment
+          }
+        })
+      } else {
+        dialogRef.close()
+      }
+    })
+
+  }
+
+  onClickAllHandleWorkflow(approvalList: any[], action: string) {
+    let user1Id = ''
+    let application1Id = ''
+
+    if (approvalList && approvalList.length > 0) {
+      approvalList.forEach(approvalItem => {
+        user1Id = approvalItem.wf.userId
+        application1Id = approvalItem.wf.applicationId
+      })
+    }
+    if (action === 'APPROVE') {
+      // const dialogRef = this.dialog.open(this.approveDialog, {
+      //   width: '770px',
+      // })
+      // dialogRef.afterClosed().subscribe(result => {
+      // if (result) {
+      const req: any = {
+        action,
+        state: 'SEND_FOR_APPROVAL',
+        userId: user1Id,
+        actorUserId: this.userwfData.userInfo.wid,
+        serviceName: 'profile',
+      }
+      if (approvalList.length > 0) {
+        approvalList.forEach((approvalAttribute: any) => {
+          this.listupdateFieldValues = JSON.parse(approvalAttribute.wf.updateFieldValues)
+          req['applicationId'] = approvalAttribute.wf.applicationId
+          req['wfId'] = approvalAttribute.wf.wfId
+          req['updateFieldValues'] = this.listupdateFieldValues
+          this.onApproveOrRejectClick(req)
+        })
+      }
+      // } else {
+      //   dialogRef.close()
+      // }
+      // })
+    } else {
+      const dialogRef = this.dialog.open(this.rejectDialog, {
+        width: '770px',
+      })
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          const req: any = {
+            action,
+            state: 'SEND_FOR_APPROVAL',
+            userId: user1Id,
+            actorUserId: this.userwfData.userInfo.wid,
+            serviceName: 'profile',
+          }
+
+          if (approvalList.length > 0) {
+            approvalList.forEach((approvalAttribute: any) => {
+              this.listupdateFieldValues = JSON.parse(approvalAttribute.wf.updateFieldValues)
+              req['applicationId'] = approvalAttribute.wf.applicationId
+              req['wfId'] = approvalAttribute.wf.wfId
+              req['updateFieldValues'] = this.listupdateFieldValues
+              this.onApproveOrRejectClick(req)
+            })
+          }
+        } else {
+          dialogRef.close()
+        }
+      })
+    }
+
+    this.events.raiseInteractTelemetry(
+      {
+        type: TelemetryEvents.EnumInteractTypes.CLICK,
+        subType: TelemetryEvents.EnumInteractSubTypes.BTN_CONTENT,
+      },
+      {
+        id: application1Id,
+        type: TelemetryEvents.EnumIdtype.APPLICATION,
+
+      }
+    )
   }
 }

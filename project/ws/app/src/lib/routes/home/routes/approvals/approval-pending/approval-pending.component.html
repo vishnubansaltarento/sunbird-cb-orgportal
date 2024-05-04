@@ -30,14 +30,15 @@
     <mat-card-content>
       <div class="flex flex-1 flex-column margin-fix">
         <div class="flex flex-1 filter max-height-60">
-          <a routerLink="/app/home/approvals/pending/verification" class="filter-option"
+          <a routerLink="/app/home/approvals/profileverification" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'profileverification', 'ws-mat-accent-border font-medium':currentFilter !== 'profileverification'}"
             mat-button (click)="filter('profileverification'); tabTelemetry('toapprove', 0)" role="button">Profile
-            Verifications</a>
+            Verifications ({{approvalTotalCount}})</a>
 
-          <a routerLink="/app/home/approvals/pending/transfers" class="filter-option"
+          <a routerLink="/app/home/approvals/transfers" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'transfers', 'ws-mat-accent-border font-medium':currentFilter !== 'transfers'}"
-            mat-button (click)="filter('transfers'); tabTelemetry('transfers', 1)" role="button">Transfers</a>
+            mat-button (click)="filter('transfers'); tabTelemetry('transfers', 1)" role="button">Transfers
+            ({{approvalTotalCount}})</a>
         </div>
       </div>
       <ng-container *ngIf="currentFilter === 'profileverification'">
@@ -56,7 +57,15 @@
       </ng-container>
       <ng-container *ngIf="currentFilter === 'transfers'">
         <!-- <ws-app-profle-approval-bulk-upload></ws-app-profle-approval-bulk-upload> -->
-        No data
+        <ng-container *ngIf="getTableData && getTableData.length > 0">
+          <ws-widget-user-card [currentFilter]="currentFilter" [usersData]="data" [isApprovals]="true"
+            [totalRecords]="approvalTotalCount" [tabChangeIndex]="pageIndex"
+            (searchByEnterKey)="onEnterkySearch($event)"
+            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+        </ng-container>
+        <ng-container *ngIf="!getTableData || getTableData.length === 0">
+          <p class="text-center">No approvals pending</p>
+        </ng-container>
       </ng-container>
     </mat-card-content>
     <!-- <mat-card-content>
