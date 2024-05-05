@@ -58,10 +58,10 @@ const routes: Routes = [
           {
             path: '',
             pathMatch: 'full',
-            redirectTo: 'all-users',
+            redirectTo: 'allusers',
           },
           {
-            path: 'all-users',
+            path: 'allusers',
             component: AllUsersComponent,
             resolve: {
               usersList: UsersListResolve,
@@ -76,7 +76,7 @@ const routes: Routes = [
             },
           },
           {
-            path: 'all-users/:tab',
+            path: 'allusers/:tab',
             component: AllUsersComponent,
             resolve: {
               usersList: UsersListResolve,
