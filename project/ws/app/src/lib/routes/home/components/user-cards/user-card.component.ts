@@ -154,12 +154,14 @@ export class UserCardComponent implements OnInit {
   // for approvals
   async getUserMappedData(approvalData: any) {
     approvalData.forEach((data: any) => {
-      const id = data.userWorkflow.userInfo.wid
-      this.usersSvc.getUserById(id).subscribe((res: any) => {
-        if (res) {
-          data.user = res
-        }
-      })
+      if (data.userWorkflow && data.userWorkflow.userInfo) {
+        const id = data.userWorkflow.userInfo.wid
+        this.usersSvc.getUserById(id).subscribe((res: any) => {
+          if (res) {
+            data.user = res
+          }
+        })
+      }
     })
   }
 
