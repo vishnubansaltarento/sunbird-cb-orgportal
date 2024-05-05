@@ -9,7 +9,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import _ from 'lodash'
 import { RolesService } from '../../../users/services/roles.service'
-import { ActivatedRoute, Router } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import { Observable, Subscription } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators'
 import { environment } from '../../../../../../../../../src/environments/environment'
@@ -42,10 +42,11 @@ export class UserCardComponent implements OnInit {
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
   @ViewChildren(MatExpansionPanel) panels!: QueryList<MatExpansionPanel>
-  @ViewChild('approveDialog', { static: false })
-  approveDialog!: TemplateRef<any>
+
   @ViewChild('rejectDialog', { static: false })
   rejectDialog!: TemplateRef<any>
+  @ViewChild('updaterejectDialog', { static: false })
+  updaterejectDialog!: TemplateRef<any>
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator | any
   startIndex = 0
@@ -97,9 +98,10 @@ export class UserCardComponent implements OnInit {
   qpParam: any
   department: any
   approvalData: any
+  showeditText = false
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private router: Router, private approvalSvc: ApprovalsService,
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
     private route: ActivatedRoute, private snackBar: MatSnackBar,
     private events: EventService) {
     // this.route.data.subscribe((data: any) => {
@@ -275,53 +277,53 @@ export class UserCardComponent implements OnInit {
       this.actionList = []
       this.comment = ''
       this.getApprovalList(data)
-    }
+    } else {
+      this.roleservice.getAllRoles().subscribe((data: any) => {
+        const parseRoledata = JSON.parse(data.result.response.value)
+        this.orgTypeList = parseRoledata.orgTypeList
 
-    this.roleservice.getAllRoles().subscribe((data: any) => {
-      const parseRoledata = JSON.parse(data.result.response.value)
-      this.orgTypeList = parseRoledata.orgTypeList
-
-      // New code for roles
-      for (let i = 0; i < this.orgTypeList.length; i += 1) {
-        if (this.orgTypeList[i].name === 'MDO') {
-          _.each(this.orgTypeList[i].roles, rolesObject => {
-            // if (this.isMdoAdmin) {
-            //   if (rolesObject === 'PUBLIC') {
-            //     this.uniqueRoles.push({
-            //       roleName: rolesObject, description: rolesObject,
-            //     })
-            //   }
-            //   if (rolesObject === 'MDO_DASHBOARD_USER') {
-            //     this.uniqueRoles.push({
-            //       roleName: rolesObject, description: rolesObject,
-            //     })
-            //   }
-            // } else {
-            // if (this.isMdoLeader) {
-            if (rolesObject !== 'MDO_LEADER') {
-              this.uniqueRoles.push({
-                roleName: rolesObject, description: rolesObject,
-              })
+        // New code for roles
+        for (let i = 0; i < this.orgTypeList.length; i += 1) {
+          if (this.orgTypeList[i].name === 'MDO') {
+            _.each(this.orgTypeList[i].roles, rolesObject => {
+              // if (this.isMdoAdmin) {
+              //   if (rolesObject === 'PUBLIC') {
+              //     this.uniqueRoles.push({
+              //       roleName: rolesObject, description: rolesObject,
+              //     })
+              //   }
+              //   if (rolesObject === 'MDO_DASHBOARD_USER') {
+              //     this.uniqueRoles.push({
+              //       roleName: rolesObject, description: rolesObject,
+              //     })
+              //   }
+              // } else {
+              // if (this.isMdoLeader) {
+              if (rolesObject !== 'MDO_LEADER') {
+                this.uniqueRoles.push({
+                  roleName: rolesObject, description: rolesObject,
+                })
+                // }
+              }
               // }
-            }
-            // }
+            })
+          }
+        }
+        this.uniqueRoles.forEach((role: any) => {
+          if (!this.rolesList.some((item: any) => item.roleName === role.roleName)) {
+            this.rolesList.push(role)
+          }
+        })
+        const usrRoles = profileDataAll.organisations[0] && profileDataAll.organisations[0].roles
+          ? profileDataAll.organisations[0].roles : []
+        if (usrRoles.length > 0) {
+          usrRoles.forEach((role: any) => {
+            this.orguserRoles.push(role)
+            this.modifyUserRoles(role)
           })
         }
-      }
-      this.uniqueRoles.forEach((role: any) => {
-        if (!this.rolesList.some((item: any) => item.roleName === role.roleName)) {
-          this.rolesList.push(role)
-        }
       })
-      const usrRoles = profileDataAll.organisations[0] && profileDataAll.organisations[0].roles
-        ? profileDataAll.organisations[0].roles : []
-      if (usrRoles.length > 0) {
-        usrRoles.forEach((role: any) => {
-          this.orguserRoles.push(role)
-          this.modifyUserRoles(role)
-        })
-      }
-    })
+    }
   }
 
   setUserDetails(user: any) {
@@ -662,7 +664,7 @@ export class UserCardComponent implements OnInit {
   //   })
   // }
 
-  onSubmit(form: any, user: any) {
+  onSubmit(form: any, user: any, panel: any) {
     // console.log('user -------', user)
     // console.log('form *******', form)
     if (form.valid) {
@@ -727,7 +729,8 @@ export class UserCardComponent implements OnInit {
               if (res) {
                 this.updateUserDataForm.reset({ roles: '' })
                 this.openSnackbar('User role updated Successfully')
-                this.router.navigate(['/app/home/users/allusers'])
+                // this.router.navigate(['/app/home/users/allusers'])
+                this.closeOtherPanels(panel)
               }
             })
           } else {
@@ -804,17 +807,18 @@ export class UserCardComponent implements OnInit {
     })
   }
 
-  onApprovalSubmit() {
+  onApprovalSubmit(panel: any) {
     // console.log('this.actionList', this.actionList)
     if (this.actionList.length > 0) {
       this.actionList.forEach((req: any) => {
         this.onApproveOrRejectClick(req)
+        this.closeOtherPanels(panel)
       })
     }
   }
 
   updateRejection(field: any) {
-    const dialogRef = this.dialog.open(this.rejectDialog, {
+    const dialogRef = this.dialog.open(this.updaterejectDialog, {
       width: '770px',
     })
     dialogRef.afterClosed().subscribe(result => {
@@ -828,7 +832,10 @@ export class UserCardComponent implements OnInit {
         dialogRef.close()
       }
     })
+  }
 
+  showedit() {
+    this.showeditText = true
   }
 
   onClickAllHandleWorkflow(approvalList: any[], action: string) {

@@ -154,19 +154,18 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         // this.approvalTotalCount = res.result.count
         const resData = res.result.data
         resData.forEach((approval: any) => {
-          let keys = ''
+          // let keys = ''
           approval.wfInfo.forEach((wf: any) => {
             currentdate = new Date(wf.createdOn)
             if (typeof wf.updateFieldValues === 'string') {
               const fields = JSON.parse(wf.updateFieldValues)
               if (fields.length > 0) {
                 fields.forEach((field: any) => {
-                  if (Object.keys(field.fromValue).length > 0) {
-                    keys += `${_.first(Object.keys(field.fromValue))}, `
-                  } else {
-                    keys += `${_.first(Object.keys(field.toValue))}, `
-                  }
-
+                  // if (Object.keys(field.fromValue).length > 0) {
+                  //   keys += `${_.first(Object.keys(field.fromValue))}, `
+                  // } else {
+                  //   keys += `${_.first(Object.keys(field.toValue))}, `
+                  // }
                   const labelKey = Object.keys(field.toValue)[0]
                   if (labelKey === 'designation' || labelKey === 'group') {
                     if (newarray.find((u: any) => u.userInfo.wid === approval.userInfo.wid) === undefined) {
