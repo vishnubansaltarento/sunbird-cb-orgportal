@@ -102,9 +102,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService) {
     // this.route.data.subscribe((data: any) => {
     //   this.profileData = data.pageData.data.profileData
     // })
@@ -216,7 +216,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-      (_err: any) => {
+                                                  (_err: any) => {
       })
   }
 
