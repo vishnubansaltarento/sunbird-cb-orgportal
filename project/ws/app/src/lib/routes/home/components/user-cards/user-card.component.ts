@@ -816,6 +816,7 @@ export class UserCardComponent implements OnInit {
           this.openSnackbar('Request Approved')
         }
         this.comment = ''
+        this.router.navigate(['/app/home/approvals/profileverification'])
         // this.needApprovalList = this.needApprovalList.filter(wf => wf.wfId !== res.result.data.wfIds[0])
       }
     })
