@@ -21,4 +21,12 @@
         <button mat-button type="button" class="search-btn" [routerLink]="['/app/home/bulk-upload']"
             [ngClass]="{'disable': isContentLive}">Create user</button>
     </div>
+    <!-- <div class="flex flex-end margin-right-s" *ngIf="isApprovals">
+        <button mat-button type="button" class="search-btn" [ngClass]="{'disable': isContentLive}">Approve all
+            requests</button>
+    </div>
+    <div class="flex flex-end" *ngIf="isApprovals">
+        <button mat-button type="button" class="search-btn" [routerLink]="" [ngClass]="{'disable': isContentLive}">Bulk
+            profile update</button>
+    </div> -->
 </div>
