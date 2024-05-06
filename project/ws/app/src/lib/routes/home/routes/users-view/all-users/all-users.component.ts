@@ -209,18 +209,18 @@ export class AllUsersComponent implements OnInit, OnDestroy {
     let filtreq = {}
     if (currentFilter === 'allusers') {
       filtreq = {
-        'rootOrgId': this.rootOrgId,
-        'status': 1,
+        rootOrgId: this.rootOrgId,
+        status: 1,
       }
     } else if (currentFilter === 'verified') {
       filtreq = {
-        'rootOrgId': this.rootOrgId,
-        'profileDetails.profileStatus': 'VERIFIED'
+        rootOrgId: this.rootOrgId,
+        'profileDetails.profileStatus': 'VERIFIED',
       }
     } else if (currentFilter === 'nonverified') {
       filtreq = {
-        'rootOrgId': this.rootOrgId,
-        'profileDetails.profileStatus': 'NOT-VERIFIED'
+        rootOrgId: this.rootOrgId,
+        'profileDetails.profileStatus': 'NOT-VERIFIED',
       }
     }
 
