@@ -104,9 +104,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService, private router: Router) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService, private router: Router) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -248,7 +248,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-      (_err: any) => {
+                                                  (_err: any) => {
       })
   }
 
