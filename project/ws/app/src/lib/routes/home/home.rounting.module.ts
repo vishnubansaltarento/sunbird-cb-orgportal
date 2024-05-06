@@ -16,7 +16,7 @@ import { ReportsSectionComponent } from './routes/reports-section/reports-sectio
 import { TrainingPlanDashboardComponent } from './routes/training-plan-dashboard/training-plan-dashboard.component'
 import { ApprovalPendingComponent } from './routes/approvals/approval-pending/approval-pending.component'
 import { WelcomeComponent } from './routes/welcome/welcome.component'
-import { AllUsersComponent } from './routes/users-view/all-users/all-users.component'
+// import { AllUsersComponent } from './routes/users-view/all-users/all-users.component'
 import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload.component'
 
 import { PageResolve } from '@sunbird-cb/utils'
@@ -46,66 +46,112 @@ const routes: Routes = [
           module: 'Home',
         },
       },
+      // {
+      //   path: 'users',
+      //   component: UsersViewComponent,
+      //   resolve: {
+      //     usersList: UsersListResolve,
+      //     pageData: PageResolve,
+      //     configService: ConfigResolveService,
+      //   },
+      //   children: [
+      //     {
+      //       path: '',
+      //       pathMatch: 'full',
+      //       redirectTo: 'allusers',
+      //     },
+      //     {
+      //       path: 'allusers',
+      //       component: AllUsersComponent,
+      //       resolve: {
+      //         usersList: UsersListResolve,
+      //         pageData: PageResolve,
+      //         configService: ConfigResolveService,
+      //       },
+      //       data: {
+      //         pageId: 'users',
+      //         module: 'User',
+      //         pageType: 'feature',
+      //         pageKey: 'users-view',
+      //       },
+      //     },
+      //     {
+      //       path: 'allusers/:tab',
+      //       component: AllUsersComponent,
+      //       resolve: {
+      //         usersList: UsersListResolve,
+      //         pageData: PageResolve,
+      //         configService: ConfigResolveService,
+      //       },
+      //       data: {
+      //         pageId: 'users',
+      //         module: 'User',
+      //         pageType: 'feature',
+      //         pageKey: 'users-view',
+      //       },
+      //     },
+      //     {
+      //       path: 'bulk-upload',
+      //       component: BulkUploadComponent,
+      //       resolve: {
+      //         usersList: UsersListResolve,
+      //         pageData: PageResolve,
+      //         configService: ConfigResolveService,
+      //       },
+      //       data: {
+      //         pageId: 'users',
+      //         module: 'User',
+      //         pageType: 'feature',
+      //         pageKey: 'users-view',
+      //       },
+      //     },
+      //   ],
+      // },
       {
-        path: 'users',
+        path: 'users/:tab',
         component: UsersViewComponent,
         resolve: {
           usersList: UsersListResolve,
           pageData: PageResolve,
           configService: ConfigResolveService,
         },
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'all-users',
-          },
-          {
-            path: 'all-users',
-            component: AllUsersComponent,
-            resolve: {
-              usersList: UsersListResolve,
-              pageData: PageResolve,
-              configService: ConfigResolveService,
-            },
-            data: {
-              pageId: 'users',
-              module: 'User',
-              pageType: 'feature',
-              pageKey: 'users-view',
-            },
-          },
-          {
-            path: 'all-users/:tab',
-            component: AllUsersComponent,
-            resolve: {
-              usersList: UsersListResolve,
-              pageData: PageResolve,
-              configService: ConfigResolveService,
-            },
-            data: {
-              pageId: 'users',
-              module: 'User',
-              pageType: 'feature',
-              pageKey: 'users-view',
-            },
-          },
-          {
-            path: 'bulk-upload',
-            component: BulkUploadComponent,
-            resolve: {
-              usersList: UsersListResolve,
-              pageData: PageResolve,
-              configService: ConfigResolveService,
-            },
-            data: {
-              pageId: 'users',
-              module: 'User',
-              pageType: 'feature',
-              pageKey: 'users-view',
-            },
-          },
-        ],
+        data: {
+          pageId: 'users',
+          module: 'User',
+          pageType: 'feature',
+          pageKey: 'users-view',
+        },
+      },
+      {
+        path: 'users',
+        redirectTo: 'users/allusers',
+        component: UsersViewComponent,
+        resolve: {
+          usersList: UsersListResolve,
+          pageData: PageResolve,
+          configService: ConfigResolveService,
+        },
+        data: {
+          pageId: 'users',
+          module: 'User',
+          pageType: 'feature',
+          pageKey: 'users-view',
+        },
+      },
+      {
+        path: 'bulk-upload',
+        component: BulkUploadComponent,
+        resolve: {
+          usersList: UsersListResolve,
+          pageData: PageResolve,
+          configService: ConfigResolveService,
+        },
+        data: {
+          pageId: 'users',
+          module: 'User',
+          pageType: 'feature',
+          pageKey: 'users-view',
+        },
       },
       {
         path: 'about',

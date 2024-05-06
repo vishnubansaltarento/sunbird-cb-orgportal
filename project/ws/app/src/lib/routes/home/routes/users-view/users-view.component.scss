@@ -79,7 +79,9 @@
     margin: 0 $size-l 0 $size-l;
   }
 }
-
+::ng-deep.overlay {
+  display: none !important;
+}
 .overflow {
   // @include breakpoint-xs {
   //   width: 10em;
