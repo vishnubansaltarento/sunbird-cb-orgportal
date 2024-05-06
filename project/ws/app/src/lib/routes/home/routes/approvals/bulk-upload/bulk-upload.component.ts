@@ -63,7 +63,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
   }
 
   getBulkStatusList(): void {
-    this.fileService.getBulkUploadDataV1(this.rootOrgId)
+    this.fileService.getBulkApprovalUploadDataV1()
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content
@@ -83,7 +83,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
   }
 
   handleDownloadFile(listObj: any): void {
-    const filePath = `/apis/proxies/v8/workflow/admin/bulkuploadfile/download/${listObj.fileName}`
+    const filePath = `/apis/proxies/v8/workflow/admin/bulkuploadfile/download/${listObj.filename}`
     window.open(filePath, '_blank')
   }
 
@@ -149,7 +149,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
       if (this.fileSelected) {
         const formData: FormData = new FormData()
         formData.append('data', this.fileSelected, this.fileName)
-        this.fileService.upload(this.fileName, formData)
+        this.fileService.uploadApproval(this.fileName, formData)
           .pipe(takeUntil(this.destroySubject$))
           .subscribe((_res: any) => {
             this.fileUploadDialogInstance.close()
