@@ -99,6 +99,7 @@ export class UserCardComponent implements OnInit {
   department: any
   approvalData: any
   showeditText = false
+  today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
     private dialog: MatDialog, private approvalSvc: ApprovalsService,
@@ -328,7 +329,6 @@ export class UserCardComponent implements OnInit {
 
   setUserDetails(user: any) {
     if (user && user.profileDetails) {
-      // this.updateUserDataForm.controls['employeeID'].setValue('')
       // this.updateUserDataForm.controls['ehrmsID'].setValue('')
       if (user.profileDetails.professionalDetails) {
         if (user.profileDetails.professionalDetails.designation) {
@@ -340,7 +340,8 @@ export class UserCardComponent implements OnInit {
         if (user.profileDetails.additionalProperties.group) {
           // this.updateUserDataForm.controls['group'].setValue(user.profileDetails.additionalProperties.group)
           this.updateUserDataForm.patchValue({
-            group: user.profileDetails.additionalProperties.group
+            // group: user.profileDetails.additionalProperties.group
+            group: _.get(user, 'profileDetails.additionalProperties.group'),
           })
         }
       }
@@ -409,7 +410,6 @@ export class UserCardComponent implements OnInit {
                     wfId: wf.wfId,
                   })
                 )
-                console.log('needApprovalList', this.needApprovalList)
               }
             })
           }
@@ -659,59 +659,56 @@ export class UserCardComponent implements OnInit {
 
   //   dialogRef.afterClosed().subscribe(result => {
   //     if (result.btnResponse) {
-  //       // console.log(result)
   //     }
   //   })
   // }
 
   onSubmit(form: any, user: any, panel: any) {
-    // console.log('user -------', user)
-    // console.log('form *******', form)
     if (form.valid) {
-      const tags = user.profileDetails && user.profileDetails.additionalProperties && user.profileDetails.additionalProperties.tags ?
-        user.profileDetails.additionalProperties.tags : []
-      if (tags !== this.selectedtags) {
-        this.reqbody = {
-          request: {
-            userId: user.userId,
-            profileDetails: {
-              personalDetails: {
-                dob: this.updateUserDataForm.controls['dob'].value,
-                domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value,
-                gender: this.updateUserDataForm.controls['gender'].value,
-                category: this.updateUserDataForm.controls['category'].value,
-                mobile: this.updateUserDataForm.controls['mobile'].value,
-                primaryEmail: this.updateUserDataForm.controls['primaryEmail'].value,
+      // const tags = user.profileDetails && user.profileDetails.additionalProperties && user.profileDetails.additionalProperties.tags ?
+      //   user.profileDetails.additionalProperties.tags : []
+      // if (tags !== this.selectedtags) {
+      this.reqbody = {
+        request: {
+          userId: user.userId,
+          profileDetails: {
+            personalDetails: {
+              dob: this.updateUserDataForm.controls['dob'].value,
+              domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value,
+              gender: this.updateUserDataForm.controls['gender'].value,
+              category: this.updateUserDataForm.controls['category'].value,
+              mobile: this.updateUserDataForm.controls['mobile'].value,
+              primaryEmail: this.updateUserDataForm.controls['primaryEmail'].value,
+            },
+            professionalDetails: [
+              {
+                designation: this.updateUserDataForm.controls['designation'].value,
+                group: this.updateUserDataForm.controls['group'].value,
               },
-              professionalDetails: [
-                {
-                  designation: this.updateUserDataForm.controls['designation'].value,
-                  group: this.updateUserDataForm.controls['group'].value,
-                },
-              ],
-              additionalProperties: {
-                tag: this.selectedtags,
-              },
-              employmentDetails: {
-                pinCode: this.updateUserDataForm.controls['pincode'].value,
-              },
+            ],
+            additionalProperties: {
+              tag: this.selectedtags,
+            },
+            employmentDetails: {
+              pinCode: this.updateUserDataForm.controls['pincode'].value,
             },
           },
-        }
-      } else {
-        this.reqbody = {
-          request: {
-            userId: user.userId,
-            profileDetails: {
-              professionalDetails: [
-                {
-                  designation: this.updateUserDataForm.controls['designation'].value,
-                },
-              ],
-            },
-          },
-        }
+        },
       }
+      // } else {
+      //   this.reqbody = {
+      //     request: {
+      //       userId: user.userId,
+      //       profileDetails: {
+      //         professionalDetails: [
+      //           {
+      //             designation: this.updateUserDataForm.controls['designation'].value,
+      //           },
+      //         ],
+      //       },
+      //     },
+      //   }
+      // }
       this.usersSvc.updateUserDetails(this.reqbody).subscribe(dres => {
         if (dres) {
           this.openSnackbar('User updated Successfully')
@@ -729,15 +726,26 @@ export class UserCardComponent implements OnInit {
               if (res) {
                 this.updateUserDataForm.reset({ roles: '' })
                 this.openSnackbar('User role updated Successfully')
+                panel.close()
                 // this.router.navigate(['/app/home/users/allusers'])
-                this.closeOtherPanels(panel)
+
+                this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+                  if (res) {
+                    user = res
+                    user.enableEdit = false
+                  }
+                })
               }
             })
           } else {
             this.openSnackbar('Select new roles')
           }
         }
-      })
+      },
+        // tslint:disable-next-line: align
+        (err: { error: any }) => {
+          this.openSnackbar(err.error.params.errmsg)
+        })
     }
   }
 
@@ -808,11 +816,10 @@ export class UserCardComponent implements OnInit {
   }
 
   onApprovalSubmit(panel: any) {
-    // console.log('this.actionList', this.actionList)
     if (this.actionList.length > 0) {
       this.actionList.forEach((req: any) => {
         this.onApproveOrRejectClick(req)
-        this.closeOtherPanels(panel)
+        panel.close()
       })
     }
   }

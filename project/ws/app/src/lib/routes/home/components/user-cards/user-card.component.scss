@@ -15,8 +15,11 @@
   .mat-content{
     display: block !important;
   }
-  .float-left {
+  .width82 {
     width: 82%;
+  }
+  .width88 {
+    width: 88%;
   }
 
   .initialcircle {
@@ -80,10 +83,14 @@
     content: "+";
     border: 0;
     transform: none;
+    font-size: 24px !important;
+    padding: 6px !important;
   }
 
 ::ng-deep .mat-expansion-panel-header.mat-expanded .mat-expansion-indicator::after {
     content: "-";
+    font-size: 24px !important;
+    padding: 6px !important;
 }
 ::ng-deep .initialcircle .circle-l {
   border-radius: 50% !important;

@@ -7,7 +7,7 @@
     <mat-expansion-panel class="user-card" *ngFor="let user of usersData?.content" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user)">
-        <div class="float-left" (click)="$event.stopPropagation();">
+        <div class="float-left width88" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-m">
             <!-- <span>AB</span> -->
             <ws-widget-avatar-photo [name]="getUseravatarName(user)" [photoUrl]="user?.photo" size="l">
@@ -67,7 +67,12 @@
                     Designation is mandatory
                   </mat-error>
                 </mat-form-field>
-                <mat-icon class="verified-icon margin-left-xs">check_circle</mat-icon>
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
               </div>
 
               <div class="md:w-1/3">
@@ -83,7 +88,12 @@
                     Group is mandatory
                   </mat-error>
                 </mat-form-field>
-                <mat-icon class="verified-icon margin-left-xs">check_circle</mat-icon>
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
               </div>
             </div>
           </div>
@@ -358,16 +368,28 @@
               <label class="view-text-label">Designation</label>
               <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
                 user.profileDetails.professionalDetails.designation ?
-                user.profileDetails.professionalDetails.designation : '-'}} <mat-icon
-                  class="verified-icon">check_circle</mat-icon></p>
+                user.profileDetails.professionalDetails.designation : '-'}}
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
+              </p>
             </div>
 
             <div class="md:w-1/3">
               <label class="view-text-label">Group</label>
               <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
                 user.profileDetails.additionalProperties.group ?
-                user.profileDetails.additionalProperties.group : '-'}} <mat-icon
-                  class="verified-icon">check_circle</mat-icon></p>
+                user.profileDetails.additionalProperties.group : '-'}}
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
+              </p>
             </div>
           </div>
         </div>
@@ -483,7 +505,7 @@
     <mat-expansion-panel class="user-card" *ngFor="let appData of approvalData" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(appData.user, appData.userWorkflow);">
-        <div class="float-left" (click)="$event.stopPropagation();">
+        <div class="float-left width82" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-s" *ngIf="appData?.user">
             <ws-widget-avatar-photo [name]="getUseravatarName(appData?.user)" [photoUrl]="appData?.user?.photo"
               size="l">
