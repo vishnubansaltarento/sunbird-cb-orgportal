@@ -149,7 +149,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
       }
       this.apprService.getApprovals(req).subscribe(res => {
         this.data = []
-        let newarray: any = []
+        const newarray: any = []
         let currentdate: Date
         // this.approvalTotalCount = res.result.count
         const resData = res.result.data
@@ -212,7 +212,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    }, inputString)
+    },                           inputString)
   }
 
   onEnterkySearch(enterValue: any) {

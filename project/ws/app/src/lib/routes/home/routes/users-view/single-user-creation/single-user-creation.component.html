@@ -1,0 +1,147 @@
+<div class="flex flex-col gap-6 bulk-container">
+  <div class="text-xl font-semibold">User Details</div>
+
+  <form [formGroup]="userCreationForm" class="flex flex-col gap-6">
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label required">Full name</div>
+        <input type="text" class="input-text" formControlName="fullName" placeholder="Type here" />
+        <mat-error class="text-xs"
+          *ngIf="userCreationForm?.get('fullName')?.touched && userCreationForm?.get('fullName')?.invalid">
+          Please enter your full name
+        </mat-error>
+      </div>
+      <div class="input-container">
+        <div class="label required">Email</div>
+        <input type="text" class="input-text" formControlName="primaryEmail" placeholder="Type here" />
+        <mat-error class="text-xs"
+          *ngIf="userCreationForm?.get('primaryEmail')?.touched && userCreationForm?.get('primaryEmail')?.invalid">
+          Please enter a valid email address
+        </mat-error>
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label required">Mobile number</div>
+        <input type="text" class="input-text" formControlName="mobile" maxlength="10" placeholder="Type here" />
+        <mat-error class="text-xs"
+          *ngIf="userCreationForm?.get('mobile')?.touched && userCreationForm?.get('mobile')?.invalid">
+          Please enter a valid mobile number
+        </mat-error>
+      </div>
+
+      <div class="input-container">
+        <div class="label required">Designation</div>
+        <mat-form-field class="profile-form-field">
+          <div class="flex flex-row auto-complete-row">
+            <input type="text" class="input-text" aria-label="Designation" matInput formControlName="designation"
+              [matAutocomplete]="designationAuto" />
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+          <mat-autocomplete #designationAuto="matAutocomplete">
+            <mat-option *ngFor="let designation of masterData?.designation" [value]="designation.name">
+              {{ designation.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label required">Group</div>
+        <mat-form-field class="profile-form-field">
+          <mat-select formControlName="group">
+            <mat-option value="">Choose a group</mat-option>
+            <mat-option *ngFor="let group of masterData.group" value="{{group}}">{{ group }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="input-container">
+        <div class="label">Date of birth</div>
+        <mat-form-field class="profile-form-field">
+          <input matInput class="input-text icon-include-input" [matDatepicker]="picker" readonly
+            formControlName="dob" />
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label">Mother tongue</div>
+        <mat-form-field class="profile-form-field">
+          <div class="flex flex-row auto-complete-row">
+            <input type="text" class="input-text" aria-label="Domicile medium" matInput formControlName="domicileMedium"
+              [matAutocomplete]="languageAuto" />
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+          <mat-autocomplete #languageAuto="matAutocomplete">
+            <mat-option *ngFor="let language of masterData?.language" [value]="language?.name">
+              {{ language?.name }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="input-container">
+        <div class="label">Gender</div>
+        <mat-form-field class="profile-form-field">
+          <mat-select formControlName="gender">
+            <mat-option value="">Select gender</mat-option>
+            <mat-option value="Male">Male</mat-option>
+            <mat-option value="Female">Female</mat-option>
+            <mat-option value="Others">Others</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label">Category</div>
+        <mat-form-field class="profile-form-field">
+          <mat-select formControlName="category">
+            <mat-option value="">Select category</mat-option>
+            <mat-option value="General">General</mat-option>
+            <mat-option value="OBC">OBC</mat-option>
+            <mat-option value="SC">SC</mat-option>
+            <mat-option value="ST">ST</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="input-container">
+        <div class="label">Office pin code</div>
+        <input type="text" class="input-text" formControlName="pincode" placeholder="Type here" />
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label">Tags</div>
+        <input type="text" class="input-text" formControlName="tags" placeholder="Enter tags" />
+      </div>
+      <div class="input-container"></div>
+    </div>
+
+    <div class="flex flex-row gap-6">
+      <div class="input-container">
+        <div class="label required mb-2">Role</div>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-row gap-4" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]">
+            <div class="flex-1">CBP_ADMIN</div>
+            <mat-checkbox></mat-checkbox>
+          </div>
+        </div>
+      </div>
+      <div class="input-container"></div>
+    </div>
+
+    <div class="flex flex-row gap-4">
+      <button class="action-button" [disabled]="userCreationForm?.invalid"
+        [ngClass]="{'disable-button': userCreationForm?.invalid}">Create user</button>
+      <button class="outline-button" (click)="handleFormClear()">Clear</button>
+    </div>
+  </form>
+</div>

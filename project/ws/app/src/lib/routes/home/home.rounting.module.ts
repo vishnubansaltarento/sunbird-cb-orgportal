@@ -17,12 +17,13 @@ import { TrainingPlanDashboardComponent } from './routes/training-plan-dashboard
 import { ApprovalPendingComponent } from './routes/approvals/approval-pending/approval-pending.component'
 import { WelcomeComponent } from './routes/welcome/welcome.component'
 // import { AllUsersComponent } from './routes/users-view/all-users/all-users.component'
-import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload.component'
+// import { BulkUploadComponent } from './routes/users-view/bulk-upload/bulk-upload.component'
 
 import { PageResolve } from '@sunbird-cb/utils'
 import { HomeResolve } from './resolvers/home-resolve'
 import { ConfigResolveService } from './resolvers/config-resolve.service'
 import { UsersListResolve } from './resolvers/users-list-resolve.service'
+import { UserCreationComponent } from './routes/users-view/user-creation/user-creation.component'
 
 const routes: Routes = [
   {
@@ -138,9 +139,24 @@ const routes: Routes = [
           pageKey: 'users-view',
         },
       },
+      // {
+      //   path: 'bulk-upload',
+      //   component: BulkUploadComponent,
+      //   resolve: {
+      //     usersList: UsersListResolve,
+      //     pageData: PageResolve,
+      //     configService: ConfigResolveService,
+      //   },
+      //   data: {
+      //     pageId: 'users',
+      //     module: 'User',
+      //     pageType: 'feature',
+      //     pageKey: 'users-view',
+      //   },
+      // },
       {
-        path: 'bulk-upload',
-        component: BulkUploadComponent,
+        path: 'user-creation',
+        component: UserCreationComponent,
         resolve: {
           usersList: UsersListResolve,
           pageData: PageResolve,
