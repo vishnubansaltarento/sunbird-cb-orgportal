@@ -33,8 +33,8 @@
               &&
               user?.profileDetails?.professionalDetails?.designation ?
               user?.profileDetails?.professionalDetails?.designation : '-'}}</div>
-            <!-- <div class="mat-caption ws-mat-black40-text">Verified on: {{user.requestedon | date: 'dd/MM/yyyy'}}</div> -->
-            <div class="mat-caption ws-mat-black40-text">Verified on: 02/05/2024</div>
+            <div class="mat-caption ws-mat-black40-text" *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+              Verified on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
           </div>
         </div>
         <div class="float-right">
@@ -49,8 +49,30 @@
         <form [formGroup]="updateUserDataForm" class="margin-top-m">
           <div class="inner-body">
             Primary Details <mat-icon class="ws-mat-black40-text custominfo">info_outline</mat-icon>
-            <p class="float-right mat-body-2"><mat-slide-toggle>Mark this user as non-verified</mat-slide-toggle></p>
+            <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+              <mat-slide-toggle>Mark this user as non-verified</mat-slide-toggle>
+            </p>
             <div class="flex flex-row margin-top-m">
+              <div class="md:w-1/3">
+                <label class="margin-remove-bottom form-label required">Group</label>
+                <mat-form-field appearance="outline">
+                  <mat-select #group formControlName="group" i18n-placeholder placeholder="Select group">
+                    <mat-option [value]="g" *ngFor="let g of groupsList">
+                      {{g.name}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error [hidden]="false" i18n="Group Error | Explains group is required"
+                    *ngIf="updateUserDataForm?.controls['group'].errors?.required">
+                    Group is mandatory
+                  </mat-error>
+                </mat-form-field>
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
+              </div>
               <div class="md:w-1/3">
                 <label class="margin-remove-bottom form-label required">Designation</label>
                 <mat-form-field appearance="outline">
@@ -65,27 +87,6 @@
                   <mat-error [hidden]="false" i18n="Designation Error | Explains designation is required"
                     *ngIf="updateUserDataForm?.controls['designation'].errors?.required">
                     Designation is mandatory
-                  </mat-error>
-                </mat-form-field>
-                <mat-icon class="verified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
-                  check_circle</mat-icon>
-                <mat-icon class="nonverified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
-                  check_circle</mat-icon>
-              </div>
-
-              <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Group</label>
-                <mat-form-field appearance="outline">
-                  <mat-select #group formControlName="group" i18n-placeholder placeholder="Select group">
-                    <mat-option [value]="g" *ngFor="let g of groupsList">
-                      {{g.name}}
-                    </mat-option>
-                  </mat-select>
-                  <mat-error [hidden]="false" i18n="Group Error | Explains group is required"
-                    *ngIf="updateUserDataForm?.controls['group'].errors?.required">
-                    Group is mandatory
                   </mat-error>
                 </mat-form-field>
                 <mat-icon class="verified-icon margin-left-xs"
@@ -365,10 +366,10 @@
           </div>
           <div class="flex flex-row margin-top-m">
             <div class="md:w-1/3">
-              <label class="view-text-label">Designation</label>
-              <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
-                user.profileDetails.professionalDetails.designation ?
-                user.profileDetails.professionalDetails.designation : '-'}}
+              <label class="view-text-label">Group</label>
+              <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
+                user.profileDetails.additionalProperties.group ?
+                user.profileDetails.additionalProperties.group : '-'}}
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
                   check_circle</mat-icon>
@@ -377,12 +378,11 @@
                   check_circle</mat-icon>
               </p>
             </div>
-
             <div class="md:w-1/3">
-              <label class="view-text-label">Group</label>
-              <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
-                user.profileDetails.additionalProperties.group ?
-                user.profileDetails.additionalProperties.group : '-'}}
+              <label class="view-text-label">Designation</label>
+              <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
+                user.profileDetails.professionalDetails.designation ?
+                user.profileDetails.professionalDetails.designation : '-'}}
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
                   check_circle</mat-icon>
@@ -530,7 +530,7 @@
 
         <div class="float-right">
           <p class="mat-body-2 margin-top-l margin-right-m"><mat-icon class="orangeicon">error</mat-icon>
-            {{appData?.userWorkflow?.wfInfo.length}} approval pending</p>
+            {{appData?.needApprovalList.length}} approval pending</p>
         </div>
       </mat-expansion-panel-header>
 
@@ -570,21 +570,17 @@
                   <mat-radio-button value="reject" (click)="addRejection('group')">Reject</mat-radio-button>
                 </mat-radio-group>
               </div> -->
-              <ng-container *ngFor="let field of needApprovalList">
+              <ng-container *ngFor="let field of appData.needApprovalList">
                 <div class="md:w-1/3 margin-bottom-s">
-                  <div *ngIf="field.fieldKey !== 'verifiedKarmayogi'">
-                    <label class="view-text-label">{{field.label}}</label>
-                  </div>
-                  <div [class]="field.fieldKey === 'verifiedKarmayogi'">
-                    <span [hidden]="field.fieldKey === 'verifiedKarmayogi'">
+                  <label class="view-text-label">{{field.label}}</label>
+                  <div>
+                    <span>
                       <input type="text" class="appr-text-field margin-bottom-s" [value]="field.value">
                       <mat-icon class="verified-icon margin-left-s"
                         *ngIf="field.action === 'APPROVE'">check_circle</mat-icon>
                       <mat-icon class="nonverified-icon margin-left-s"
                         *ngIf="field.action === 'REJECT'">cancel</mat-icon>
                     </span>
-                    <label class="appr-text-label mt-2" *ngIf="field.fieldKey === 'verifiedKarmayogi'">{{field.label}}
-                    </label>
                     <mat-radio-group aria-label="Select an option" name="approveDesignation"
                       formControlName="approveDesignation" class="mat-caption margin-top-s">
                       <mat-radio-button value="approve" class="margin-right-s"
@@ -728,7 +724,7 @@
         </div>
       </div>
       <div class="panel-body" *ngIf="!appData?.user">
-        <p class="text-center">No user data</p>
+        <p class="text-center margin-top-m">No user data</p>
       </div>
     </mat-expansion-panel>
   </mat-accordion>

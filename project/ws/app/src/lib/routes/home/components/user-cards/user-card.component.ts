@@ -9,7 +9,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes'
 // tslint:disable-next-line
 import _ from 'lodash'
 import { RolesService } from '../../../users/services/roles.service'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { Observable, Subscription } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators'
 import { environment } from '../../../../../../../../../src/environments/environment'
@@ -76,7 +76,7 @@ export class UserCardComponent implements OnInit {
   masterLanguagesEntries: any
   genderList = ['Male', 'Female', 'Others']
   categoryList = ['General', 'OBC', 'SC', 'ST', 'Others']
-  needApprovalList: any[] = []
+  // needApprovalList: any[] = []
   profileData: any[] = []
   userwfData!: any
   comment = ''
@@ -87,6 +87,8 @@ export class UserCardComponent implements OnInit {
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
+
+  userGroup: any
 
   otpSend = false
   otpVerified = false
@@ -102,12 +104,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
-    // this.route.data.subscribe((data: any) => {
-    //   this.profileData = data.pageData.data.profileData
-    // })
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService, private router: Router) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -141,14 +140,16 @@ export class UserCardComponent implements OnInit {
 
   ngOnInit() {
     this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
-
+    // console.log('this.currentFilter', this.currentFilter)
     if (this.isApprovals && this.usersData && this.usersData.length > 0) {
       this.approvalData = this.usersData
       this.getUserMappedData(this.approvalData)
-
       this.approvalSvc.getProfileConfig().then((res: any) => {
         this.profileData = res && res.profileData
       })
+      if (this.profileData) {
+        this.getFieldsMappedData(this.approvalData)
+      }
     } else {
       this.init()
     }
@@ -162,6 +163,37 @@ export class UserCardComponent implements OnInit {
         this.usersSvc.getUserById(id).subscribe((res: any) => {
           if (res) {
             data.user = res
+          }
+        })
+      }
+    })
+  }
+
+  async getFieldsMappedData(approvalData: any) {
+    approvalData.forEach((appdata: any) => {
+      if (appdata.userWorkflow.wfInfo && appdata.userWorkflow.wfInfo.length > 0) {
+        appdata.needApprovalList = []
+        appdata.userWorkflow.wfInfo.forEach((wf: any) => {
+          if (typeof wf.updateFieldValues === 'string') {
+            const fields = JSON.parse(wf.updateFieldValues)
+            if (fields.length > 0) {
+              fields.forEach((field: any) => {
+                const labelKey = Object.keys(field.toValue)[0]
+                const feildNameObj = labelKey === 'designation' ? 'Designation' : 'Group'
+                if (labelKey === 'designation' || labelKey === 'group') {
+                  appdata.needApprovalList.push(
+                    Object.assign({
+                      wf,
+                      feildName: labelKey,
+                      label: feildNameObj,
+                      value: field.toValue[labelKey],
+                      fieldKey: field.fieldKey,
+                      wfId: wf.wfId,
+                    })
+                  )
+                }
+              })
+            }
           }
         })
       }
@@ -216,7 +248,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-                                                  (_err: any) => {
+      (_err: any) => {
       })
   }
 
@@ -274,7 +306,7 @@ export class UserCardComponent implements OnInit {
     this.updateTags(profileData)
 
     if (this.isApprovals) {
-      this.needApprovalList = []
+      // this.needApprovalList = []
       this.actionList = []
       this.comment = ''
       this.getApprovalList(data)
@@ -338,11 +370,9 @@ export class UserCardComponent implements OnInit {
 
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.group) {
-          // this.updateUserDataForm.controls['group'].setValue(user.profileDetails.additionalProperties.group)
-          this.updateUserDataForm.patchValue({
-            // group: user.profileDetails.additionalProperties.group
-            group: _.get(user, 'profileDetails.additionalProperties.group'),
-          })
+          // this.updateUserDataForm.patchValue({ group: _.get(user, 'profileDetails.additionalProperties.group') })
+          // this.userGroup = user.profileDetails.additionalProperties.
+          this.updateUserDataForm.controls.group.setValue(user.profileDetails.additionalProperties.group)
         }
       }
 
@@ -391,31 +421,6 @@ export class UserCardComponent implements OnInit {
 
   getApprovalList(approvalData: any) {
     this.userwfData = approvalData
-    if (approvalData.wfInfo && approvalData.wfInfo.length > 0) {
-      approvalData.wfInfo.forEach((wf: any) => {
-        if (typeof wf.updateFieldValues === 'string') {
-          const fields = JSON.parse(wf.updateFieldValues)
-          if (fields.length > 0) {
-            fields.forEach((field: any) => {
-              const labelKey = Object.keys(field.toValue)[0]
-              const feildNameObj = this.profileData.filter(userData => userData.key === labelKey)[0]
-              if (labelKey === 'designation' || labelKey === 'group') {
-                this.needApprovalList.push(
-                  Object.assign({
-                    wf,
-                    feildName: labelKey,
-                    label: feildNameObj ? feildNameObj.name : null,
-                    value: field.toValue[labelKey],
-                    fieldKey: field.fieldKey,
-                    wfId: wf.wfId,
-                  })
-                )
-              }
-            })
-          }
-        }
-      })
-    }
   }
 
   cancelSubmit() {
@@ -727,7 +732,7 @@ export class UserCardComponent implements OnInit {
                 this.updateUserDataForm.reset({ roles: '' })
                 this.openSnackbar('User role updated Successfully')
                 panel.close()
-                // this.router.navigate(['/app/home/users/allusers'])
+                this.router.navigate(['/app/home/users/allusers'])
 
                 this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
                   if (_res) {

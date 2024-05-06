@@ -215,6 +215,12 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
     },                           inputString)
   }
 
+  onEnterkySearch(enterValue: any) {
+    // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
+    const filterValue = enterValue.toLowerCase()
+    this.data = this.data.filter((user: any) => user.userInfo.first_name.toLowerCase().includes(filterValue))
+  }
+
   onPaginateChange(event: PageEvent) {
     this.pageIndex = event.pageIndex
     this.limit = event.pageSize
