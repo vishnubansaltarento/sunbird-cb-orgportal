@@ -15,8 +15,11 @@
   .mat-content{
     display: block !important;
   }
-  .float-left {
-    width: 86%;
+  .width82 {
+    width: 82%;
+  }
+  .width88 {
+    width: 88%;
   }
 
   .initialcircle {
@@ -76,7 +79,19 @@
     }
   }
 }
+::ng-deep .mat-expansion-panel-header .mat-expansion-indicator::after {
+    content: "+";
+    border: 0;
+    transform: none;
+    font-size: 24px !important;
+    padding: 6px !important;
+  }
 
+::ng-deep .mat-expansion-panel-header.mat-expanded .mat-expansion-indicator::after {
+    content: "-";
+    font-size: 24px !important;
+    padding: 6px !important;
+}
 ::ng-deep .initialcircle .circle-l {
   border-radius: 50% !important;
   width: 60px !important;
@@ -270,55 +285,33 @@ label {
     padding: 0px !important;
   }
 }
+.orangeicon {
+  color: #e99e38;
+  vertical-align: middle;
+  height: 30px !important;
+}
+.editreasonicon {
+  vertical-align: middle;
+  color: #666 !important;
+}
+::ng-deep .mat-dialog-container {
+  padding: 0 !important;
+  overflow: unset !important;
+}
 
-.rejection {
-
-  .header {
-    height: 80px;
-    background-color: rgba(27, 76, 161, 1);
-    color: rgba(255, 255, 255, 1);
-    font-size: 24px;
-    font-weight: 700;
-
-    .editBox {
-      width: 24px;
-      cursor: pointer;
-    }
+.rejectdialog {
+  .mat-dialog-title {
+    background: #1b4ca1;
+    color: #fff;
+    padding: 1em 1em;
+    font: 500 18px/24px Montserrat !important;
   }
-
-  .reason-description {
-    padding: 20px;
-    font-size: 14px;
-    color: rgba(0, 0, 0, 1);
+  .mat-dialog-content {
+    margin: 0 !important;
+    padding: 0 24px !important;
   }
-
-  .reason-text-area {
-    height: 170px;
-    resize: none;
-  }
-
-  .footer {
-    height: 75px;
-    background-color: rgba(241, 240, 244, 1);
-
-    // .submit-btn {
-    //   height: 40px;
-    //   padding: 12px, 16px, 12px, 16px;
-    //   background-color: rgba(27, 76, 161, 1);
-    //   color: rgba(255, 255, 255, 1);
-    //   font-size: 14px;
-    //   font-weight: 700;
-    //   border-radius: 4px;
-    // }
-
-    // .cancel-btn {
-    //   height: 40px;
-    //   padding: 12px, 16px, 12px, 16px;
-    //   color: rgba(27, 76, 161, 1);
-    //   border: 1px solid rgba(27, 76, 161, 1);
-    //   font-size: 14px;
-    //   font-weight: 700;
-    //   border-radius: 4px;
-    // }
+  .mat-dialog-actions {
+    padding: 10px 24px !important;
+    margin-bottom: 0 !important;
   }
 }

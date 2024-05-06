@@ -125,19 +125,19 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   fetchApprovals() {
-    const conditions = [
-      ['location', 'Country'],
-      ['designation', 'Designation'],
-      ['group', 'Group'],
-      ['name', 'Organisation Name'],
-      ['orgNameOther', 'Other Organisation Name'],
-      ['industry', 'Industry'],
-      ['industryOther', 'Other Industry'],
-      ['doj', 'Date of Joining'],
-      ['organisationType', 'Type of Organisation'],
-      ['orgDesc', 'Organisation Description'],
-      ['verifiedKarmayogi', 'Verified Karmayogi'],
-    ]
+    // const conditions = [
+    //   ['location', 'Country'],
+    //   ['designation', 'Designation'],
+    //   ['group', 'Group'],
+    //   ['name', 'Organisation Name'],
+    //   ['orgNameOther', 'Other Organisation Name'],
+    //   ['industry', 'Industry'],
+    //   ['industryOther', 'Other Industry'],
+    //   ['doj', 'Date of Joining'],
+    //   ['organisationType', 'Type of Organisation'],
+    //   ['orgDesc', 'Organisation Description'],
+    //   ['verifiedKarmayogi', 'Verified Karmayogi'],
+    // ]
 
     if (this.departName) {
       const req = {
@@ -149,44 +149,42 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
       }
       this.apprService.getApprovals(req).subscribe(res => {
         this.data = []
+        const newarray: any = []
         let currentdate: Date
-        this.approvalTotalCount = res.result.count
+        // this.approvalTotalCount = res.result.count
         const resData = res.result.data
         resData.forEach((approval: any) => {
-          let keys = ''
+          // let keys = ''
           approval.wfInfo.forEach((wf: any) => {
             currentdate = new Date(wf.createdOn)
             if (typeof wf.updateFieldValues === 'string') {
               const fields = JSON.parse(wf.updateFieldValues)
               if (fields.length > 0) {
                 fields.forEach((field: any) => {
-                  if (Object.keys(field.fromValue).length > 0) {
-
-                    keys += `${_.first(Object.keys(field.fromValue))}, `
-                  } else {
-                    keys += `${_.first(Object.keys(field.toValue))}, `
+                  // if (Object.keys(field.fromValue).length > 0) {
+                  //   keys += `${_.first(Object.keys(field.fromValue))}, `
+                  // } else {
+                  //   keys += `${_.first(Object.keys(field.toValue))}, `
+                  // }
+                  const labelKey = Object.keys(field.toValue)[0]
+                  if (labelKey === 'designation' || labelKey === 'group') {
+                    if (newarray.find((u: any) => u.userInfo.wid === approval.userInfo.wid) === undefined) {
+                      newarray.push(approval)
+                    }
                   }
                 })
               }
             }
           })
+        })
 
+        newarray.forEach((appr: any) => {
           this.data.push({
-            fullname: approval.userInfo ? `${approval.userInfo.first_name}` : '--',
-            // fullname: approval.userInfo ? `${approval.userInfo.first_name} ${approval.userInfo.last_name}` : '--',
-            // requestedon: `${currentdate.getDate()}
-            //   requestedon: `${currentdate.getDate()}
-            // ${moment(currentdate.getMonth() + 1, 'MM').format('MMM')}
-            // ${currentdate.getFullYear()}
-            // ${currentdate.getHours()} :
-            // ${currentdate.getMinutes()} :
-            // ${currentdate.getSeconds()}`,
-            // requestedon: this.datePipe.transform(currentdate, 'dd MMM y'),
-            // fields: keys.slice(0, -1),
+            fullname: appr.userInfo ? `${appr.userInfo.first_name}` : '--',
             requestedon: currentdate,
-            fields: this.replaceWords(keys, conditions),
-            userWorkflow: approval,
-            tag: (approval.userInfo && approval.userInfo.tag) ? `${approval.userInfo.tag}` : '',
+            // fields: this.replaceWords(keys, conditions),
+            userWorkflow: appr,
+            tag: (appr.userInfo && appr.userInfo.tag) ? `${appr.userInfo.tag}` : '',
           })
           this.data.sort((a: any, b: any) => {
             const textA = a.fullname.toUpperCase()
@@ -194,6 +192,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
           })
         })
+        this.approvalTotalCount = this.data.length
       })
     } else {
       this.snackbar.open('Please connect to your SPV admin, to update MDO name.')

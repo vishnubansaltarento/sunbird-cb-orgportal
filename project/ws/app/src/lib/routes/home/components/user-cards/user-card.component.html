@@ -7,7 +7,7 @@
     <mat-expansion-panel class="user-card" *ngFor="let user of usersData?.content" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user)">
-        <div class="float-left" (click)="$event.stopPropagation();">
+        <div class="float-left width88" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-m">
             <!-- <span>AB</span> -->
             <ws-widget-avatar-photo [name]="getUseravatarName(user)" [photoUrl]="user?.photo" size="l">
@@ -67,7 +67,12 @@
                     Designation is mandatory
                   </mat-error>
                 </mat-form-field>
-                <mat-icon class="verified-icon margin-left-xs">check_circle</mat-icon>
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
               </div>
 
               <div class="md:w-1/3">
@@ -83,7 +88,12 @@
                     Group is mandatory
                   </mat-error>
                 </mat-form-field>
-                <mat-icon class="verified-icon margin-left-xs">check_circle</mat-icon>
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
               </div>
             </div>
           </div>
@@ -328,7 +338,7 @@
             </div>
 
             <div class="flex flex-row margin-top-l">
-              <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, user)"
+              <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, user, panel)"
                 class="margin-right-m btn-success btn-responsive successbtn" [disabled]="updateUserDataForm?.invalid">
                 <span class="text-white" i18n>
                   Update
@@ -358,16 +368,28 @@
               <label class="view-text-label">Designation</label>
               <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
                 user.profileDetails.professionalDetails.designation ?
-                user.profileDetails.professionalDetails.designation : '-'}} <mat-icon
-                  class="verified-icon">check_circle</mat-icon></p>
+                user.profileDetails.professionalDetails.designation : '-'}}
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
+              </p>
             </div>
 
             <div class="md:w-1/3">
               <label class="view-text-label">Group</label>
               <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
                 user.profileDetails.additionalProperties.group ?
-                user.profileDetails.additionalProperties.group : '-'}} <mat-icon
-                  class="verified-icon">check_circle</mat-icon></p>
+                user.profileDetails.additionalProperties.group : '-'}}
+                <mat-icon class="verified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  check_circle</mat-icon>
+                <mat-icon class="nonverified-icon margin-left-xs"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  check_circle</mat-icon>
+              </p>
             </div>
           </div>
         </div>
@@ -483,7 +505,7 @@
     <mat-expansion-panel class="user-card" *ngFor="let appData of approvalData" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(appData.user, appData.userWorkflow);">
-        <div class="float-left" (click)="$event.stopPropagation();">
+        <div class="float-left width82" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-s" *ngIf="appData?.user">
             <ws-widget-avatar-photo [name]="getUseravatarName(appData?.user)" [photoUrl]="appData?.user?.photo"
               size="l">
@@ -505,9 +527,14 @@
             </div>
           </div>
         </div>
+
+        <div class="float-right">
+          <p class="mat-body-2 margin-top-l margin-right-m"><mat-icon class="orangeicon">error</mat-icon>
+            {{appData?.userWorkflow?.wfInfo.length}} approval pending</p>
+        </div>
       </mat-expansion-panel-header>
 
-      <div class="panel-body" *ngIf="appData.user">
+      <div class="panel-body" *ngIf="appData?.user">
         <form [formGroup]="approveUserDataForm" class="margin-top-m">
           <!-- <button mat-button class="my-4 mr-4" (click)="addRejection()">add reason</button>
               <button mat-button class="my-4 mr-4" (click)="updateRejection()">update reason</button> -->
@@ -544,7 +571,7 @@
                 </mat-radio-group>
               </div> -->
               <ng-container *ngFor="let field of needApprovalList">
-                <div class="md:w-1/3">
+                <div class="md:w-1/3 margin-bottom-s">
                   <div *ngIf="field.fieldKey !== 'verifiedKarmayogi'">
                     <label class="view-text-label">{{field.label}}</label>
                   </div>
@@ -564,7 +591,8 @@
                         (click)="onClickHandleWorkflow(field,'APPROVE')">Approve</mat-radio-button>
                       <mat-radio-button value="reject"
                         (click)="onClickHandleWorkflow(field,'REJECT')">Reject</mat-radio-button>
-                      <mat-icon class="margin-left-m" *ngIf="field.action === 'REJECT' && comment !== ''"
+                      <mat-icon class="margin-left-m editreasonicon cursor-pointer"
+                        *ngIf="field.action === 'REJECT' && comment !== ''"
                         (click)="updateRejection(field)">chat_bubble</mat-icon>
                     </mat-radio-group>
                   </div>
@@ -685,7 +713,7 @@
         </div>
 
         <div class="flex flex-row margin-top-l">
-          <button mat-raised-button type="submit" (click)="onApprovalSubmit()"
+          <button mat-raised-button type="submit" (click)="onApprovalSubmit(panel)"
             class="margin-right-m btn-success btn-responsive successbtn" [disabled]="actionList.length === 0">
             <span class="text-white" i18n>
               Update
@@ -712,22 +740,39 @@
 </div>
 
 <ng-template #rejectDialog>
-  <form>
+  <form class="rejectdialog">
     <p mat-dialog-title class="dialog-title">Reason for rejection</p>
     <mat-dialog-content>
-      <!-- <p class="appr-text margin-top-l">Please specify the reason for rejection</p> -->
-      <!-- <textarea rows="4" [(ngModel)]="comment" placeholder="Type the description in fewer than 100 characters"
-        name="comment" class="reject-reason-text"></textarea> -->
-
       <mat-form-field class="w-full mt-5" appearance="outline">
         <textarea matInput class="reason-text-area" [(ngModel)]="comment" name="reason"
           placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"></textarea>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions class="flex flex-wrap justify-end">
-      <button mat-raised-button class="btn-success btn-responsive cancelbtn" matDialogClose>Cancel</button>
-      <button mat-raised-button class="btn-success btn-responsive successbtn" [mat-dialog-close]="true">
+      <button mat-raised-button class="btn-success btn-responsive successbtn" [mat-dialog-close]="true"
+        [disabled]="!comment">
         <span class="text-white">Submit</span></button>
+      <button mat-raised-button class="btn-success btn-responsive cancelbtn" matDialogClose>Cancel</button>
+    </mat-dialog-actions>
+  </form>
+</ng-template>
+
+<ng-template #updaterejectDialog>
+  <form class="rejectdialog">
+    <p mat-dialog-title class="dialog-title">Reason for rejection
+      <mat-icon (click)="showedit()" *ngIf="!showeditText" class="float-right cursor-pointer">edit_square</mat-icon>
+    </p>
+    <mat-dialog-content>
+      <p class="margin-top-l margin-bottom-l" *ngIf="!showeditText">{{comment}}</p>
+      <mat-form-field class="w-full mt-5" appearance="outline" *ngIf="showeditText">
+        <textarea matInput class="reason-text-area" [(ngModel)]="comment" name="reason"
+          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"></textarea>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions class="flex flex-wrap justify-end" *ngIf="showeditText">
+      <button mat-raised-button class="btn-success btn-responsive successbtn" [mat-dialog-close]="true">
+        <span class="text-white">Update</span></button>
+      <button mat-raised-button class="btn-success btn-responsive cancelbtn" matDialogClose>Cancel</button>
     </mat-dialog-actions>
   </form>
 </ng-template>

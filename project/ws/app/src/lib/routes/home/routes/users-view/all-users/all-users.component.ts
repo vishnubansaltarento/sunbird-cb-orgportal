@@ -100,12 +100,12 @@ export class AllUsersComponent implements OnInit, OnDestroy {
     if (this.configSvc.unMappedUser && this.configSvc.unMappedUser.roles) {
       this.isMdoAdmin = this.configSvc.unMappedUser.roles.includes('MDO_ADMIN')
     }
-    this.filterData('')
+    // this.filterData('')
 
     this.getUsers('', 'allusers')
     this.getUsers('', 'verified')
     this.getUsers('', 'nonverified')
-    this.getUsers('', 'notmyuser')
+    // this.getUsers('', 'notmyuser')
 
     this.reportsNoteList = [
       `Easily create users individually or in bulk.`,
@@ -135,6 +135,7 @@ export class AllUsersComponent implements OnInit, OnDestroy {
 
   filter(filter: string) {
     this.currentFilter = filter
+    // console.log('filter---------', filter)
     this.pageIndex = 0
     this.currentOffset = 0
     this.limit = 20
@@ -151,21 +152,6 @@ export class AllUsersComponent implements OnInit, OnDestroy {
       TelemetryEvents.EnumInteractSubTypes.USER_TAB,
       data,
     )
-  }
-
-  get dataForTable() {
-    switch (this.currentFilter) {
-      case 'allusers':
-        return this.activeUsersData
-      case 'verified':
-        return this.verifiedUsersData
-      case 'nonverified':
-        return this.nonverifiedUsersData
-      case 'notmyuser':
-        return this.notmyuserUsersData
-      default:
-        return []
-    }
   }
 
   filterData(query: string) {
@@ -204,6 +190,7 @@ export class AllUsersComponent implements OnInit, OnDestroy {
   }
 
   getUsers(query: string, currentFilter: any) {
+    // console.log('currentFilter', currentFilter)
     this.loaderService.changeLoad.next(true)
     const usersData: any[] = []
     let filtreq = {}

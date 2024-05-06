@@ -55,12 +55,13 @@
             mat-button (click)="filter('allusers'); tabTelemetry('allusers', 0)" role="button">All users
             ({{activeUsersDataCount}})</a>
 
-          <a routerLink="/app/home/users/verified" routerLinkActive="router-link-active" class="filter-option"
+          <a routerLink="/app/home/users/allusers/verified" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'verified','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
             mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">Verified
             ({{verifiedUsersDataCount}})</a>
 
-          <a routerLink="/app/home/users/nonverified" routerLinkActive="router-link-active" class="filter-option"
+          <a routerLink="/app/home/users/allusers/nonverified" routerLinkActive="router-link-active"
+            class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'nonverified','ws-mat-accent-border font-medium':currentFilter !== 'nonverified'}"
             mat-button (click)="filter('nonverified'); tabTelemetry('nonverified', 0)" role="button">Non-verified
             ({{nonverifiedUsersDataCount}})</a>
