@@ -1,11 +1,6 @@
 <div class="flex flex-col gap-6">
-  <div class="flex flex-row gap-4 items-center">
-    <mat-icon class="cursor-pointer" [routerLink]="['/app/home/users/allusers']">arrow_back</mat-icon>
-    <div class="flex font-bold">Bulk Profile Update</div>
-  </div>
-
   <div class="flex flex-col gap-4 bulk-container">
-    <div class="flex font-bold">Bulk Profile Update</div>
+    <div class="flex font-bold">Bulk user creation</div>
     <div class="flex flex-row gap-8">
       <div class="flex-1">
         <div class="flex flex-col gap-6 dashed-card">
@@ -53,7 +48,6 @@
         <div class="flex flex-row justify-between items-center">
           <div class="flex flex-row gap-1">
             <div class="font-bold">File Information</div>
-            <mat-icon class="ws-mat-black40-text">info_outline</mat-icon>
           </div>
           <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
             <mat-icon>download_2</mat-icon>

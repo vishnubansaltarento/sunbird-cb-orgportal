@@ -9,9 +9,7 @@ import _ from 'lodash'
 const API_END_POINTS = {
   GET_ALL_USERS: '/apis/proxies/v8/user/v1/search',
   GET_MY_DEPARTMENT: '/apis/protected/v8/portal/mdo/mydepartment?allUsers=true',
-  // CREATE_USER: 'apis/protected/v8/admin/userRegistration/create-user',
   CREATE_USER: 'apis/protected/v8/user/profileDetails/createUser',
-  // PROFILE_REGISTRY: 'apis/protected/v8/user/profileRegistry/getUserRegistryByUser/',
   PROFILE_REGISTRY_V1: '/apis/proxies/v8/api/user/v2/read/',
   PROFILE_REGISTRY_V2: '/apis/proxies/v8/api/user/v2/read',
   CREATE_PROFILE_REGISTRY: '/apis/protected/v8/user/profileRegistry/createUserRegistryV2',
@@ -33,7 +31,6 @@ const API_END_POINTS = {
   GET_GROUPS: '/api/user/v1/groups',
   getMasterNationlity: '/apis/protected/v8/user/profileRegistry/getMasterNationalities',
   editProfileDetails: '/apis/proxies/v8/user/v1/extPatch',
-  // GET_BULKUPLOAD_DATA: '/apis/protected/v8/admin/userRegistration/bulkUploadData',
 }
 
 @Injectable({
@@ -121,7 +118,7 @@ export class UsersService {
     let reqBody
     reqBody = {
       request: {
-        filters: filters,
+        filters,
         limit: pageLimit,
         offset: offsetNum,
         query: searchText,
@@ -184,7 +181,7 @@ export class UsersService {
     return this.http.get<any>(url)
   }
 
-  getDesignations(_req: any) {
+  getDesignations(_req?: any) {
     return this.http.get<any>(API_END_POINTS.getDesignation)
   }
 

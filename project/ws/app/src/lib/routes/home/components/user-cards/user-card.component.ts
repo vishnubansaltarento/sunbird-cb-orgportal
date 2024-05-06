@@ -102,9 +102,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService) {
     // this.route.data.subscribe((data: any) => {
     //   this.profileData = data.pageData.data.profileData
     // })
@@ -216,7 +216,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-      (_err: any) => {
+                                                  (_err: any) => {
       })
   }
 
@@ -279,8 +279,8 @@ export class UserCardComponent implements OnInit {
       this.comment = ''
       this.getApprovalList(data)
     } else {
-      this.roleservice.getAllRoles().subscribe((data: any) => {
-        const parseRoledata = JSON.parse(data.result.response.value)
+      this.roleservice.getAllRoles().subscribe((_data: any) => {
+        const parseRoledata = JSON.parse(_data.result.response.value)
         this.orgTypeList = parseRoledata.orgTypeList
 
         // New code for roles
@@ -580,7 +580,7 @@ export class UserCardComponent implements OnInit {
 
   addRejection(field: any) {
     const rejectinDetails = {
-      field: field,
+      field,
       header: {
         headerText: 'Reason of rejection',
         showEditButton: false,
@@ -729,10 +729,11 @@ export class UserCardComponent implements OnInit {
                 panel.close()
                 // this.router.navigate(['/app/home/users/allusers'])
 
-                this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
-                  if (res) {
-                    user = res
-                    user.enableEdit = false
+                this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
+                  if (_res) {
+                    // tslint:disable-next-line
+                    user = _res
+                    user['enableEdit'] = false
                   }
                 })
               }
