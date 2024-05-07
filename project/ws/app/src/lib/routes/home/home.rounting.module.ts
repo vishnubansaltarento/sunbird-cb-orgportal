@@ -24,6 +24,7 @@ import { HomeResolve } from './resolvers/home-resolve'
 import { ConfigResolveService } from './resolvers/config-resolve.service'
 import { UsersListResolve } from './resolvers/users-list-resolve.service'
 import { UserCreationComponent } from './routes/users-view/user-creation/user-creation.component'
+import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
 
 const routes: Routes = [
   {
@@ -224,6 +225,20 @@ const routes: Routes = [
             component: ApprovalPendingComponent,
             data: {
               pageId: 'approvals-transfers',
+              module: 'Approvals',
+              pageType: 'feature',
+              pageKey: 'approval-view',
+            },
+            resolve: {
+              pageData: PageResolve,
+              configService: ConfigResolveService,
+            },
+          },
+          {
+            path: 'bulkupdate',
+            component: BulkUploadApprovalComponent,
+            data: {
+              pageId: 'approvals-bulkupdate',
               module: 'Approvals',
               pageType: 'feature',
               pageKey: 'approval-view',

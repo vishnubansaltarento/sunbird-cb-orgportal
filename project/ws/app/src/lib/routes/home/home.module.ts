@@ -73,6 +73,7 @@ import { VerifyOtpComponent } from './routes/users-view/verify-otp/verify-otp.co
 import { FileProgressComponent } from './routes/users-view/file-progress/file-progress.component'
 import { UserCreationComponent } from './routes/users-view/user-creation/user-creation.component'
 import { SingleUserCreationComponent } from './routes/users-view/single-user-creation/single-user-creation.component'
+import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
 
 @NgModule({
   declarations: [
@@ -112,6 +113,7 @@ import { SingleUserCreationComponent } from './routes/users-view/single-user-cre
     FileProgressComponent,
     UserCreationComponent,
     SingleUserCreationComponent,
+    BulkUploadApprovalComponent,
   ],
   imports: [
     CommonModule,
