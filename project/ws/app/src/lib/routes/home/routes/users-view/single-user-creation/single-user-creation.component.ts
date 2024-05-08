@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core'
 import { FormBuilder, FormControl, Validators } from '@angular/forms'
 import { MomentDateAdapter } from '@angular/material-moment-adapter'
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core'
@@ -38,9 +38,11 @@ const PIN_CODE_PATTERN = /^[1-9][0-9]{5}$/
 })
 export class SingleUserCreationComponent implements OnInit, OnDestroy {
 
+  @ViewChildren("rolesCheckbox") checkboxes!: QueryList<ElementRef>
   private destroySubject$ = new Subject()
   separatorKeysCodes: number[] = [ENTER, COMMA]
   masterData: any = {}
+  rolesArr: string[] = []
   userCreationForm = this.formBuilder.group({
     fullName: new FormControl('', [Validators.required]),
     primaryEmail: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
@@ -160,20 +162,16 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
 
   handleRolesCheck(event: MatCheckboxChange, role: string): void {
     if (event.checked) {
-      if (this.userCreationForm.get('roles')) {
-        // tslint:disable-next-line
-        this.userCreationForm.get('roles')!.value.push(role)
-      }
+      this.rolesArr.push(role)
     } else {
-      if (this.userCreationForm.get('roles')) {
-        // tslint:disable-next-line
-        const indexValue = this.userCreationForm.get('roles')!.value.indexOf(role)
-        if (indexValue > -1) {
-          // tslint:disable-next-line
-          this.userCreationForm.get('roles')!.value.splice(indexValue, 1)
-        }
+      if (this.rolesArr.indexOf(role) > -1) {
+        this.rolesArr.splice(this.rolesArr.indexOf(role), 1)
       }
     }
+
+    this.userCreationForm.patchValue({
+      roles: this.rolesArr
+    })
   }
 
   handleAddTags(event: MatChipInputEvent): void {
@@ -200,6 +198,9 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
 
   handleFormClear(): void {
     this.userCreationForm.reset()
+    this.checkboxes.forEach((elem: any) => {
+      elem.checked = false
+    })
   }
 
   handleUserCreation(): void {
@@ -208,6 +209,16 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line
       dataToSubmit.dob = `${new Date(dataToSubmit.dob).getDate()}-${new Date(dataToSubmit.dob).getMonth() + 1}-${new Date(dataToSubmit.dob).getFullYear()}`
     }
+    this.usersService.createUser(dataToSubmit)
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe((_res: any) => {
+        this.matSnackBar.open('User created successfully!')
+        this.handleFormClear()
+      }, (_err: HttpErrorResponse) => {
+        if (!_err.ok) {
+          this.matSnackBar.open('Unable to create user, please try again later!')
+        }
+      })
   }
 
   ngOnDestroy(): void {

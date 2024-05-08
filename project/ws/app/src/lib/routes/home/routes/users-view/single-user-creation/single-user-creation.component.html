@@ -141,14 +141,13 @@
         <div class="flex flex-col gap-4">
           <div class="flex flex-row gap-4" *ngFor="let role of masterData?.mdoRoles">
             <div class="flex-1">{{ role }}</div>
-            <mat-checkbox (change)="handleRolesCheck($event, role)"></mat-checkbox>
+            <mat-checkbox #rolesCheckbox (change)="handleRolesCheck($event, role)"></mat-checkbox>
           </div>
         </div>
       </div>
       <div class="input-container"></div>
     </div>
-    userCreationForm = {{ userCreationForm.value | json }}
-    userCreationForm?.invalid = {{ userCreationForm?.invalid }}
+
     <div class="flex flex-row gap-4">
       <button class="action-button" [ngClass]="{'disable-button': userCreationForm?.invalid}"
         [disabled]="userCreationForm?.invalid" (click)="handleUserCreation()">Create user</button>
