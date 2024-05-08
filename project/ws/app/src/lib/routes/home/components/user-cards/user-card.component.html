@@ -633,7 +633,9 @@
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/4">
                 <label class="view-text-label">Employee ID</label>
-                <p>{{appData.user.empID ? appData.user.empID : '-'}}</p>
+                <p>{{appData.user.profileDetails && appData.user.profileDetails.employmentDetails &&
+                  appData.user.profileDetails.employmentDetails.employeeCode ?
+                  appData.user.profileDetails.employmentDetails.employeeCode : '-'}}</p>
               </div>
 
               <div class="md:w-1/4">
