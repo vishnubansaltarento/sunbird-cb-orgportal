@@ -13,7 +13,10 @@ import { UsersService } from '../../../users/services/users.service'
 export class SearchComponent implements OnInit {
   @Input() from: any = ''
   @Input() isApprovals: any
+  @Input() showApproveALL: any
+  @Input() disableApproveALL: any
   @Output() handleApiData = new EventEmitter()
+  @Output() handleapproveAll = new EventEmitter()
   searchText = ''
   filterVisibilityFlag = false
   clearFilter = false
@@ -95,7 +98,9 @@ export class SearchComponent implements OnInit {
     this.pageSize = 20
   }
 
-  createUser() { }
+  approveAll() {
+    this.handleapproveAll.emit()
+  }
 
   sort() { }
 }

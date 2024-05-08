@@ -19,6 +19,7 @@ import { ApprovalsService } from '../../../services/approvals.service'
 
 export class ApprovalPendingComponent implements OnInit, OnDestroy {
   data: any = []
+  approvalData: any = []
   currentFilter = 'profileverification'
   discussionList!: any
   discussProfileData!: any
@@ -29,6 +30,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   currentOffset = 0
   configSvc: any
   reportsNoteList: string[] = []
+  showApproveALL = false
+  disableApproveALL = false
 
   constructor(
     private router: Router,
@@ -193,32 +196,37 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
           })
         })
         this.approvalTotalCount = this.data.length
+        this.approvalData = this.data
+        if (this.data && this.data.length > 0) {
+          this.showApproveALL = true
+          this.disableApproveALL = false
+        }
       })
     } else {
       this.snackbar.open('Please connect to your SPV admin, to update MDO name.')
     }
   }
 
-  get getTableData() {
-    if (this.data.length > 0) {
-      this.data.forEach((element: any) => {
-        // element.requestedon = this.datePipe.transform(element.requestedon, 'dd MMM y')
-        element.requestedon = element.requestedon
-      })
-    }
-    return this.data
-  }
+  // get getTableData() {
+  //   if (this.data.length > 0) {
+  //     this.data.forEach((element: any) => {
+  //       // element.requestedon = this.datePipe.transform(element.requestedon, 'dd MMM y')
+  //       element.requestedon = element.requestedon
+  //     })
+  //   }
+  //   return this.data
+  // }
 
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    },                           inputString)
+    }, inputString)
   }
 
-  onEnterkySearch(enterValue: any) {
+  onSearch(enterValue: any) {
     // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
     const filterValue = enterValue.toLowerCase()
-    this.data = this.data.filter((user: any) => user.userInfo.first_name.toLowerCase().includes(filterValue))
+    this.data = this.approvalData.filter((user: any) => user.fullname.toLowerCase().includes(filterValue))
   }
 
   onPaginateChange(event: PageEvent) {
@@ -230,4 +238,63 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void { }
 
+  onApproveAllReqs(req: any) {
+    this.apprService.handleWorkflow(req).subscribe((res: any) => {
+      if (res.result.data) {
+      }
+    })
+  }
+  onApproveALL() {
+    this.disableApproveALL = true
+    if (this.data && this.data.length > 0) {
+      const datalength = this.data.length
+      this.data.forEach((data: any, index: any) => {
+        if (data.userWorkflow.wfInfo && data.userWorkflow.wfInfo.length > 0) {
+          const action = 'APPROVE'
+          data.userWorkflow.wfInfo.forEach((wf: any) => {
+            const req: any = {
+              action,
+              state: 'SEND_FOR_APPROVAL',
+              userId: wf.userId,
+              actorUserId: data.userWorkflow.userInfo.wid,
+              serviceName: 'profile',
+            }
+            const listupdateFieldValues = JSON.parse(wf.updateFieldValues)
+            req['applicationId'] = wf.applicationId
+            req['wfId'] = wf.wfId
+            req['updateFieldValues'] = listupdateFieldValues
+            this.onApproveAllReqs(req)
+
+            this.events.raiseInteractTelemetry(
+              {
+                type: TelemetryEvents.EnumInteractTypes.CLICK,
+                subType: TelemetryEvents.EnumInteractSubTypes.BTN_CONTENT,
+              },
+              {
+                id: wf.applicationId,
+                type: TelemetryEvents.EnumIdtype.APPLICATION,
+              }
+            )
+          })
+        }
+
+        if (index === datalength - 1) {
+          setTimeout(() => {
+            this.openSnackbar('All requests are Approved')
+            this.fetchApprovals()
+          }, 200)
+        }
+      })
+    }
+  }
+
+  private openSnackbar(primaryMsg: string, duration: number = 5000) {
+    this.snackbar.open(primaryMsg, 'X', {
+      duration,
+    })
+  }
+
+  showButton() {
+    this.disableApproveALL = true
+  }
 }
