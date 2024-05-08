@@ -42,6 +42,9 @@
 .btn-disabled {
     background: rgba(0, 0, 0, 0.16) !important;
 }
+.mat-button[disabled] {
+  opacity: 0.6 !important;
+}
 
 .disable {
   opacity: 0.3;
