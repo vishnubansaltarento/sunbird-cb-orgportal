@@ -222,7 +222,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    this.destroySubject$.unsubscribe()
   }
 
 }

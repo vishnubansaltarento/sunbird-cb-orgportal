@@ -388,7 +388,7 @@ export class UserCardComponent implements OnInit {
         if (user.profileDetails.personalDetails.dob) {
           // this.updateUserDataForm.controls['dob'].setValue(user.profileDetails.personalDetails.dob)
           this.updateUserDataForm.patchValue({
-            dob: this.getDateFromText(user.profileDetails.personalDetails.dob)
+            dob: this.getDateFromText(user.profileDetails.personalDetails.dob),
           })
         }
         if (user.profileDetails.personalDetails.domicileMedium) {
@@ -670,6 +670,7 @@ export class UserCardComponent implements OnInit {
             this.openSnackbar('Request approved successfully')
           }, 100)
         }
+        // tslint:disable-next-line
         this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
         if (this.approvalData.length === 0) {
           this.disableButton.emit()

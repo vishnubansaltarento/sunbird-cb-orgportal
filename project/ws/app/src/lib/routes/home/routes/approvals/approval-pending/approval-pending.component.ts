@@ -220,7 +220,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    }, inputString)
+    },                           inputString)
   }
 
   onSearch(enterValue: any) {
@@ -282,7 +282,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.openSnackbar('All requests are Approved')
             this.fetchApprovals()
-          }, 200)
+          },         200)
         }
       })
     }
