@@ -35,14 +35,14 @@ export class SearchComponent implements OnInit {
     //   if (pageData) {
     //     this.pageIndex = pageData.pageIndex
     //     this.pageSize = pageData.pageSize
-    //     this.getContent()
+    //     // this.getContent()
     //   }
     // })
   }
 
   openFilter() {
     this.filterVisibilityFlag = true
-    // this.tpdsSvc.filterToggle.next({ from: this.from, status: true })
+    this.usersSvc.filterToggle.next({ from: this.from, status: true })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
     //   ele.style.zIndex = '1'
@@ -52,7 +52,7 @@ export class SearchComponent implements OnInit {
 
   hideFilter(event: any) {
     this.filterVisibilityFlag = event
-    // this.tpdsSvc.filterToggle.next({ from: '', status: false })
+    this.usersSvc.filterToggle.next({ from: '', status: false })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
     //   ele.style.zIndex = '1000'

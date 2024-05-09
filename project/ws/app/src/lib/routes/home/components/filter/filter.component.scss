@@ -26,7 +26,7 @@
     margin:26px 25px;
 }
 
-.filter-content {    
+.filter-content {
     padding: 18px 0px;
     margin: 0px 25px;
 }
@@ -97,7 +97,7 @@
 }
 
 .filter ::ng-deep .mat-expansion-panel-header {
-    height: 24px !important; 
+    height: 24px !important;
 }
 
 .spacer {
@@ -166,4 +166,12 @@
 ::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
+}
+
+::ng-deep .mat-drawer.mat-drawer-side {
+    z-index: 1;
+}
+
+::ng-deep ws-app-nav-bar {
+    z-index: 999 !important;
 }
