@@ -3,13 +3,15 @@
     <div class="flex font-bold">Bulk user creation</div>
     <div class="flex flex-row gap-8">
       <div class="flex-1">
-        <div class="flex flex-col gap-6 dashed-card">
-          <div>Open &amp; follow these instruction</div>
+        <div class="flex flex-col gap-3 dashed-card">
+          <div>Follow these steps to create users in bulk:</div>
           <div class="flex flex-col gap-4">
             <ol class="custom-ol">
-              <li>Keep the row of the items you wish to process</li>
-              <li>Keep the row of the items you wish to process</li>
-              <li>Delete the entire row you do not intend to process</li>
+              <li>Download the Sample File ZIP.</li>
+              <li>Fill in user details in the Sample File.</li>
+              <li>Verify via OTP.</li>
+              <li>Upload the populated sample csv file.</li>
+              <li>Check the upload results for confirmation.</li>
             </ol>
           </div>
           <div class="flex flex-row gap-6">
@@ -19,7 +21,8 @@
       </div>
       <div class="flex-1">
         <div class="flex flex-col gap-2 dashed-card items-center">
-          <div class="flex cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
+          <div class="flex cursor-pointer margin-top-m" (click)="fileInput.click()"
+            (dblclick)="$event.preventDefault()">
             <img src="/assets/icons/csv-file.svg" alt="CSV file logo" />
           </div>
           <div *ngIf="showFileError" class="error-msg">Upload CSV format file only</div>
@@ -32,7 +35,7 @@
             <!-- <div class="flex">or</div>
             <div class="flex">Drag file to upload</div> -->
           </div>
-          <div class="flex flex-col items-center">
+          <div class="flex flex-col items-center margin-bottom-m">
             <div class="flex">Max file size: 100 MB</div>
             <div class="flex">Supported file types: CSV</div>
           </div>
