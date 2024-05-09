@@ -200,12 +200,16 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     } else if (currentFilter === 'verified') {
       filtreq = {
         rootOrgId: this.rootOrgId,
-        'profileDetails.profileStatus': 'VERIFIED',
+        profileDetails: {
+          profileStatus: 'VERIFIED',
+        },
       }
     } else if (currentFilter === 'nonverified') {
       filtreq = {
         rootOrgId: this.rootOrgId,
-        'profileDetails.profileStatus': 'NOT-VERIFIED',
+        profileDetails: {
+          profileStatus: 'NOT-VERIFIED',
+        },
       }
     }
 
