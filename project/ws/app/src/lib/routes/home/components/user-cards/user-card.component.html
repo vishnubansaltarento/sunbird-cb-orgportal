@@ -5,8 +5,7 @@
 
 <div *ngIf="!isApprovals">
   <mat-accordion [multi]="true">
-    <mat-expansion-panel class="user-card" *ngFor="let user of usersData?.content" #panel
-      (opened)="closeOtherPanels(panel)">
+    <mat-expansion-panel class="user-card" *ngFor="let user of usersData" #panel (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user)">
         <div class="float-left width88" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-m">
@@ -15,19 +14,19 @@
             </ws-widget-avatar-photo>
           </div>
           <div class="username display-inline-block">
-            <div class="mat-subheading-2 margin-remove"
-              *ngIf="user?.profileDetails && user?.profileDetails?.personalDetails">
-              {{user?.profileDetails?.personalDetails?.firstname}}
+            <div class="mat-subheading-2 margin-remove">
+              <span *ngIf="user?.profileDetails && user?.profileDetails?.personalDetails">
+                {{user?.profileDetails?.personalDetails?.firstname}}
+              </span>
+              <span *ngIf="!user?.profileDetails?.personalDetails">
+                {{user?.firstName}}
+              </span>
               <span class="status-label margin-left-s verified"
                 *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">Verified
                 <mat-icon>check_circle</mat-icon></span>
               <span class="status-label margin-left-s nonverified"
                 *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">Non-verified
                 <mat-icon>check_circle</mat-icon></span>
-            </div>
-
-            <div class="mat-subheading-2 display-inline-block margin-remove" *ngIf="!user?.profileDetails">
-              {{user?.firstName}}
             </div>
             <div class="mat-body-2 ws-mat-black40-text">{{user?.profileDetails &&
               user?.profileDetails?.professionalDetails
@@ -368,9 +367,9 @@
           <div class="flex flex-row margin-top-m">
             <div class="md:w-1/3">
               <label class="view-text-label">Group</label>
-              <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
-                user.profileDetails.additionalProperties.group ?
-                user.profileDetails.additionalProperties.group : '-'}}
+              <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
+                user.profileDetails.professionalDetails[0].group ?
+                user.profileDetails.professionalDetails[0].group : '-'}}
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
                   check_circle</mat-icon>
@@ -499,7 +498,7 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <div *ngIf="usersData && usersData?.content.length === 0">
+  <div *ngIf="usersData && usersData.length === 0">
     <p class="margin-top-xl margin-bottom-xl">No users found</p>
   </div>
 </div>
