@@ -196,7 +196,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   async getAllUsers(query: string) {
     this.loaderService.changeLoad.next(true)
     // const usersData: any[] = []
-    let filtreq = {
+    const filtreq = {
       rootOrgId: this.rootOrgId,
       status: 1,
     }
@@ -206,7 +206,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       // if (allusersData && allusersData.content && allusersData.content.length > 0) {
       //   _.filter(allusersData.content, { isDeleted: false }).forEach((user: any) => {
       //     // tslint:disable-next-line
-      //     const org = { roles: _.get(_.first(_.filter(user.organisations, { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
+      //     const org = { roles: _.get(_.first(_.filter(user.organisations,
+      // { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
       //     usersData.push({
       //       fullname: user ? `${user.firstName}` : null,
       //       // fullname: user ? `${user.firstName} ${user.lastName}` : null,

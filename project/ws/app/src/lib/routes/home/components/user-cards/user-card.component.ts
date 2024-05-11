@@ -294,7 +294,7 @@ export class UserCardComponent implements OnInit {
   }
 
   onEditUser(user: any) {
-    user.enableEdit = true
+    user.enableEdit = !user.enableEdit
     this.setUserDetails(user)
   }
 
@@ -495,7 +495,7 @@ export class UserCardComponent implements OnInit {
     this.searchByEnterKey.emit(event)
   }
 
-  onSubmit(form: any, user: any) {
+  onSubmit(form: any, user: any, panel: any) {
     if (form.valid) {
       // const tags = user.profileDetails && user.profileDetails.additionalProperties && user.profileDetails.additionalProperties.tags ?
       //   user.profileDetails.additionalProperties.tags : []
@@ -558,7 +558,7 @@ export class UserCardComponent implements OnInit {
                 if (res) {
                   this.updateUserDataForm.reset({ roles: '' })
                   this.openSnackbar('User role updated Successfully')
-                  // panel.close()
+                  panel.close()
                   // this.router.navigate(['/app/home/users/allusers'])
 
                   this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
@@ -580,6 +580,7 @@ export class UserCardComponent implements OnInit {
                 // tslint:disable-next-line
                 user = res
                 user.enableEdit = false
+                panel.close()
               }
             })
           }
