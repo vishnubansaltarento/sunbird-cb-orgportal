@@ -13,7 +13,7 @@ import { NSProfileDataV2 } from '../../models/profile-v2.model'
 import { UsersService } from '../../../users/services/users.service'
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
-import { ProfileV2UtillService } from '../../services/home-utill.service'
+// import { ProfileV2UtillService } from '../../services/home-utill.service'
 import { ReportsVideoComponent } from '../reports-video/reports-video.component'
 
 @Component({
@@ -69,7 +69,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     // private snackBar: MatSnackBar,
     private events: EventService,
     private loaderService: LoaderService,
-    private profileUtilSvc: ProfileV2UtillService,
+    // private profileUtilSvc: ProfileV2UtillService,
     private sanitizer: DomSanitizer,
     // private telemetrySvc: TelemetryService,
     // private configSvc: ConfigurationsService,
@@ -93,6 +93,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     // }
   }
   ngOnInit() {
+    this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
     this.rootOrgId = _.get(this.route.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
     this.searchQuery = ''
     if (this.configSvc.unMappedUser && this.configSvc.unMappedUser.roles) {
@@ -100,10 +101,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     }
     // this.filterData('')
 
-    this.getUsers('', 'allusers')
-    // this.getUsers('', 'verified')
-    // this.getUsers('', 'nonverified')
-    // this.getUsers('', 'notmyuser')
+    this.getAllUsers('')
+    this.getVUsers('')
+    this.getNVUsers('')
 
     this.reportsNoteList = [
       `Easily create users individually or in bulk.`,
@@ -133,7 +133,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
 
   filter(filter: string) {
     this.currentFilter = filter
-    // console.log('filter---------', filter)
     this.pageIndex = 0
     this.currentOffset = 0
     this.limit = 20
@@ -153,7 +152,14 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   }
 
   filterData(query: string) {
-    this.getUsers(query, this.currentFilter)
+    // this.getUsers(query, this.currentFilter)
+    if (this.currentFilter === 'allusers') {
+      this.getAllUsers(query)
+    } else if (this.currentFilter === 'verified') {
+      this.getVUsers(query)
+    } else if (this.currentFilter === 'nonverified') {
+      this.getNVUsers(query)
+    }
   }
 
   showEditUser(roles: any): boolean {
@@ -167,94 +173,92 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     return true
   }
 
-  blockedUsers() {
-    const blockedUsersData: any[] = []
-    if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
-      _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
-        blockedUsersData.push({
-          fullname: user ? `${user.firstName}` : null,
-          // fullname: user ? `${user.firstName} ${user.lastName}` : null,
-          email: user.personalDetails && user.personalDetails.primaryEmail ?
-            this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
-          role: user.roles,
-          userId: user.id,
-          active: !user.isDeleted,
-          blocked: user.blocked,
-          roles: _.join(_.map(user.roleInfo, i => `<li>${i}</li>`), ''),
-        })
-      })
-    }
-    return blockedUsersData
-  }
+  // blockedUsers() {
+  //   const blockedUsersData: any[] = []
+  //   if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
+  //     _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
+  //       blockedUsersData.push({
+  //         fullname: user ? `${user.firstName}` : null,
+  //         // fullname: user ? `${user.firstName} ${user.lastName}` : null,
+  //         email: user.personalDetails && user.personalDetails.primaryEmail ?
+  //           this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
+  //         role: user.roles,
+  //         userId: user.id,
+  //         active: !user.isDeleted,
+  //         blocked: user.blocked,
+  //         roles: _.join(_.map(user.roleInfo, i => `<li>${i}</li>`), ''),
+  //       })
+  //     })
+  //   }
+  //   return blockedUsersData
+  // }
 
-  getUsers(query: string, currentFilter: any) {
-    // console.log('currentFilter', currentFilter)
+  async getAllUsers(query: string) {
     this.loaderService.changeLoad.next(true)
-    const usersData: any[] = []
-    let filtreq = {}
-    if (currentFilter === 'allusers') {
-      filtreq = {
-        rootOrgId: this.rootOrgId,
-        status: 1,
-      }
-    } else if (currentFilter === 'verified') {
-      filtreq = {
-        rootOrgId: this.rootOrgId,
-        profileDetails: {
-          profileStatus: 'VERIFIED',
-        },
-      }
-    } else if (currentFilter === 'nonverified') {
-      filtreq = {
-        rootOrgId: this.rootOrgId,
-        profileDetails: {
-          profileStatus: 'NOT-VERIFIED',
-        },
-      }
+    // const usersData: any[] = []
+    const filtreq = {
+      rootOrgId: this.rootOrgId,
+      status: 1,
     }
 
     this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
-      this.usersData = data.result.response
-      if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
-        _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
-          // tslint:disable-next-line
-          const org = { roles: _.get(_.first(_.filter(user.organisations, { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
-          usersData.push({
-            fullname: user ? `${user.firstName}` : null,
-            // fullname: user ? `${user.firstName} ${user.lastName}` : null,
-            email: user.personalDetails && user.personalDetails.primaryEmail ?
-              this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
-            role: org.roles || [],
-            userId: user.id,
-            active: !user.isDeleted,
-            blocked: user.blocked,
-            roles: _.join(_.map((org.roles || []), i => `<li>${i}</li>`), ''),
-            orgId: user.rootOrgId,
-            orgName: user.rootOrgName,
-            allowEditUser: this.showEditUser(org.roles),
-          })
-        })
+      const allusersData = data.result.response
+      // if (allusersData && allusersData.content && allusersData.content.length > 0) {
+      //   _.filter(allusersData.content, { isDeleted: false }).forEach((user: any) => {
+      //     // tslint:disable-next-line
+      //     const org = { roles: _.get(_.first(_.filter(user.organisations,
+      // { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
+      //     usersData.push({
+      //       fullname: user ? `${user.firstName}` : null,
+      //       // fullname: user ? `${user.firstName} ${user.lastName}` : null,
+      //       email: user.personalDetails && user.personalDetails.primaryEmail ?
+      //         this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
+      //       role: org.roles || [],
+      //       userId: user.id,
+      //       active: !user.isDeleted,
+      //       blocked: user.blocked,
+      //       roles: _.join(_.map((org.roles || []), i => `<li>${i}</li>`), ''),
+      //       orgId: user.rootOrgId,
+      //       orgName: user.rootOrgName,
+      //       allowEditUser: this.showEditUser(org.roles),
+      //     })
+      //   })
 
-        usersData.sort((a: any, b: any) => {
-          const textA = a.fullname.toUpperCase()
-          const textB = b.fullname.toUpperCase()
-          return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-        })
-      }
-      if (this.currentFilter === 'allusers') {
-        this.activeUsersData = usersData
-        this.activeUsersDataCount = this.usersData.count
-      } else if (this.currentFilter === 'verified') {
-        this.verifiedUsersData = usersData
-        this.verifiedUsersDataCount = this.usersData.count
-      } else if (this.currentFilter === 'nonverified') {
-        this.notmyuserUsersData = usersData
-        this.nonverifiedUsersDataCount = this.usersData.count
-      } else if (this.currentFilter === 'notmyuser') {
-        this.notmyuserUsersData = usersData
-        this.notmyuserUsersDataCount = this.usersData.count
-      }
-      return usersData
+      //   usersData.sort((a: any, b: any) => {
+      //     const textA = a.fullname.toUpperCase()
+      //     const textB = b.fullname.toUpperCase()
+      //     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+      //   })
+      // }
+      this.activeUsersData = allusersData.content
+      this.activeUsersDataCount = data.result.response.count
+    })
+  }
+  async getVUsers(query: string) {
+    this.loaderService.changeLoad.next(true)
+    const filtreq = {
+      rootOrgId: this.rootOrgId,
+      'profileDetails.profileStatus': 'VERIFIED',
+    }
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+      const allusersData = data.result.response
+      this.verifiedUsersData = allusersData.content
+      this.verifiedUsersDataCount = data.result.response.count
+    })
+  }
+
+  async getNVUsers(query: string) {
+    this.loaderService.changeLoad.next(true)
+    const filtreq = {
+      rootOrgId: this.rootOrgId,
+      'profileDetails.profileStatus': 'NOT-VERIFIED',
+    }
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+      const allusersData = data.result.response
+      this.nonverifiedUsersData = allusersData.content
+      this.nonverifiedUsersDataCount = data.result.response.count
     })
   }
 
