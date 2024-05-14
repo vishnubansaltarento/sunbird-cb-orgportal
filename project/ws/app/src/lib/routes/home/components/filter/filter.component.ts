@@ -44,9 +44,11 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   constructor(
     private cdref: ChangeDetectorRef,
     private trainingPlanService: TrainingPlanService,
-    private usersSvc: UsersService) { }
+    private usersSvc: UsersService) {
+  }
 
   ngOnInit() {
+    if (!this.usersSvc.filterToggle) { return }
     this.usersSvc.filterToggle.subscribe((data: any) => {
       if (data && data.status) {
         if (data.from === 'content') {
@@ -72,6 +74,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       }
     })
 
+    if (!this.usersSvc.clearFilter) { return }
     this.usersSvc.clearFilter.subscribe((result: any) => {
       if (result && result.status) {
         this.from = result.from
