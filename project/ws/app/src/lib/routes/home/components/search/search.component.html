@@ -30,3 +30,7 @@
             [ngClass]="{'disable': isContentLive}">Bulk profile update</button>
     </div>
 </div>
+
+<div [hidden]="!filterVisibilityFlag">
+    <ws-app-filter [from]="from"></ws-app-filter>
+</div>

@@ -3,8 +3,9 @@ import {
   Output, QueryList, ViewChildren, ChangeDetectionStrategy, AfterContentChecked,
 } from '@angular/core'
 import { FormControl } from '@angular/forms'
-import { TrainingPlanDataSharingService } from '../../../training-plan/services/training-plan-data-share.service'
+// import { TrainingPlanDataSharingService } from '../../../training-plan/services/training-plan-data-share.service'
 import { TrainingPlanService } from '../../../training-plan/services/traininig-plan.service'
+import { UsersService } from '../../../users/services/users.service'
 @Component({
   selector: 'ws-app-filter',
   templateUrl: './filter.component.html',
@@ -43,17 +44,17 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   constructor(
     private cdref: ChangeDetectorRef,
     private trainingPlanService: TrainingPlanService,
-    private tpdsSvc: TrainingPlanDataSharingService) { }
+    private usersSvc: UsersService) { }
 
   ngOnInit() {
-    this.tpdsSvc.filterToggle.subscribe((data: any) => {
+    this.usersSvc.filterToggle.subscribe((data: any) => {
       if (data && data.status) {
         if (data.from === 'content') {
           this.getFilterEntity()
           // this.getProviders()
         } else {
-          // if(this.tpdsSvc.trainingPlanAssigneeData &&
-          //   this.tpdsSvc.trainingPlanAssigneeData.category === 'Custom Users') {
+          // if(this.usersSvc.trainingPlanAssigneeData &&
+          //   this.usersSvc.trainingPlanAssigneeData.category === 'Custom Users') {
           //   this.getDesignation();
           // }
           if (!this.designationList.length) {
@@ -71,7 +72,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       }
     })
 
-    this.tpdsSvc.clearFilter.subscribe((result: any) => {
+    this.usersSvc.clearFilter.subscribe((result: any) => {
       if (result && result.status) {
         this.from = result.from
         this.clearFilter()
@@ -114,7 +115,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
 
   hideFilter() {
     // this.toggleFilter.emit(false)
-    this.tpdsSvc.filterToggle.next({ from: '', status: false })
+    this.usersSvc.filterToggle.next({ from: '', status: false })
   }
 
   checkedProviders(event: any, item: any) {
@@ -273,12 +274,12 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   applyFilter() {
     if (this.from === 'content') {
       // this.getFilterData.emit(this.filterObj)
-      this.tpdsSvc.getFilterDataObject.next(this.filterObj)
+      this.usersSvc.getFilterDataObject.next(this.filterObj)
     } else {
-      this.tpdsSvc.getFilterDataObject.next(this.assigneeFilterObj)
+      this.usersSvc.getFilterDataObject.next(this.assigneeFilterObj)
       // this.getFilterData.emit(this.assigneeFilterObj)
     }
-    this.tpdsSvc.filterToggle.next({ from: '', status: false })
+    this.usersSvc.filterToggle.next({ from: '', status: false })
   }
 
   clearFilter() {
@@ -298,10 +299,10 @@ export class FilterComponent implements OnInit, AfterContentChecked {
 
     if (this.from === 'content') {
       // this.getFilterData.emit(this.filterObj)
-      // this.tpdsSvc.getFilterDataObject.next(this.filterObj)
+      // this.usersSvc.getFilterDataObject.next(this.filterObj)
     } else {
       // this.getFilterData.emit(this.assigneeFilterObj)
-      // this.tpdsSvc.getFilterDataObject.next(this.assigneeFilterObj)
+      // this.usersSvc.getFilterDataObject.next(this.assigneeFilterObj)
     }
 
     if (this.checkboxes) {

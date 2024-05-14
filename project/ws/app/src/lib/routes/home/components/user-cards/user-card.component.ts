@@ -105,9 +105,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -249,7 +249,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-                                                  (_err: any) => {
+      (_err: any) => {
       })
   }
 
@@ -294,7 +294,7 @@ export class UserCardComponent implements OnInit {
   }
 
   onEditUser(user: any) {
-    user.enableEdit = true
+    user.enableEdit = !user.enableEdit
     this.setUserDetails(user)
   }
 
@@ -367,14 +367,11 @@ export class UserCardComponent implements OnInit {
         if (user.profileDetails.professionalDetails.designation) {
           this.updateUserDataForm.controls['designation'].setValue(user.profileDetails.professionalDetails.designation)
         }
-      }
+        if (user.profileDetails.professionalDetails[0].group) {
+          this.updateUserDataForm.controls['group'].setValue(user.profileDetails.professionalDetails[0].group)
 
-      if (user.profileDetails.additionalProperties) {
-        if (user.profileDetails.additionalProperties.group) {
-          this.updateUserDataForm.controls['group'].setValue(user.profileDetails.additionalProperties.group)
         }
       }
-
       if (user.profileDetails.personalDetails) {
         if (user.profileDetails.personalDetails.primaryEmail) {
           this.updateUserDataForm.controls['primaryEmail'].setValue(user.profileDetails.personalDetails.primaryEmail)
@@ -422,8 +419,10 @@ export class UserCardComponent implements OnInit {
 
   getUseravatarName(user: any) {
     let name = ''
-    if (user && user.profileDetails && user.profileDetails.personalDetails.firstname) {
-      name = `${user.profileDetails.personalDetails.firstname}`
+    if (user && user.profileDetails && user.profileDetails.personalDetails) {
+      if (user.profileDetails.personalDetails.firstname) {
+        name = `${user.profileDetails.personalDetails.firstname}`
+      }
     } else {
       name = `${user.firstName}`
     }
@@ -496,7 +495,7 @@ export class UserCardComponent implements OnInit {
     this.searchByEnterKey.emit(event)
   }
 
-  onSubmit(form: any, user: any) {
+  onSubmit(form: any, user: any, panel: any) {
     if (form.valid) {
       // const tags = user.profileDetails && user.profileDetails.additionalProperties && user.profileDetails.additionalProperties.tags ?
       //   user.profileDetails.additionalProperties.tags : []
@@ -559,7 +558,7 @@ export class UserCardComponent implements OnInit {
                 if (res) {
                   this.updateUserDataForm.reset({ roles: '' })
                   this.openSnackbar('User role updated Successfully')
-                  // panel.close()
+                  panel.close()
                   // this.router.navigate(['/app/home/users/allusers'])
 
                   this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
@@ -581,6 +580,7 @@ export class UserCardComponent implements OnInit {
                 // tslint:disable-next-line
                 user = res
                 user.enableEdit = false
+                panel.close()
               }
             })
           }
@@ -668,7 +668,7 @@ export class UserCardComponent implements OnInit {
           this.comment = ''
           setTimeout(() => {
             this.openSnackbar('Request approved successfully')
-          },         100)
+          }, 100)
         }
         // tslint:disable-next-line
         this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })

@@ -38,6 +38,9 @@ const API_END_POINTS = {
 })
 export class UsersService {
   handleContentPageChange = new Subject()
+  filterToggle = new Subject()
+  clearFilter = new Subject()
+  getFilterDataObject = new Subject()
   constructor(private http: HttpClient) { }
   getAllUsers(filter: object): Observable<any> {
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, filter).pipe(map(res => _.get(res, 'result.response')))
