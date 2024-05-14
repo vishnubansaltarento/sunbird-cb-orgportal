@@ -5,17 +5,17 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label required">Full name</div>
-        <input type="text" class="input-text" formControlName="fullName" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="firstName" placeholder="Type here" />
         <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('fullName')?.touched && userCreationForm?.get('fullName')?.invalid">
+          *ngIf="userCreationForm?.get('firstName')?.touched && userCreationForm?.get('firstName')?.invalid">
           Please enter your full name
         </mat-error>
       </div>
       <div class="input-container">
         <div class="label required">Email</div>
-        <input type="text" class="input-text" formControlName="primaryEmail" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="email" placeholder="Type here" />
         <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('primaryEmail')?.touched && userCreationForm?.get('primaryEmail')?.invalid">
+          *ngIf="userCreationForm?.get('email')?.touched && userCreationForm?.get('email')?.invalid">
           Please enter a valid email address
         </mat-error>
       </div>
@@ -24,15 +24,15 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label required">Mobile number</div>
-        <input type="text" class="input-text" formControlName="mobile" maxlength="10" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="phone" maxlength="10" placeholder="Type here" />
         <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('mobile')?.touched && userCreationForm?.get('mobile')?.invalid">
+          *ngIf="userCreationForm?.get('phone')?.touched && userCreationForm?.get('phone')?.invalid">
           Please enter a valid mobile number
         </mat-error>
       </div>
 
       <div class="input-container">
-        <div class="label required">Designation</div>
+        <div class="label">Designation</div>
         <mat-form-field class="profile-form-field">
           <div class="flex flex-row auto-complete-row">
             <input type="text" class="input-text" aria-label="Designation" matInput formControlName="designation"
@@ -50,7 +50,7 @@
 
     <div class="flex flex-row gap-6">
       <div class="input-container">
-        <div class="label required">Group</div>
+        <div class="label">Group</div>
         <mat-form-field class="profile-form-field">
           <mat-select formControlName="group">
             <mat-option value="">Choose a group</mat-option>
@@ -120,7 +120,17 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label">Tags</div>
-        <input type="text" class="input-text" formControlName="tags" placeholder="Enter tags" />
+        <input type="text" class="input-text" matInput i18n-placeholder="Type tag here"
+          placeholder="Type tag here and press enter" [matChipInputFor]="chipListTags" autocomplete="off"
+          maxlength="100" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="handleAddTags($event)" />
+        <mat-chip-list #chipListTags>
+          <mat-chip *ngFor="let tag of userCreationForm?.get('tags')?.value" [selectable]="true" [removable]="true"
+            (removed)="handleRemoveTag(tag)">
+            {{ tag }}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </mat-chip-list>
       </div>
       <div class="input-container"></div>
     </div>
@@ -129,9 +139,9 @@
       <div class="input-container">
         <div class="label required mb-2">Role</div>
         <div class="flex flex-col gap-4">
-          <div class="flex flex-row gap-4" *ngFor="let item of [1, 2, 3, 4, 5, 6, 7, 8]">
-            <div class="flex-1">CBP_ADMIN</div>
-            <mat-checkbox></mat-checkbox>
+          <div class="flex flex-row gap-4" *ngFor="let role of masterData?.mdoRoles">
+            <div class="flex-1">{{ role }}</div>
+            <mat-checkbox #rolesCheckbox (change)="handleRolesCheck($event, role)"></mat-checkbox>
           </div>
         </div>
       </div>
@@ -139,8 +149,8 @@
     </div>
 
     <div class="flex flex-row gap-4">
-      <button class="action-button" [disabled]="userCreationForm?.invalid"
-        [ngClass]="{'disable-button': userCreationForm?.invalid}">Create user</button>
+      <button class="action-button" [ngClass]="{'disable-button': userCreationForm?.invalid}"
+        [disabled]="userCreationForm?.invalid" (click)="handleUserCreation()">Create user</button>
       <button class="outline-button" (click)="handleFormClear()">Clear</button>
     </div>
   </form>

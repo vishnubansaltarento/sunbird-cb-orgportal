@@ -13,7 +13,10 @@ import { UsersService } from '../../../users/services/users.service'
 export class SearchComponent implements OnInit {
   @Input() from: any = ''
   @Input() isApprovals: any
+  @Input() showApproveALL: any
+  @Input() disableApproveALL: any
   @Output() handleApiData = new EventEmitter()
+  @Output() handleapproveAll = new EventEmitter()
   searchText = ''
   filterVisibilityFlag = false
   clearFilter = false
@@ -32,14 +35,14 @@ export class SearchComponent implements OnInit {
     //   if (pageData) {
     //     this.pageIndex = pageData.pageIndex
     //     this.pageSize = pageData.pageSize
-    //     this.getContent()
+    //     // this.getContent()
     //   }
     // })
   }
 
   openFilter() {
     this.filterVisibilityFlag = true
-    // this.tpdsSvc.filterToggle.next({ from: this.from, status: true })
+    this.usersSvc.filterToggle.next({ from: this.from, status: true })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
     //   ele.style.zIndex = '1'
@@ -49,7 +52,7 @@ export class SearchComponent implements OnInit {
 
   hideFilter(event: any) {
     this.filterVisibilityFlag = event
-    // this.tpdsSvc.filterToggle.next({ from: '', status: false })
+    this.usersSvc.filterToggle.next({ from: '', status: false })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
     //   ele.style.zIndex = '1000'
@@ -95,7 +98,9 @@ export class SearchComponent implements OnInit {
     this.pageSize = 20
   }
 
-  createUser() { }
+  approveAll() {
+    this.handleapproveAll.emit()
+  }
 
   sort() { }
 }
