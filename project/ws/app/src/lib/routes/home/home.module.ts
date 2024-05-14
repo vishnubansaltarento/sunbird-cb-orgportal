@@ -35,6 +35,7 @@ import { InitResolver } from './resolvers/init-resolve.service'
 import { MdoInfoService } from './services/mdoinfo.service'
 import { UploadService } from './services/upload.service'
 import { TrainingPlanDashboardService } from './services/training-plan-dashboard.service'
+import { UsersService } from '../users/services/users.service'
 
 import { HomeComponent } from './routes/home/home.component'
 import { UsersViewComponent } from './routes/users-view/users-view.component'
@@ -188,6 +189,7 @@ import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk
     MdoInfoService,
     UploadService,
     TrainingPlanDashboardService,
+    UsersService,
   ],
 })
 export class HomeModule {
