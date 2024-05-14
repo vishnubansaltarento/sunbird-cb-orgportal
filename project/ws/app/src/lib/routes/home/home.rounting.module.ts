@@ -25,6 +25,8 @@ import { ConfigResolveService } from './resolvers/config-resolve.service'
 import { UsersListResolve } from './resolvers/users-list-resolve.service'
 import { UserCreationComponent } from './routes/users-view/user-creation/user-creation.component'
 import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
+import { RequestListComponent } from './components/request-list/request-list.component'
+import { CreateRequestFormComponent } from './components/request-list/create-request-form/create-request-form.component'
 
 const routes: Routes = [
   {
@@ -310,6 +312,33 @@ const routes: Routes = [
           pageData: PageResolve,
         },
       },
+      {
+        path: 'request-list',
+        component: RequestListComponent,
+        data: {
+          pageId: 'request-list',
+          pageType: 'feature',
+          pageKey: 'request-list',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+          pageData: PageResolve,
+        },
+      },
+      {
+        path: 'create-request-form',
+        component: CreateRequestFormComponent,
+        data: {
+          pageId: 'create-request-form',
+          pageType: 'feature',
+          pageKey: 'create-request-form',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+          pageData: PageResolve,
+        },
+      },
+
     ],
   },
   {

@@ -1,0 +1,31 @@
+.reportsDemo {
+
+
+    .reportsDemoVideo {
+      width: 290px;
+      height: 163px;
+      border-radius: 5px;
+      background-color: #FDEAD5;
+      font-weight: 600;
+      pointer-events: all;
+      cursor: pointer;
+
+      .video_icon {
+        font-size: 32px;
+      }
+    }
+  }
+
+  .create-action {
+    display: flex;
+    justify-content: end;
+    .search-btn {
+        background: #1b4ca1 !important;
+        color: white !important;
+        font-family: 'Lato';
+        font-weight: 700;
+        font-size: 14px;
+        border-radius: 4px;
+        min-width: 138px;
+    }
+  }

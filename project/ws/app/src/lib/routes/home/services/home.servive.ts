@@ -3,8 +3,11 @@ import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs'
 import { NSProfileDataV2 } from '../models/profile-v2.model'
 import { map } from 'rxjs/operators'
+// tslint:disable
+import _ from 'lodash'
 
 const PROTECTED_SLAG_V8 = '/apis/protected/v8'
+
 
 const API_END_POINTS = {
   DISCUSS_PROFILE: '/apis/protected/v8/discussionHub/users',
@@ -16,6 +19,9 @@ const API_END_POINTS = {
   // GET_MY_DEPARTMENT: '/apis/protected/v8/portal/mdo/mydepartment?allUsers=false',
   GET_MY_DEPARTMENT_ALL: '/apis/protected/v8/portal/mdo/mydepartment?allUsers=true',
   GET_USER_DETAILS: `/apis/protected/v8/user/details?ts='${Date.now()}`,
+  GET_FILTER_ENTITY: 'apis/proxies/v8/competency/v4/search',
+  GET_REQUEST_TYPE_LIST:'/apis/proxies/v8/org/v1/search',
+  CREATE_DEMAND_REQUEST:'/apis/proxies/v8/demand/content/create'
 }
 
 @Injectable({
@@ -48,4 +54,17 @@ export class ProfileV2Service {
   getUserDetails(): Observable<any> {
     return this.http.get<any>(`${API_END_POINTS.GET_USER_DETAILS}`)
   }
+
+  getFilterEntity(filter: object): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.GET_FILTER_ENTITY}`, filter).pipe(map(res => _.get(res, 'result.competency')))
+  }
+
+  getRequestTypeList(request:any):Observable<any>{
+    return this.http.post<any>(`${API_END_POINTS.GET_REQUEST_TYPE_LIST}`,request).pipe(map(res=> _.get(res, 'result.response.content')))
+  }
+
+  createDemand(request:any){
+   return this.http.post<any>(`${API_END_POINTS.CREATE_DEMAND_REQUEST}`,request)
+  }
+
 }
