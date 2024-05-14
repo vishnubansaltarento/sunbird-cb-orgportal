@@ -105,9 +105,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -249,7 +249,7 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-      (_err: any) => {
+                                                  (_err: any) => {
       })
   }
 
@@ -668,9 +668,8 @@ export class UserCardComponent implements OnInit {
           this.comment = ''
           setTimeout(() => {
             this.openSnackbar('Request approved successfully')
-          }, 100)
+          },         100)
         }
-
         // tslint:disable-next-line
         this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
         if (this.approvalData.length === 0) {

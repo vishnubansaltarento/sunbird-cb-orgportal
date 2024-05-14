@@ -7,9 +7,12 @@ import { HttpErrorResponse } from '@angular/common/http'
 import { COMMA, ENTER } from '@angular/cdk/keycodes'
 import { Subject } from 'rxjs'
 import { debounceTime, distinctUntilChanged, startWith, takeUntil } from 'rxjs/operators'
-
+/* tslint:disable */
+import _ from 'lodash'
+/* tslint:enable */
 import { UsersService } from '../../../../users/services/users.service'
 import { RolesService } from '../../../../users/services/roles.service'
+import { ActivatedRoute } from '@angular/router'
 
 export const MY_FORMATS = {
   parse: {
@@ -43,10 +46,12 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA]
   masterData: any = {}
   rolesArr: string[] = []
+  fullProfile: any
   userCreationForm = this.formBuilder.group({
-    fullName: new FormControl('', [Validators.required]),
-    primaryEmail: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
-    mobile: new FormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.minLength(10)]),
+    email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
+    firstName: new FormControl('', [Validators.required]),
+    phone: new FormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.minLength(10)]),
+    channel: new FormControl(''),
     designation: new FormControl(''),
     group: new FormControl(''),
     dob: new FormControl(''),
@@ -62,8 +67,12 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private matSnackBar: MatSnackBar,
-    private rolesService: RolesService
+    private rolesService: RolesService,
+    private activatedRouter: ActivatedRoute
   ) {
+
+    this.fullProfile = _.get(this.activatedRouter.snapshot, 'data.configService')
+
     if (this.userCreationForm.get('designation')) {
       // tslint:disable-next-line
       this.userCreationForm.get('designation')!.valueChanges
@@ -102,6 +111,9 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
     this.getMasterLanguages()
     this.getGroups()
     this.getOrgRolesList()
+    this.userCreationForm.patchValue({
+      channel: (this.fullProfile && this.fullProfile.unMappedUser.channel) || '',
+    })
   }
 
   getDesignation(): void {
@@ -209,14 +221,25 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line
       dataToSubmit.dob = `${new Date(dataToSubmit.dob).getDate()}-${new Date(dataToSubmit.dob).getMonth() + 1}-${new Date(dataToSubmit.dob).getFullYear()}`
     }
-    this.usersService.createUser(dataToSubmit)
+
+    if (!this.userCreationForm.value.channel) {
+      this.matSnackBar.open('Channel info is empty! So unable to create user')
+      return
+    }
+
+    const postData = {
+      personalDetails: '',
+    }
+    postData.personalDetails = dataToSubmit
+
+    this.usersService.createUser(postData)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((_res: any) => {
         this.matSnackBar.open('User created successfully!')
         this.handleFormClear()
       },         (_err: HttpErrorResponse) => {
         if (!_err.ok) {
-          this.matSnackBar.open('Unable to create user, please try again later!')
+          this.matSnackBar.open(_.get(_err, 'error.params.errmsg') || 'Unable to create user, please try again later!')
         }
       })
   }

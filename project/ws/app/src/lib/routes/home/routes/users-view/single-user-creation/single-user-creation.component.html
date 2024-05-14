@@ -5,17 +5,17 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label required">Full name</div>
-        <input type="text" class="input-text" formControlName="fullName" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="firstName" placeholder="Type here" />
         <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('fullName')?.touched && userCreationForm?.get('fullName')?.invalid">
+          *ngIf="userCreationForm?.get('firstName')?.touched && userCreationForm?.get('firstName')?.invalid">
           Please enter your full name
         </mat-error>
       </div>
       <div class="input-container">
         <div class="label required">Email</div>
-        <input type="text" class="input-text" formControlName="primaryEmail" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="email" placeholder="Type here" />
         <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('primaryEmail')?.touched && userCreationForm?.get('primaryEmail')?.invalid">
+          *ngIf="userCreationForm?.get('email')?.touched && userCreationForm?.get('email')?.invalid">
           Please enter a valid email address
         </mat-error>
       </div>
@@ -24,9 +24,9 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label required">Mobile number</div>
-        <input type="text" class="input-text" formControlName="mobile" maxlength="10" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="phone" maxlength="10" placeholder="Type here" />
         <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('mobile')?.touched && userCreationForm?.get('mobile')?.invalid">
+          *ngIf="userCreationForm?.get('phone')?.touched && userCreationForm?.get('phone')?.invalid">
           Please enter a valid mobile number
         </mat-error>
       </div>
