@@ -42,6 +42,7 @@ export class UserCardComponent implements OnInit {
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
   @Output() disableButton = new EventEmitter()
+  @Output() updateList = new EventEmitter()
   @ViewChildren(MatExpansionPanel) panels!: QueryList<MatExpansionPanel>
 
   @ViewChild('rejectDialog', { static: false })
@@ -249,7 +250,8 @@ export class UserCardComponent implements OnInit {
         countryCode: '+91',
       })
     },
-                                                  (_err: any) => {
+      // tslint:disable-next-line
+      (_err: any) => {
       })
   }
 
@@ -433,8 +435,9 @@ export class UserCardComponent implements OnInit {
     this.userwfData = approvalData
   }
 
-  cancelSubmit() {
+  cancelSubmit(user: any) {
     this.updateUserDataForm.reset()
+    user.enableEdit = !user.enableEdit
   }
 
   modifyUserRoles(role: string) {
@@ -559,15 +562,16 @@ export class UserCardComponent implements OnInit {
                   this.updateUserDataForm.reset({ roles: '' })
                   this.openSnackbar('User role updated Successfully')
                   panel.close()
+                  this.updateList.emit()
                   // this.router.navigate(['/app/home/users/allusers'])
 
-                  this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
-                    if (_res) {
-                      // tslint:disable-next-line
-                      user = _res
-                      user['enableEdit'] = false
-                    }
-                  })
+                  // this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
+                  //   if (_res) {
+                  //     // tslint:disable-next-line
+                  //     user = _res
+                  //     user['enableEdit'] = false
+                  //   }
+                  // })
                 }
               })
             } else {
@@ -575,14 +579,16 @@ export class UserCardComponent implements OnInit {
             }
           } else {
             user['enableEdit'] = false
-            this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
-              if (res) {
-                // tslint:disable-next-line
-                user = res
-                user.enableEdit = false
-                panel.close()
-              }
-            })
+
+            panel.close()
+            this.updateList.emit()
+            // this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+            //   if (res) {
+            //     // tslint:disable-next-line
+            //     user = res
+            //     user.enableEdit = false
+            //   }
+            // })
           }
         }
       },
@@ -668,7 +674,8 @@ export class UserCardComponent implements OnInit {
           this.comment = ''
           setTimeout(() => {
             this.openSnackbar('Request approved successfully')
-          },         100)
+            // tslint:disable-next-line
+          }, 100)
         }
         // tslint:disable-next-line
         this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
@@ -700,5 +707,27 @@ export class UserCardComponent implements OnInit {
 
   showedit() {
     this.showeditText = true
+  }
+
+  markStatus(status: any, user: any) {
+    const reqbody = {
+      request: {
+        userId: user.userId,
+        profileDetails: {
+          profileStatus: status,
+        },
+      },
+    }
+
+    this.usersSvc.updateUserDetails(reqbody).subscribe(dres => {
+      if (dres) {
+        this.openSnackbar('User status updated Successfully')
+        this.updateList.emit()
+      }
+    },
+      // tslint:disable-next-line: align
+      (err: { error: any }) => {
+        this.openSnackbar(err.error.params.errmsg)
+      })
   }
 }
