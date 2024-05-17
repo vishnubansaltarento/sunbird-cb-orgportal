@@ -81,8 +81,8 @@
         <!-- <div *ngIf="activeUsersDataCount > 0"> -->
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="activeUsersData"
           [totalRecords]="activeUsersDataCount" [tabChangeIndex]="pageIndex" [isApprovals]="false"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
+          (updateList)="getUsers('')"></ws-widget-user-card>
         <!-- </div> -->
         <!-- <p class="margin-top-l margin-bottom-l" *ngIf="activeUsersDataCount === 0">No users found</p> -->
       </ng-container>
@@ -90,8 +90,8 @@
         <!-- <div *ngIf="verifiedUsersDataCount > 0"> -->
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"
           [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
+          (updateList)="getVUsers('')"></ws-widget-user-card>
         <!-- </div> -->
         <!-- <p class="margin-top-l margin-bottom-l" *ngIf="verifiedUsersDataCount === 0">No users found</p> -->
       </ng-container>
@@ -99,8 +99,8 @@
         <!-- <div *ngIf="nonverifiedUsersDataCount > 0"> -->
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="nonverifiedUsersData"
           [totalRecords]="nonverifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)"
-          (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
+          (updateList)="getNVUsers('')"></ws-widget-user-card>
         <!-- </div> -->
         <!-- <p class="margin-top-l margin-bottom-l" *ngIf="nonverifiedUsersDataCount === 0">No users found</p> -->
       </ng-container>
