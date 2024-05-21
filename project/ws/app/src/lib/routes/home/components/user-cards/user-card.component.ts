@@ -384,7 +384,15 @@ export class UserCardComponent implements OnInit {
           this.updateUserDataForm.controls['mobile'].setValue(user.profileDetails.personalDetails.mobile)
         }
         if (user.profileDetails.personalDetails.gender) {
-          this.updateUserDataForm.controls['gender'].setValue(user.profileDetails.personalDetails.gender)
+          if (user.profileDetails.personalDetails.gender === 'FEMALE') {
+            this.updateUserDataForm.controls['gender'].setValue('Female')
+          } else if (user.profileDetails.personalDetails.gender === 'MALE') {
+            this.updateUserDataForm.controls['gender'].setValue('Male')
+          } else if (user.profileDetails.personalDetails.gender === 'OTHERS') {
+            this.updateUserDataForm.controls['gender'].setValue('Others')
+          } else {
+            this.updateUserDataForm.controls['gender'].setValue(user.profileDetails.personalDetails.gender)
+          }
         }
         if (user.profileDetails.personalDetails.dob) {
           // this.updateUserDataForm.controls['dob'].setValue(user.profileDetails.personalDetails.dob)
