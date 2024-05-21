@@ -52,8 +52,8 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
     firstName: new FormControl('', [Validators.required]),
     phone: new FormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.minLength(10)]),
     channel: new FormControl(''),
-    designation: new FormControl(''),
-    group: new FormControl(''),
+    designation: new FormControl('', [Validators.required]),
+    group: new FormControl('', [Validators.required]),
     dob: new FormControl(''),
     domicileMedium: new FormControl(''),
     gender: new FormControl(''),
@@ -122,7 +122,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .subscribe((_res: any) => {
         this.masterData['designation'] = _res.responseData
         this.masterData['designationBackup'] = _res.responseData
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch designation details, please try again later!')
         }
@@ -135,7 +135,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.masterData['language'] = res.languages
         this.masterData['languageBackup'] = res.languages
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch master language details, please try again later!')
         }
@@ -147,7 +147,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.masterData['group'] = res.result.response
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch group data, please try again later!')
         }
@@ -165,7 +165,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
             this.masterData['mdoRoles'] = mdoArray.roles
           }
         }
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch roles list, please try again later!')
         }
@@ -237,7 +237,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .subscribe((_res: any) => {
         this.matSnackBar.open('User created successfully!')
         this.handleFormClear()
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open(_.get(_err, 'error.params.errmsg') || 'Unable to create user, please try again later!')
         }
