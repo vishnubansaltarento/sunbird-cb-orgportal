@@ -57,12 +57,18 @@
   .status-label.nonverified {
     background: #D13924;
   }
+  .status-label.notmyuser {
+    background: #e99e38;
+  }
 
   .verified-icon {
     color: #1D8923;
   }
   .nonverified-icon {
     color: #D13924;
+  }
+  .notmyuser-icon {
+    color: #e99e38;
   }
 
  .button {
@@ -292,6 +298,12 @@ label {
   vertical-align: middle;
   height: 30px !important;
 }
+.orangeicon-dialog {
+  color: #e99e38;
+  vertical-align: middle;
+  height: 45px !important;
+  font-size: 36px;
+}
 .editreasonicon {
   vertical-align: middle;
   color: #666 !important;
@@ -316,4 +328,8 @@ label {
     padding: 10px 24px !important;
     margin-bottom: 0 !important;
   }
+}
+
+.blue-text {
+  color:#1B4CA1;
 }
