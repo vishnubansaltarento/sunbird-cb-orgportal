@@ -1,6 +1,6 @@
 <div class="searchfilter" *ngIf="!isApprovals">
   <ws-app-searchuser (handleApiData)="onSearch($event)" (handleapproveAll)="onApproveALL()"
-    [showApproveALL]="showApproveALL"></ws-app-searchuser>
+    [showApproveALL]="showApproveALL" [currentFilter]="currentFilter"></ws-app-searchuser>
 </div>
 
 <div *ngIf="!isApprovals">
