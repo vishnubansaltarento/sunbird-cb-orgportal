@@ -15,7 +15,7 @@
               <li>Download the Sample File ZIP.</li>
               <li>Fill in user details in the Sample File.</li>
               <li>Verify via OTP.</li>
-              <li>Upload the populated sample csv file.</li>
+              <li>Upload the populated sample file.</li>
               <li>Check the upload results for confirmation.</li>
             </ol>
           </div>
@@ -30,7 +30,7 @@
             (dblclick)="$event.preventDefault()">
             <img src="/assets/icons/csv-file.svg" alt="CSV file logo" />
           </div>
-          <div *ngIf="showFileError" class="error-msg">Upload CSV format file only</div>
+          <div *ngIf="showFileError" class="error-msg">Upload xsls format file only</div>
           <div class="flex flex-col items-center">
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
               Browse files</div>
@@ -42,7 +42,7 @@
           </div>
           <div class="flex flex-col items-center margin-bottom-m">
             <div class="flex">Max file size: 100 MB</div>
-            <div class="flex">Supported file types: CSV</div>
+            <div class="flex">Supported file types: xsls</div>
           </div>
         </div>
       </div>
