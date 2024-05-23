@@ -106,9 +106,9 @@ export class UserCardComponent implements OnInit {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -556,7 +556,6 @@ export class UserCardComponent implements OnInit {
       // }
       this.usersSvc.updateUserDetails(this.reqbody).subscribe(dres => {
         if (dres) {
-          this.openSnackbar('User updated Successfully')
           if (this.isMdoLeader) {
             if (form.value.roles !== this.orguserRoles) {
               const dreq = {
@@ -570,7 +569,8 @@ export class UserCardComponent implements OnInit {
               this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
                 if (res) {
                   this.updateUserDataForm.reset({ roles: '' })
-                  this.openSnackbar('User role updated Successfully')
+                  // this.openSnackbar('User role updated Successfully')q
+                  this.openSnackbar('User updated Successfully')
                   panel.close()
                   this.updateList.emit()
                   // this.router.navigate(['/app/home/users/allusers'])
@@ -592,6 +592,7 @@ export class UserCardComponent implements OnInit {
 
             panel.close()
             this.updateList.emit()
+            this.openSnackbar('User updated Successfully')
             // this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
             //   if (res) {
             //     // tslint:disable-next-line
