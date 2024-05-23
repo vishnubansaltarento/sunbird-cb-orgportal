@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-6">
   <div class="flex flex-col gap-4 bulk-container">
-    <div class="flex font-bold">Bulk user creation</div>
+    <div class="flex font-bold">Bulk creation</div>
     <div class="flex flex-row gap-8">
       <div class="flex-1">
         <div class="flex flex-col gap-3 dashed-card">
@@ -46,13 +46,14 @@
 
   <div class="text-base font-bold">File logs</div>
   <div class="flex flex-col gap-6">
-    <div class="file-container" *ngFor="let list of lastUploadList | slice:startIndex:lastIndex">
+    <div class="file-container" *ngFor="let list of lastUploadList | orderBy:'dateCreatedOn':'desc'">
       <div class="flex flex-col gap-4">
         <div class="flex flex-row justify-between items-center">
           <div class="flex flex-row gap-1">
             <div class="font-bold">File Information</div>
           </div>
-          <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
+          <div class="flex flex-row gap-2 outline-button items-center" *ngIf="list?.status !== 'SUCCESSFUL'"
+            (click)="handleDownloadFile(list)">
             <mat-icon>download_2</mat-icon>
             Download error log
           </div>
@@ -85,7 +86,7 @@
             <div class="value">{{ list?.dateCreatedOn | date: 'dd MMM yyyy h:mm a' }}</div>
           </div>
           <div class="flex flex-col">
-            <div class="label">Completed ON</div>
+            <div class="label">Completed On</div>
             <div class="value">{{ list?.dateUpdatedOn | date: 'dd MMM yyyy h:mm a' }}</div>
           </div>
         </div>

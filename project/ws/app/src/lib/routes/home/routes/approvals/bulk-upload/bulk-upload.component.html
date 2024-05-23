@@ -51,7 +51,7 @@
 
   <div class="text-base font-bold">File logs</div>
   <div class="flex flex-col gap-6">
-    <div class="file-container" *ngFor="let list of lastUploadList | slice:startIndex:lastIndex">
+    <div class="file-container" *ngFor="let list of lastUploadList | orderBy:'datecreatedon':'desc'">
       <div class="flex flex-col gap-4">
         <div class="flex flex-row justify-between items-center">
           <div class="flex flex-row gap-1">

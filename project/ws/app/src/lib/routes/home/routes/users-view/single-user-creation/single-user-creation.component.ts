@@ -47,9 +47,10 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
   masterData: any = {}
   rolesArr: string[] = []
   fullProfile: any
+  namePatern = `^[a-zA-Z\\s\\']{1,50}$`
   userCreationForm = this.formBuilder.group({
     email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
-    firstName: new FormControl('', [Validators.required]),
+    firstName: new FormControl('', [Validators.required, Validators.pattern(this.namePatern)]),
     phone: new FormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.minLength(10)]),
     channel: new FormControl(''),
     designation: new FormControl('', [Validators.required]),
