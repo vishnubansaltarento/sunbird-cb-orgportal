@@ -143,6 +143,7 @@ export class UserCardComponent implements OnInit {
   ngOnInit() {
     if (this.isApprovals && this.usersData) {
       this.approvalData = this.usersData
+      console.log('this.approvalData--', this.approvalData)
       if (this.approvalData && this.approvalData.length > 0) {
         this.getUserMappedData(this.approvalData)
         this.approvalSvc.getProfileConfig().then((res: any) => {
