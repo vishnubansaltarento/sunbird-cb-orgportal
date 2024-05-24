@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ProfileV2Service } from '../../../services/home.servive'
+import { ActivatedRoute, Router } from '@angular/router'
+import { MatDialog, MatSnackBar } from '@angular/material'
+import { CompetencyViewComponent } from '../competency-view/competency-view.component'
+import { ConfirmationBoxComponent } from '../../../../training-plan/components/confirmation-box/confirmation.box.component'
+import _ from 'lodash'
 
 @Component({
   selector: 'ws-app-create-request-form',
@@ -12,14 +17,24 @@ export class CreateRequestFormComponent implements OnInit {
   specialCharList = `( a-z/A-Z , 0-9 . _ - $ / \ : [ ]' ' !)`
   // tslint:disable-next-line:max-line-length
   noSpecialChar = new RegExp(/^[\u0900-\u097F\u0980-\u09FF\u0C00-\u0C7F\u0B80-\u0BFF\u0C80-\u0CFF\u0D00-\u0D7F\u0A80-\u0AFF\u0B00-\u0B7F\u0A00-\u0A7Fa-zA-Z0-9()$[\]\\.:,_/ -]*$/)
-  learningList = ['Self-paced', 'Instructor-led']
+  // learningList = ['Self-paced', 'Instructor-led']
+  learningList = [
+    {
+      name: 'Self-paced',
+      key: 'self-paced',
+    },
+    {
+      name: 'Instructor-led',
+      key: 'instructor-led',
+    },
+  ]
   requestTypeList = ['Single', 'Broadcast']
   competencyList: any[] = []
   allCompetencyTheme: any[] = []
   seletedCompetencyArea: any
   seletedCompetencyTheme: any = []
   allCompetencySubtheme: any[] = []
-  seletedCompetencySubTheme: any[] = []
+  seletedCompetencySubTheme: any
   requestTypeData: any[] = []
   isAssignee = false
   isBroadCast = false
@@ -27,10 +42,32 @@ export class CreateRequestFormComponent implements OnInit {
   filteredSubTheme: any[] = []
   filteredRequestType: any[] = []
   subthemeCheckedList: any[] = []
-  resData=''
+  resData = ''
+  fullProfile: any
+  userId: any
+  allCompetencies: any[] = []
+  filteredallCompetencies: any[] = []
+  statusValue: any
+  enableCompetencyAdd = false
+  filteredallCompetencyTheme: any = []
+  filteredallCompetencySubtheme: any = []
+  dialogRefs: any
+  demandId: any
+  actionBtnName: any
+  requestObjData: any
+  isHideData = false
+
+  competencyCtrl!: FormControl
+  competencyArea!: FormControl
+  competencyTheme!: FormControl
+  competencySubtheme!: FormControl
 
   constructor(private formBuilder: FormBuilder,
-    private homeService: ProfileV2Service,
+              private homeService: ProfileV2Service,
+              private activatedRouter: ActivatedRoute,
+              private snackBar: MatSnackBar,
+              private router: Router,
+              public dialog: MatDialog,
   ) {
     this.requestForm = this.formBuilder.group({
       TitleName: new FormControl('', [Validators.required, Validators.pattern(this.noSpecialChar), Validators.minLength(10)]),
@@ -38,23 +75,99 @@ export class CreateRequestFormComponent implements OnInit {
       userType:  new FormControl('', [Validators.pattern(this.noSpecialChar)]),
       learningMode:  new FormControl(''),
       compArea: new FormControl(''),
-      compTheme: new FormControl(''),
-      compSubTheme: new FormControl(''),
       referenceLink: new FormControl(''),
       requestType: new FormControl('', Validators.required),
-      assignee: new FormControl(''),
-      providers: new FormControl(''),
-      themeText: new FormControl(''),
-      subthemeText: new FormControl(''),
+      assignee: new FormControl({}),
+      providers: new FormControl([[]]),
       providerText: new FormControl(''),
+      queryThemeControl: new FormControl(''),
+      querySubThemeControl: new FormControl(''),
+      competencies_v5: [],
     })
 
    }
 
   ngOnInit() {
-    this.getFilterEntity()
     this.getRequestTypeList()
+    this.fullProfile = _.get(this.activatedRouter.snapshot, 'data.configService')
+    this.userId = this.fullProfile.userProfile.userId
+    this.competencyArea = new FormControl('')
+    this.competencyTheme = new FormControl('')
+    this.competencySubtheme = new FormControl('')
 
+    this.getFilterEntity()
+
+    this.activatedRouter.queryParams.subscribe(params => {
+      if (params['id']) {
+        this.demandId = params.id
+        this.actionBtnName = params.name
+      }
+    })
+
+  }
+
+  getRequestDataById() {
+    this.homeService.getRequestDataById(this.demandId).subscribe((data: any) => {
+     if (data) {
+      this.requestObjData = data
+       this.setRequestData()
+     }
+    }
+  )
+  }
+
+  setRequestData() {
+    this.requestForm.setValue({
+      TitleName: this.requestObjData.title,
+      Objective: this.requestObjData.objective,
+      userType: this.requestObjData.typeOfUser ? this.requestObjData.typeOfUser : '',
+      learningMode: this.requestObjData.learningMode ? this.requestObjData.learningMode : '',
+      competencies_v5: [],
+      referenceLink: this.requestObjData.referenceLink ?  this.requestObjData.referenceLink : '',
+      providers: [],
+      assignee: {},
+      requestType: this.requestObjData.requestType,
+      compArea: '',
+      providerText: '',
+      queryThemeControl: '',
+      querySubThemeControl: '',
+    })
+   const value = this.requestForm.controls.competencies_v5.value || []
+   this.requestObjData.competencies.map((comp: any) => {
+    const obj = {
+      competencyArea: comp.area,
+      competencyTheme: comp.sub_theme,
+      competencySubTheme: comp.theme,
+     }
+     value.push(obj)
+   })
+
+     this.requestForm.controls.competencies_v5.setValue(value)
+
+    this.selectRequestType(this.requestObjData.requestType)
+   if (this.filteredRequestType) {
+    const abc = this.filteredRequestType.filter(option =>
+      this.requestObjData.preferredProvider.some((res: any) =>
+         res.providerName === option.orgName
+    )
+  )
+  this.requestForm.controls['providers'].setValue(abc)
+   }
+
+   if (this.requestTypeData) {
+    if (this.requestObjData.assignedProvider) {
+      const assignData = this.requestTypeData.find(option =>
+        this.requestObjData.assignedProvider.providerName === option.orgName
+       )
+       if (assignData) {
+         this.requestForm.controls['assignee'].setValue(assignData)
+       }
+    }
+   }
+  }
+
+  navigateBack() {
+    this.router.navigateByUrl('/app/home/request-list')
   }
 
   searchValueData(e: any, searchValue: any) {
@@ -94,7 +207,12 @@ export class CreateRequestFormComponent implements OnInit {
       },
     }
     this.homeService.getFilterEntity(filterObj).subscribe((res: any) => {
-      this.competencyList = res
+      if (res) {
+        this.competencyList = res
+        this.allCompetencies = res
+          this.filteredallCompetencies = this.allCompetencies
+      }
+
     })
   }
 
@@ -109,6 +227,14 @@ export class CreateRequestFormComponent implements OnInit {
     this.homeService.getRequestTypeList(requestObj).subscribe(data => {
       this.requestTypeData = data
       this.filteredRequestType = [...this.requestTypeData]
+      if (this.demandId) {
+        this.getRequestDataById()
+        if (this.actionBtnName === 'view') {
+          this.requestForm.disable()
+          this.isHideData = true
+        }
+      }
+
     })
   }
 
@@ -116,18 +242,23 @@ export class CreateRequestFormComponent implements OnInit {
    if (item === 'Single') {
      this.isAssignee = true
      this.isBroadCast = false
+     this.statusValue = 'Assigned'
+     this.requestForm.controls['providers'].setValue('')
+     this.requestForm.controls['providers'].clearValidators()
+     this.requestForm.controls['providers'].updateValueAndValidity() //
+     this.requestForm.controls['assignee'].setValidators([Validators.required])
+     this.requestForm.controls['assignee'].updateValueAndValidity()
    } else if (item === 'Broadcast') {
-    this.isBroadCast = true
-    this.isAssignee = false
+    this.statusValue = 'Unassigned'
+     this.isBroadCast = true
+     this.isAssignee = false
+     this.requestForm.controls['assignee'].setValue('')
+     this.requestForm.controls['assignee'].clearValidators()
+     this.requestForm.controls['assignee'].updateValueAndValidity()
+     this.requestForm.controls['providers'].setValidators([Validators.required])
+     this.requestForm.controls['providers'].updateValueAndValidity()
    }
 
-  }
-
-  resetCompSubfields() {
-    // this.enableCompetencyAdd = false
-    // this.allCompetencySubtheme = []
-    // this.seletedCompetencyTheme = []
-    // this.seletedCompetencySubTheme = []
   }
 
   openedChange(e: any, searchControl: any) {
@@ -145,113 +276,188 @@ export class CreateRequestFormComponent implements OnInit {
     this.requestForm.controls[searchControl].patchValue('')
   }
 
- // on selection change of competency area and assign value to allCompetencyTheme
-  onAreaSelection(option: any) {
+  updateQuery(field: any) {
+    if (field === 'theme') {
+      this.requestForm.controls['queryThemeControl'].valueChanges.subscribe((newValue: any) => {
+        this.filteredallCompetencyTheme = this.filterValues(newValue, this.allCompetencyTheme)
+      })
+      // this.filteredallCompetencyTheme = this.filterValues(key, this.allCompetencyTheme)
+    } else {
+      this.requestForm.controls['querySubThemeControl'].valueChanges.subscribe((newValue: any) => {
+        this.filteredallCompetencySubtheme = this.filterValues(newValue, this.allCompetencySubtheme)
+      })
+      // this.filteredallCompetencySubtheme = this.filterValues(newValue, this.allCompetencySubtheme)
+    }
+  }
+
+  resetSearch(field: any) {
+    if (field === 'theme') {
+      this.requestForm.controls['queryThemeControl'].setValue('')
+      this.filteredallCompetencyTheme = this.allCompetencyTheme
+      if (!this.seletedCompetencySubTheme) {
+        this.filteredallCompetencySubtheme = []
+        this.requestForm.controls['querySubThemeControl'].setValue('')
+      } else {
+        this.requestForm.controls['querySubThemeControl'].setValue('')
+      }
+    } else {
+      this.requestForm.controls['querySubThemeControl'].setValue('')
+      this.filteredallCompetencySubtheme = this.allCompetencySubtheme
+    }
+  }
+
+  resetCompSubfields() {
+    this.enableCompetencyAdd = false
     this.allCompetencySubtheme = []
-    this.filteredSubTheme = []
-    this.allCompetencyTheme = []
-    this.resetCompSubfields()
-    this.competencyList.forEach((val: any) => {
-      if (option.value.name === val.name) {
-        this.seletedCompetencyArea = val
-        // this.allCompetencyTheme = val.children
-        val.children.forEach((item: any) => {
-          item.selected = false
-          this.allCompetencyTheme.push(item)
-          this.filterCompetencyThemes = [...this.allCompetencyTheme]
-        })
+    this.filteredallCompetencyTheme = []
+    this.filteredallCompetencySubtheme = []
+    this.requestForm.controls['queryThemeControl'].setValue('')
+    this.requestForm.controls['querySubThemeControl'].setValue('')
+    this.seletedCompetencyTheme = ''
+    this.seletedCompetencySubTheme = ''
+  }
+
+ // on selection change of competency area and assign value to allCompetencyTheme
+ compAreaSelected(option: any) {
+  this.resetCompSubfields()
+  this.allCompetencies.forEach((val: any) => {
+    if (option.name === val.name) {
+      this.seletedCompetencyArea = val
+      this.allCompetencyTheme = val.children
+      this.filteredallCompetencyTheme = this.allCompetencyTheme
+
+    }
+  })
+}
+
+compThemeSelected(option: any) {
+  this.enableCompetencyAdd = false
+  this.allCompetencyTheme.forEach((val: any) => {
+    if (option.name === val.name) {
+      this.seletedCompetencyTheme = val
+      this.allCompetencySubtheme = val.children
+      this.filteredallCompetencySubtheme = this.allCompetencySubtheme
+    }
+  })
+}
+
+compSubThemeSelected(option: any) {
+  this.enableCompetencyAdd = true
+  this.allCompetencySubtheme.forEach((val: any) => {
+    if (option.name === val.name) {
+      this.seletedCompetencySubTheme = val
+    }
+  })
+}
+
+resetCompfields() {
+  this.enableCompetencyAdd = false
+  this.requestForm.controls['compArea'].setValue('')
+  this.allCompetencyTheme = []
+  this.allCompetencySubtheme = []
+  this.filteredallCompetencyTheme = []
+  this.filteredallCompetencySubtheme = []
+  this.requestForm.controls['queryThemeControl'].setValue('')
+  this.requestForm.controls['querySubThemeControl'].setValue('')
+}
+
+canPush(arr: any[], obj: any) {
+  for (const item of arr) {
+    // if (test.id === obj.id) {
+    if (item.competencyAreaId === obj.competencyAreaId && item.competencyThemeId === obj.competencyThemeId
+      && item.competencySubThemeId === obj.competencySubThemeId) {
+      return false
+    }
+  }
+  return true
+
+}
+
+refreshData() {
+  const searchObj = {
+    search: {
+      type: 'Competency Area',
+    },
+    filter: {
+      isDetail: true,
+    },
+  }
+  this.homeService.getFilterEntity(searchObj).subscribe((response: any) => {
+    if (response) {
+      this.allCompetencies = response
+      this.filteredallCompetencies = this.allCompetencies
+    }
+  })
+}
+
+addCompetency() {
+  if (this.seletedCompetencyArea && this.seletedCompetencyTheme && this.seletedCompetencySubTheme) {
+    const obj = {
+      competencyArea: this.seletedCompetencyArea.name,
+      competencyAreaId: this.seletedCompetencyArea.id,
+      competencyAreaDescription: this.seletedCompetencyArea.description,
+      competencyTheme: this.seletedCompetencyTheme.name,
+      competencyThemeId: this.seletedCompetencyTheme.id,
+      competecnyThemeDescription: this.seletedCompetencyTheme.description,
+      competencyThemeType: this.seletedCompetencyTheme.additionalProperties.themeType,
+      competencySubTheme: this.seletedCompetencySubTheme.name,
+      competencySubThemeId: this.seletedCompetencySubTheme.id,
+      competecnySubThemeDescription: this.seletedCompetencySubTheme.description,
+    }
+
+    const value = this.requestForm.controls.competencies_v5.value || []
+    if (this.canPush(value, obj)) {
+      value.push(obj)
+      this.requestForm.controls.competencies_v5.setValue(value)
+      this.resetCompfields()
+      this.refreshData()
+    } else {
+      this.snackBar.open('This competency is already added')
+      this.resetCompfields()
+    }
+  }
+
+}
+
+removeCompetency(id: any): void {
+  if (id && !id.competencyArea) {
+    const index = _.findIndex(this.requestForm.controls.competencies_v5.value, { id })
+    this.requestForm.controls.competencies_v5.value.splice(index, 1)
+    this.requestForm.controls.competencies_v5.setValue(this.requestForm.controls.competencies_v5.value)
+    this.refreshData()
+  } else {
+    this.requestForm.controls.competencies_v5.value.forEach((item: any, index: any) => {
+      if (item.competencyAreaId === id.competencyAreaId && item.competencyThemeId === id.competencyThemeId
+        && item.competencySubThemeId === id.competencySubThemeId) {
+        this.requestForm.controls.competencies_v5.value.splice(index, 1)
+        this.requestForm.controls.competencies_v5.setValue(this.requestForm.controls.competencies_v5.value)
+        this.refreshData()
       }
     })
   }
 
-  // On Selection of Competency theme and assign value to filteredSubTheme
-  onThemeSelection(option: any) {
-    this.filteredSubTheme = []
-    this.allCompetencySubtheme = []
-    // this.enableCompetencyAdd = false
-    const index = this.seletedCompetencyTheme.findIndex((object: any) => object.name === option.value.name)
-    if (index === -1) {
-      this.allCompetencyTheme.forEach((val: any) => {
-        option.value.forEach((data: any) => {
-          if (data.name === val.name) {
-          val.selected = true
-          this.seletedCompetencyTheme.push(val)
-          val.children.forEach((item: any) => {
-            item.selected = false
-            item.compThemeID = val.id
-            this.allCompetencySubtheme.push(item)
-            this.filteredSubTheme = [...this.allCompetencySubtheme]
-          })
-        }
-        })
-      })
-    } else {
-      this.seletedCompetencyTheme[index].selected = false
+}
 
-      const id = this.seletedCompetencyTheme[index].id
-      this.seletedCompetencyTheme.splice(index, 1)
-      if (this.seletedCompetencyTheme.length === 0) {
-        this.seletedCompetencySubTheme = []
-      }
-      this.allCompetencySubtheme = this.allCompetencySubtheme.filter((item: any) => item.compThemeID !== id)
-      this.seletedCompetencySubTheme = this.seletedCompetencySubTheme.filter((item: any) => item.compThemeID !== id)
+view(item?: any) {
+  // const seletedItem = this.allCompetencies.filter((v: any) => v.id === (item && item.id))[0]
+  // item['children'] = (seletedItem && seletedItem.children) ? seletedItem.children : []
+  const dialogRef = this.dialog.open(CompetencyViewComponent, {
+    // minHeight: 'auto',
+    width: '30%',
+    panelClass: 'remove-pad',
+    data: item,
+    autoFocus: false,
+  })
+  dialogRef.afterClosed().subscribe((response: any) => {
+
+    if (response && response.action === 'ADD') {
+      // this.addCompetency(response)
+      // this.refreshData(this.currentActivePage)
+    } else if (response && response.action === 'DELETE') {
+      this.removeCompetency(response.id)
     }
-  }
-
-  onSubThemeSelection(event: any) {
-   this.subthemeCheckedList = [...event.value]
-   this.subthemeCheckedList.forEach((item: any) => {
-      item.checked = true
-   })
-
-  }
-
-  onThemeRemoved(theme: any) {
-    this.allCompetencySubtheme = []
-    this.filteredSubTheme = []
-    const compThemeControl = this.requestForm.get('compTheme') as FormControl | null
-    if (compThemeControl) {
-      const themes = compThemeControl.value
-      if (themes) {
-        const index = themes.indexOf(theme)
-        if (index >= 0) {
-          themes.splice(index, 1)
-          compThemeControl.setValue(themes)
-          if (themes.length) {
-            themes.forEach((child: any) => {
-              child.children.forEach((innerChild: any) => {
-                this.allCompetencySubtheme.push(innerChild)
-            this.filteredSubTheme = [...this.allCompetencySubtheme]
-            // const constSubthemeCont = this.requestForm.get('compSubTheme') as FormControl | null
-            // if(constSubthemeCont){
-            //   constSubthemeCont.setValue(this.filteredSubTheme);
-            // }
-
-              })
-            })
-          } else {
-            this.allCompetencySubtheme = []
-            this.filteredSubTheme = []
-          }
-
-        }
-      }
-    }
-  }
-
-  onSubThemeRemoved(theme: any) {
-    const compSubThemeControl = this.requestForm.get('compSubTheme') as FormControl | null
-    if (compSubThemeControl) {
-      const themes = compSubThemeControl.value
-      if (themes) {
-        const index = themes.indexOf(theme)
-        if (index >= 0) {
-          themes.splice(index, 1)
-          compSubThemeControl.setValue(themes)
-        }
-      }
-    }
-  }
+  })
+}
 
   onProviderRemoved(provider: any) {
     const compThemeControl = this.requestForm.get('providers') as FormControl | null
@@ -267,39 +473,127 @@ export class CreateRequestFormComponent implements OnInit {
     }
   }
 
+  showSaveButton() {
+
+  }
+
+  showConformationPopUp() {
+    this.dialogRefs = this.dialog.open(ConfirmationBoxComponent, {
+      disableClose: true,
+      data: {
+        type: 'conformation',
+        icon: 'radio_on',
+        title: 'Are you sure you want to Create a demand?',
+        // subTitle: 'You wont be able to revert this',
+        primaryAction: 'Confirm',
+        secondaryAction: 'Cancel',
+      },
+      autoFocus: false,
+    })
+
+this.dialogRefs.afterClosed().subscribe((_res: any) => {
+  if (_res === 'confirmed') {
+    this.submit()
+  }
+})
+}
+
   submit() {
-    const request = {
+    let providerList: any[] = []
+    if (this.requestForm.value.providers) {
+      providerList = this.requestForm.value.providers.map((item: any) => ({
+        providerName: item.orgName,
+        providerId: item.id,
+      }))
+    }
+    let assigneeProvider: any
+    if (this.requestForm.value.assignee) {
+      assigneeProvider = {
+        providerName: this.requestForm.value.assignee.orgName,
+        providerId: this.requestForm.value.assignee.id,
+      }
+    }
+
+    let competencyDataList: any[] = []
+    if (this.requestForm.value.competencies_v5) {
+      competencyDataList = this.requestForm.value.competencies_v5.map((item: any) => ({
+        area: item.competencyArea,
+        theme: item.competencyTheme,
+        sub_theme: item.competencySubTheme,
+      }))
+    }
+
+    const request: any = {
       title: this.requestForm.value.TitleName,
       objective: this.requestForm.value.Objective,
       typeOfUser: this.requestForm.value.userType,
-      learningMode: this.requestForm.value.learningMode,
-      competencies: {
-        select_area: 'Functional',
-        select_theme: 'Data Science',
-        select_sub_theme: 'Basic',
-      },
+      // learningMode: this.requestForm.value.learningMode.toLowerCase(),
+      competencies: competencyDataList,
       referenceLink: this.requestForm.value.referenceLink,
       requestType: this.requestForm.value.requestType,
-      preferredProvider: [
-        {
-          providerName: 'Provider 1',
-          providerId: '23456',
-        },
-        {
-          providerName: 'Provider 2',
-          providerId: '3456789',
-        },
-      ],
-      status: 'Unassigned',
-      source: 'MDOID',
+      preferredProvider: providerList,
+      assignedProvider: assigneeProvider,
+      status: this.statusValue,
+      source: this.userId,
 
     }
 
+    if (this.requestForm.value.learningMode) {
+      request.learningMode = this.requestForm.value.learningMode.toLowerCase()
+    }
+    this.showDialogBox('progress')
     this.homeService.createDemand(request).subscribe(res => {
-      this.resData =res
+      this.resData = res
+      this.dialogRefs.close()
+      this.showDialogBox('progress-completed')
 
+      setTimeout(() => {
+        this.dialogRefs.close()
+        if (this.resData) {
+          this.router.navigateByUrl('/app/home/request-list')
+      }
+      },         1000)
+    }
+  )
+   }
+
+   showDialogBox(event: any) {
+    const dialogData: any = {}
+    switch (event) {
+      case 'progress':
+        dialogData['type'] = 'progress'
+        dialogData['icon'] = 'vega'
+        dialogData['title'] = 'Processing your request'
+        dialogData['subTitle'] = `Wait a second , your request is processing………`
+        break
+      case 'progress-completed':
+        dialogData['type'] = 'progress-completed'
+        dialogData['icon'] = 'accept_icon'
+        dialogData['title'] = 'Processing your request'
+        dialogData['subTitle'] = `Wait a second , your request is processing………`
+        dialogData['primaryAction'] = 'Redirecting....'
+        break
+    }
+
+    this.openDialoagBox(dialogData)
+  }
+
+  openDialoagBox(dialogData: any) {
+    this.dialogRefs = this.dialog.open(ConfirmationBoxComponent, {
+      disableClose: true,
+      data: {
+        type: dialogData.type,
+        icon: dialogData.icon,
+        title: dialogData.title,
+        subTitle: dialogData.subTitle,
+        primaryAction: dialogData.primaryAction,
+        secondaryAction: dialogData.secondaryAction,
+      },
+      autoFocus: false,
     })
 
+    this.dialogRefs.afterClosed().subscribe(() => {
+    })
   }
 
 }

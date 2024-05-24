@@ -2,6 +2,11 @@
     padding: 0.5%;
     .card-section {
         padding: 2%;
+        .arrow-btn {
+          padding-right: 1%;
+          width: 20px;
+          cursor: pointer;
+        }
         .title-request {
             font-family: 'Montserrat';
             font-weight: 600;
@@ -34,6 +39,13 @@
             font-weight: 700;
             line-height: 21px;
           }
+
+          .disbaledSelect {
+           pointer-events: none;
+           cursor: not-allowed;
+          }
+
+          
            
         }
         .title-text {
@@ -90,4 +102,50 @@
   }
   .mat-button[disabled] {
     opacity: 0.6;
+  }
+ .compt-table tr[disabled] {
+    color: #aaa; /* Gray out the text */
+    pointer-events: none; /* Disable pointer events */
+    cursor: not-allowed; /* Change cursor to indicate disabled state */
+  }
+    .compt-table th,
+    .compt-table td {
+      border: 1px solid #eaeaea;
+    
+    }
+  
+  .complabels {
+    color: #ffffff !important;
+    background: #000;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin: 4px 8px 4px 0;
+  }
+  
+  .complabels.active {
+    background: #ffffff;
+    color: #555555 !important;
+    border: 1px solid #000;
+  }
+
+  .forms-table {
+    border-spacing: 0 6px;
+  
+    tr {
+      background-color: rgba(0, 116, 182, 0.2);
+      border-radius: 4px 4px 4px 4px;
+  
+      td:nth-child(1) {
+        border-radius: 4px 0px 0px 4px;
+      }
+  
+      td:nth-child(2) {
+        border-radius: 0 4px 4px 0px;
+      }
+  
+      .usericon {
+        vertical-align: bottom;
+        padding: 0 4px;
+      }
+    }
   }

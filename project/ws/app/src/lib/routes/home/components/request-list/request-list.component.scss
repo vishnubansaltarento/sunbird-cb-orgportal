@@ -29,3 +29,32 @@
         min-width: 138px;
     }
   }
+
+  ::ng-deep {
+    .custom-table .cdk-column-status .textclass {
+    padding: 10px  !important;
+    border-radius: 10px !important;
+    color: white !important;
+  }
+  .unassignedClass .cdk-column-status .textclass {
+    background-color: #000000 !important;
+    opacity: 60%;
+  }
+  .assignedClass .cdk-column-status .textclass {
+    background-color: #1D8923;
+  }
+  .custom-table .search {
+    display: none !important;
+  }
+  .custom-table .cdk-column-title .textclass {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .custom-table .example-container .mat-paginator {
+    display: none !important;
+  }
+}

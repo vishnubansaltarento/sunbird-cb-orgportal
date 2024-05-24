@@ -24,10 +24,17 @@
             </div>
         </mat-card-content>
     </mat-card>
-
     <div class="create-action">
         <button mat-button type="button" class="search-btn" [routerLink]="['/app/home/create-request-form']">Request Content</button>
-
-
     </div>
+    
+    <div class="margin-top-l custom-table" *ngIf="requestListData"
+     [ngClass]="{ 'assignedClass':isAssigned }" 
+     > 
+    <ws-widget-org-user-table  [tableData]="tabledata" [data]="requestListData" [actionMenuItem]="pageConfig?.data?.actionMenu"  (actionsClick)="menuSelected($event)" (eOnRowClick)="viewDetails($event)">
+    </ws-widget-org-user-table>
+    <mat-paginator [pageSize]="pageSize" [length]="this.requestCount" [pageSizeOptions]="[20,30,40]"
+    (page)="onChangePage($event)"></mat-paginator>
+</div>
+
 </div>

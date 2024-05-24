@@ -21,7 +21,10 @@ const API_END_POINTS = {
   GET_USER_DETAILS: `/apis/protected/v8/user/details?ts='${Date.now()}`,
   GET_FILTER_ENTITY: 'apis/proxies/v8/competency/v4/search',
   GET_REQUEST_TYPE_LIST:'/apis/proxies/v8/org/v1/search',
-  CREATE_DEMAND_REQUEST:'/apis/proxies/v8/demand/content/create'
+  CREATE_DEMAND_REQUEST:'/apis/proxies/v8/demand/content/create',
+  GET_REQUEST_DATA:'/apis/proxies/v8/demand/content/search',
+  MARK_INVALID:'/apis/proxies/v8/demand/content/update/status',
+  GET_REQUEST_DATA_BYID: 'apis/proxies/v8/demand/content/read'
 }
 
 @Injectable({
@@ -65,6 +68,18 @@ export class ProfileV2Service {
 
   createDemand(request:any){
    return this.http.post<any>(`${API_END_POINTS.CREATE_DEMAND_REQUEST}`,request)
+  }
+
+  getRequestList(request:any){
+   return this.http.post<any>(`${API_END_POINTS.GET_REQUEST_DATA}`,request).pipe(map(res=>_.get(res,'result.result')))
+  }
+
+  markAsInvalid(request:any){
+    return this.http.post<any>(`${API_END_POINTS.MARK_INVALID}`,request)
+   }
+
+  getRequestDataById(demandId:any) {
+    return this.http.get<any>(`${API_END_POINTS.GET_REQUEST_DATA_BYID}/${demandId}`).pipe(map(res=>_.get(res, 'result.result')))
   }
 
 }
