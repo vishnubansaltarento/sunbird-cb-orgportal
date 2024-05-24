@@ -328,6 +328,7 @@ export class InitService {
           } else {
             this.configSvc.unMappedUser.orgProfile = null
           }
+          localStorage.setItem('login', 'true')
 
         } else {
           this.authSvc.force_logout()
