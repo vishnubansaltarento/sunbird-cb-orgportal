@@ -27,21 +27,32 @@
               <span class="status-label margin-left-s nonverified"
                 *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">Non-verified
                 <mat-icon>check_circle</mat-icon></span>
+              <span class="status-label margin-left-s notmyuser"
+                *ngIf="user?.profileDetails?.profileStatus === 'NOT-MY-USER'">Not my user
+                <mat-icon>error</mat-icon></span>
             </div>
             <div class="mat-body-2 ws-mat-black40-text">{{user?.profileDetails &&
               user?.profileDetails?.professionalDetails
               &&
-              user?.profileDetails?.professionalDetails?.designation ?
-              user?.profileDetails?.professionalDetails?.designation : '-'}}</div>
-            <div class="mat-caption ws-mat-black40-text" *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+              user?.profileDetails?.professionalDetails[0]?.designation ?
+              user?.profileDetails?.professionalDetails[0]?.designation : '-'}}</div>
+            <div class="mat-caption ws-mat-black40-text"
+              *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED' && user?.profileDetails?.profileStatusVerifiedOn">
               Verified on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
+            <div class="mat-caption ws-mat-black40-text"
+              *ngIf="user?.profileDetails?.profileStatus !== 'VERIFIED' && user?.profileDetails?.profileStatusVerifiedOn">
+              Marked on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
+            <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusVerifiedOn">
+              -</div>
           </div>
         </div>
-        <div class="float-right">
-          <div class="button margin-top-m mat-body" (click)="onEditUser(user);$event.stopPropagation();"
-            *ngIf="isMdoAdmin || isMdoLeader">
+        <div class="float-right" *ngIf="isMdoAdmin || isMdoLeader">
+          <div class="button margin-top-m mat-body" (click)="onEditUser(user, panel);$event.stopPropagation();"
+            *ngIf="currentFilter !== 'notmyuser'">
             <mat-icon>edit</mat-icon> Edit
           </div>
+          <div class="button margin-top-m mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
+            *ngIf="currentFilter === 'notmyuser'">Reassign</div>
         </div>
       </mat-expansion-panel-header>
 
@@ -50,7 +61,8 @@
           <div class="inner-body">
             Primary Details <mat-icon class="ws-mat-black40-text custominfo">info_outline</mat-icon>
             <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
-              <mat-slide-toggle>Mark this user as non-verified</mat-slide-toggle>
+              <mat-slide-toggle (click)="markStatus('NOT-VERIFIED', user)">Mark this user as
+                non-verified</mat-slide-toggle>
             </p>
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/3">
@@ -71,7 +83,7 @@
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
-                  check_circle</mat-icon>
+                  cancel</mat-icon>
               </div>
               <div class="md:w-1/3">
                 <label class="margin-remove-bottom form-label required">Designation</label>
@@ -94,7 +106,7 @@
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
-                  check_circle</mat-icon>
+                  cancel</mat-icon>
               </div>
             </div>
           </div>
@@ -313,17 +325,19 @@
             </div>
 
             <div class="flex flex-row margin-top-m">
-              <div class="md:w-1/2" *ngIf="!isMdoAdmin">
+              <div class="md:w-1/1" *ngIf="!isMdoAdmin">
                 <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
                   aria-label="Roles label" i18n="Role label|Label which explains the user to select the roles">
                   Role
                 </label>
-                <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
-                  <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
-                    [selected]="userRoles.has(role.roleName)" [value]="role?.roleName">
-                    {{role.roleName}}
-                  </mat-list-option>
-                </mat-selection-list>
+                <div>
+                  <mat-selection-list id="roles" formControlName="roles" #roles class="roles-list">
+                    <mat-list-option *ngFor="let role of rolesList" (click)="modifyUserRoles(role.roleName)"
+                      [selected]="userRoles.has(role.roleName)" [value]="role?.roleName">
+                      {{role.roleName}}
+                    </mat-list-option>
+                  </mat-selection-list>
+                </div>
               </div>
 
               <div class="md:w-1/2" *ngIf="isMdoAdmin">
@@ -345,7 +359,7 @@
                   Update
                 </span>
               </button>
-              <button mat-raised-button type="submit" (click)="cancelSubmit()"
+              <button mat-raised-button type="submit" (click)="cancelSubmit(user)"
                 class="btn-success btn-responsive cancelbtn">
                 <span i18n>
                   Cancel
@@ -375,20 +389,20 @@
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
-                  check_circle</mat-icon>
+                  cancel</mat-icon>
               </p>
             </div>
             <div class="md:w-1/3">
               <label class="view-text-label">Designation</label>
               <p>{{user.profileDetails && user.profileDetails.professionalDetails &&
-                user.profileDetails.professionalDetails.designation ?
-                user.profileDetails.professionalDetails.designation : '-'}}
+                user.profileDetails.professionalDetails[0].designation ?
+                user.profileDetails.professionalDetails[0].designation : '-'}}
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
-                  check_circle</mat-icon>
+                  cancel</mat-icon>
               </p>
             </div>
           </div>
@@ -466,7 +480,9 @@
 
             <div class="md:w-1/4">
               <label class="view-text-label">eHRMS ID</label>
-              <p>{{user.ehrmsID ? user.ehrmsID : '-'}}</p>
+              <p>{{user.profileDetails && user.profileDetails.additionalProperties &&
+                user.profileDetails.additionalProperties.externalSystemId ?
+                user.profileDetails.additionalProperties.externalSystemId : '-'}}</p>
             </div>
 
             <div class="md:w-1/2">
@@ -525,8 +541,8 @@
             </div>
             <div class="mat-body-2 ws-mat-black40-text">{{appData.user &&
               appData.user.profileDetails.professionalDetails &&
-              appData.user.profileDetails.professionalDetails.designation ?
-              appData.user.profileDetails.professionalDetails.designation : '-'}}</div>
+              appData.user.profileDetails.professionalDetails[0].designation ?
+              appData.user.profileDetails.professionalDetails[0].designation : '-'}}</div>
             <div class="mat-caption ws-mat-black40-text">Requested on: {{appData.requestedon | date: 'dd/MM/yyyy'}}
             </div>
           </div>
@@ -696,7 +712,9 @@
 
               <div class="md:w-1/4">
                 <label class="view-text-label">eHRMS ID</label>
-                <p>{{appData.user.ehrmsID ? appData.user.ehrmsID : '-'}}</p>
+                <p>{{appData.user.profileDetails && appData.user.profileDetails.additionalProperties &&
+                  appData.user.profileDetails.additionalProperties.externalSystemId ?
+                  appData.user.profileDetails.additionalProperties.externalSystemId : '-'}}</p>
               </div>
 
               <div class="md:w-1/2">
@@ -794,4 +812,27 @@
       <button mat-raised-button class="btn-success btn-responsive cancelbtn" matDialogClose>Cancel</button>
     </mat-dialog-actions>
   </form>
+</ng-template>
+
+<ng-template #confirm>
+  <div class="confirm-dialog text-center padding-l">
+    <mat-icon class="infoIcon orangeicon-dialog">error_outline</mat-icon>
+    <div mat-dialog-content i18n class="margin-top-xs blue-text">
+      Are you sure you want to re-assign this user to your MDO?
+    </div>
+    <div class="mat-caption margin-top-xs">Note: The user will be shifted to non-verified tab</div>
+    <div mat-dialog-actions class="flex-center margin-top-s">
+      <button mat-raised-button type="submit" [mat-dialog-close]="false"
+        class="margin-right-m  btn-success btn-responsive cancelbtn">
+        <span i18n>
+          No
+        </span>
+      </button>
+      <button mat-raised-button type="submit" [mat-dialog-close]="true" class="btn-success btn-responsive successbtn">
+        <span class="text-white" i18n>
+          Yes
+        </span>
+      </button>
+    </div>
+  </div>
 </ng-template>

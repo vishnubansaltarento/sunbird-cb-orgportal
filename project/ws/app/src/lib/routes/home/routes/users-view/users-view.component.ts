@@ -104,6 +104,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     this.getAllUsers('')
     this.getVUsers('')
     this.getNVUsers('')
+    this.getNMUsers('')
 
     this.reportsNoteList = [
       `Easily create users individually or in bulk.`,
@@ -159,6 +160,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.getVUsers(query)
     } else if (this.currentFilter === 'nonverified') {
       this.getNVUsers(query)
+    } else if (this.currentFilter === 'notmyuser') {
+      this.getNMUsers(query)
     }
   }
 
@@ -259,6 +262,20 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
+    })
+  }
+
+  async getNMUsers(query: string) {
+    this.loaderService.changeLoad.next(true)
+    const filtreq = {
+      rootOrgId: this.rootOrgId,
+      'profileDetails.profileStatus': 'NOT-MY-USER',
+    }
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+      const allusersData = data.result.response
+      this.notmyuserUsersData = allusersData.content
+      this.notmyuserUsersDataCount = data.result.response.count
     })
   }
 
