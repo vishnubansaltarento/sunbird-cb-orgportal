@@ -206,33 +206,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
 
     this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       const allusersData = data.result.response
-      // if (allusersData && allusersData.content && allusersData.content.length > 0) {
-      //   _.filter(allusersData.content, { isDeleted: false }).forEach((user: any) => {
-      //     // tslint:disable-next-line
-      //     const org = { roles: _.get(_.first(_.filter(user.organisations,
-      // { organisationId: _.get(this.configSvc, 'unMappedUser.rootOrg.id') })), 'roles') }
-      //     usersData.push({
-      //       fullname: user ? `${user.firstName}` : null,
-      //       // fullname: user ? `${user.firstName} ${user.lastName}` : null,
-      //       email: user.personalDetails && user.personalDetails.primaryEmail ?
-      //         this.profileUtilSvc.emailTransform(user.personalDetails.primaryEmail) : this.profileUtilSvc.emailTransform(user.email),
-      //       role: org.roles || [],
-      //       userId: user.id,
-      //       active: !user.isDeleted,
-      //       blocked: user.blocked,
-      //       roles: _.join(_.map((org.roles || []), i => `<li>${i}</li>`), ''),
-      //       orgId: user.rootOrgId,
-      //       orgName: user.rootOrgName,
-      //       allowEditUser: this.showEditUser(org.roles),
-      //     })
-      //   })
-
-      //   usersData.sort((a: any, b: any) => {
-      //     const textA = a.fullname.toUpperCase()
-      //     const textB = b.fullname.toUpperCase()
-      //     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-      //   })
-      // }
       this.activeUsersData = allusersData.content
       this.activeUsersDataCount = data.result.response.count
     })
