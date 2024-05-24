@@ -73,6 +73,10 @@ export class RequestListComponent implements OnInit {
 
   }
 
+  openVideoPopup(){
+    
+  }
+
   hasAccess() {
     let flag = false
     if (this.pageConfig && this.pageConfig.data && this.pageConfig.data.actionMenu) {
