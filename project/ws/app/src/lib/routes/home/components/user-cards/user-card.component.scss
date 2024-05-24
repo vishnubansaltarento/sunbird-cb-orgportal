@@ -288,7 +288,7 @@ label {
   }
 }
 
-::ng-deep .rejection-modal {
+:host ::ng-deep .rejection-modal {
   .mat-dialog-container {
     padding: 0px !important;
   }
@@ -308,7 +308,7 @@ label {
   vertical-align: middle;
   color: #666 !important;
 }
-::ng-deep .mat-dialog-container {
+:host ::ng-deep .mat-dialog-container {
   padding: 0 !important;
   overflow: unset !important;
 }
