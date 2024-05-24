@@ -8,8 +8,6 @@ import { MatDialog } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
 import _ from 'lodash'
-
-
 @Component({
   selector: 'ws-app-request-list',
   templateUrl: './request-list.component.html',
