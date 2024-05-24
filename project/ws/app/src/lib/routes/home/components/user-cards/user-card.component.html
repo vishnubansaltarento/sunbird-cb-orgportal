@@ -36,13 +36,12 @@
               &&
               user?.profileDetails?.professionalDetails[0]?.designation ?
               user?.profileDetails?.professionalDetails[0]?.designation : '-'}}</div>
-            <div class="mat-caption ws-mat-black40-text"
+            <!-- <div class="mat-caption ws-mat-black40-text"
               *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED' && user?.profileDetails?.profileStatusVerifiedOn">
-              Verified on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
-            <div class="mat-caption ws-mat-black40-text"
-              *ngIf="user?.profileDetails?.profileStatus !== 'VERIFIED' && user?.profileDetails?.profileStatusVerifiedOn">
-              Marked on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
-            <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusVerifiedOn">
+              Verified on: {{user?.profileDetails?.profileStatusUpdatedOn | date: 'dd/MM/yyyy'}}</div> -->
+            <div class="mat-caption ws-mat-black40-text" *ngIf="user?.profileDetails?.profileStatusUpdatedOn">
+              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn | date: 'dd/MM/yyyy'}}</div>
+            <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">
               -</div>
           </div>
         </div>
