@@ -73,8 +73,8 @@ export class RequestListComponent implements OnInit {
 
   }
 
-  openVideoPopup(){
-    
+  openVideoPopup() {
+
   }
 
   hasAccess() {
