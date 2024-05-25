@@ -143,7 +143,6 @@ export class UserCardComponent implements OnInit {
   ngOnInit() {
     if (this.isApprovals && this.usersData) {
       this.approvalData = this.usersData
-      console.log('this.approvalData--', this.approvalData)
       if (this.approvalData && this.approvalData.length > 0) {
         this.getUserMappedData(this.approvalData)
         this.approvalSvc.getProfileConfig().then((res: any) => {
@@ -363,7 +362,9 @@ export class UserCardComponent implements OnInit {
   }
 
   setUserDetails(user: any) {
+
     if (user && user.profileDetails) {
+      console.log(user.profileDetails)
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.externalSystemId) {
           this.updateUserDataForm.controls['ehrmsID'].setValue(user.profileDetails.additionalProperties.externalSystemId)
@@ -407,12 +408,13 @@ export class UserCardComponent implements OnInit {
         if (user.profileDetails.personalDetails.category) {
           this.updateUserDataForm.controls['category'].setValue(user.profileDetails.personalDetails.category)
         }
+        if (user.profileDetails.personalDetails.pinCode) {
+          this.updateUserDataForm.controls['pincode'].setValue(user.profileDetails.personalDetails.pinCode)
+        }
       }
 
       if (user.profileDetails.employmentDetails) {
-        if (user.profileDetails.employmentDetails.pinCode) {
-          this.updateUserDataForm.controls['pincode'].setValue(user.profileDetails.employmentDetails.pincode)
-        }
+
         if (user.profileDetails.employmentDetails.employeeCode) {
           this.updateUserDataForm.controls['employeeID'].setValue(user.profileDetails.employmentDetails.employeeCode)
         }
@@ -574,6 +576,7 @@ export class UserCardComponent implements OnInit {
                   this.openSnackbar('User updated Successfully')
                   panel.close()
                   this.updateList.emit()
+                  this.searchByEnterKey.emit('')
                   // this.router.navigate(['/app/home/users/allusers'])
 
                   // this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
