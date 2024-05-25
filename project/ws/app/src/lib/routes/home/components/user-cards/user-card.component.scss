@@ -9,7 +9,7 @@
   border-radius: 5px !important;
 
   .mat-expansion-panel-header {
-    padding: 14px 24px !important;
+    padding: 10px 24px !important;
   }
 
   .mat-content{
@@ -85,6 +85,12 @@
     }
   }
 }
+
+::ng-deep .mat-expansion-panel-header {
+  min-height: 48px !important;
+  height: inherit !important;
+}
+
 ::ng-deep .mat-expansion-panel-header .mat-expansion-indicator::after {
     content: "+";
     border: 0;
@@ -332,4 +338,8 @@ label {
 
 .blue-text {
   color:#1B4CA1;
+}
+
+.word-wrap {
+  word-wrap: break-word;
 }
