@@ -112,23 +112,23 @@ export class UserCardComponent implements OnInit {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
-      employeeID: new FormControl({ value: '', disabled: true }, []),
+      employeeID: new FormControl('', []),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
-      dob: new FormControl('', [Validators.required]),
+      dob: new FormControl('', []),
       primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
       countryCode: new FormControl('+91', [Validators.required]),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
       tags: new FormControl('', [Validators.pattern(this.namePatern)]),
-      roles: new FormControl('', []),
-      domicileMedium: new FormControl('', [Validators.required]),
-      gender: new FormControl('', [Validators.required]),
-      category: new FormControl('', [Validators.required]),
-      pincode: new FormControl('', [Validators.required]),
+      roles: new FormControl('', [Validators.required]),
+      domicileMedium: new FormControl('', []),
+      gender: new FormControl('', []),
+      category: new FormControl('', []),
+      pincode: new FormControl('', []),
     })
 
     this.approveUserDataForm = new FormGroup({
-      approveDesignation: new FormControl('', [Validators.required]),
-      approveGroup: new FormControl('', [Validators.required]),
+      approveDesignation: new FormControl('', []),
+      approveGroup: new FormControl('', []),
     })
 
     const fullProfile = _.get(this.route.snapshot, 'data.configService')
@@ -410,7 +410,7 @@ export class UserCardComponent implements OnInit {
 
       if (user.profileDetails.employmentDetails) {
         if (user.profileDetails.employmentDetails.pinCode) {
-          this.updateUserDataForm.controls['pincode'].setValue(user.profileDetails.employmentDetails.pincode)
+          this.updateUserDataForm.controls['pincode'].setValue(user.profileDetails.employmentDetails.pinCode)
         }
         if (user.profileDetails.employmentDetails.employeeCode) {
           this.updateUserDataForm.controls['employeeID'].setValue(user.profileDetails.employmentDetails.employeeCode)
@@ -708,6 +708,7 @@ export class UserCardComponent implements OnInit {
           if (req.wfId === field.wfId) {
             req.comment = this.comment
             field.comment = this.comment
+            this.showeditText = false
           }
         })
       } else {
