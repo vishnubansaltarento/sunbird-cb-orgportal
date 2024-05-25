@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
 import {
@@ -30,7 +30,7 @@ import { TelemetryEvents } from '../../../../head/_services/telemetry.event.mode
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
   ],
 })
-export class UserCardComponent implements OnInit {
+export class UserCardComponent implements OnInit, OnChanges {
   @Input() userId: any
   @Input() tableData: any
   @Input() usersData: any
@@ -141,6 +141,7 @@ export class UserCardComponent implements OnInit {
   }
 
   ngOnInit() {
+
     if (this.isApprovals && this.usersData) {
       this.approvalData = this.usersData
       if (this.approvalData && this.approvalData.length > 0) {
@@ -154,6 +155,12 @@ export class UserCardComponent implements OnInit {
       }
     } else {
       this.init()
+    }
+  }
+
+  ngOnChanges() {
+    if (this.usersData) {
+      this.usersData = _.orderBy(this.usersData, item => item.profileDetails.personalDetails.firstname, ['asc'])
     }
   }
 

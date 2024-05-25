@@ -2,7 +2,6 @@
   <ws-app-searchuser (handleApiData)="onSearch($event)" (handleapproveAll)="onApproveALL()"
     [showApproveALL]="showApproveALL" [currentFilter]="currentFilter"></ws-app-searchuser>
 </div>
-
 <div *ngIf="!isApprovals">
   <mat-accordion [multi]="true">
     <mat-expansion-panel class="user-card" *ngFor="let user of usersData" #panel (opened)="closeOtherPanels(panel)">
