@@ -364,7 +364,6 @@ export class UserCardComponent implements OnInit {
   setUserDetails(user: any) {
 
     if (user && user.profileDetails) {
-      console.log(user.profileDetails)
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.externalSystemId) {
           this.updateUserDataForm.controls['ehrmsID'].setValue(user.profileDetails.additionalProperties.externalSystemId)
