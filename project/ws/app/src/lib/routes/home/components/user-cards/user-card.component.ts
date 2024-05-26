@@ -106,9 +106,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -144,10 +144,10 @@ export class UserCardComponent implements OnInit, OnChanges {
     let enableBtn = true
     if (appData.needApprovalList) {
       appData.needApprovalList.forEach((field: any) => {
-        if (field.label === 'Group' && this.approveUserDataForm.get('approveGroup')!.invalid) {
+        if (field.label === 'Group' && this.approveUserDataForm.controls.approveGroup.invalid) {
           enableBtn = false
         }
-        if (field.label === 'Designation' && this.approveUserDataForm.get('approveDesignation')!.invalid) {
+        if (field.label === 'Designation' && this.approveUserDataForm.controls.approveDesignation.invalid) {
           enableBtn = false
         }
       })
@@ -177,9 +177,9 @@ export class UserCardComponent implements OnInit, OnChanges {
     if (this.usersData) {
       this.usersData = _.orderBy(this.usersData, item => {
         if (item.profileDetails && item.profileDetails.personalDetails) {
-          item.profileDetails.personalDetails.firstname
+          return item.profileDetails.personalDetails.firstname
         }
-      }, ['asc'])
+      },                         ['asc'])
     }
   }
 
