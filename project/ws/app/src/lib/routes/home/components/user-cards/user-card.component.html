@@ -2,7 +2,6 @@
   <ws-app-searchuser (handleApiData)="onSearch($event)" (handleapproveAll)="onApproveALL()"
     [showApproveALL]="showApproveALL" [currentFilter]="currentFilter"></ws-app-searchuser>
 </div>
-
 <div *ngIf="!isApprovals">
   <mat-accordion [multi]="true">
     <mat-expansion-panel class="user-card" *ngFor="let user of usersData | orderBy: 'firstName':'asc'" #panel
@@ -427,13 +426,13 @@
 
             <div class="md:w-1/4">
               <label class="view-text-label">Email</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails ?
+              <p class="word-wrap">{{user.profileDetails && user.profileDetails.personalDetails ?
                 user.profileDetails.personalDetails.primaryEmail : '-'}}</p>
             </div>
 
             <div class="md:w-1/4">
               <label class="view-text-label">Mobile Number</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails ?
+              <p>+91-{{user.profileDetails && user.profileDetails.personalDetails ?
                 user.profileDetails.personalDetails.mobile : '-'}}</p>
             </div>
 
@@ -466,19 +465,19 @@
                 user.profileDetails.personalDetails.category : '-'}}</p>
             </div>
 
-            <div class="md:w-1/4">
+            <!-- <div class="md:w-1/4">
               <label class="view-text-label">Pay Band</label>
               <p>{{user.profileDetails && user.profileDetails.employmentDetails &&
                 user.profileDetails.employmentDetails.payType ?
                 user.profileDetails.employmentDetails.payType : '-'}}</p>
-            </div>
+            </div> -->
           </div>
           <div class="flex flex-row margin-top-m">
             <div class="md:w-1/4">
               <label class="view-text-label">Office Pin Code</label>
-              <p>{{user.profileDetails && user.profileDetails.employmentDetails &&
-                user.profileDetails.employmentDetails.pinCode ?
-                user.profileDetails.employmentDetails.pinCode : '-'}}</p>
+              <p>{{user.profileDetails && user.profileDetails.personalDetails &&
+                user.profileDetails.personalDetails.pinCode ?
+                user.profileDetails.personalDetails.pinCode : '-'}}</p>
             </div>
 
             <div class="md:w-1/4">
@@ -640,7 +639,7 @@
 
               <div class="md:w-1/4">
                 <label class="view-text-label">Mobile Number</label>
-                <p>{{appData.user.profileDetails && appData.user.profileDetails.personalDetails ?
+                <p>+91-{{appData.user.profileDetails && appData.user.profileDetails.personalDetails ?
                   appData.user.profileDetails.personalDetails.mobile : '-'}}</p>
               </div>
 
@@ -684,9 +683,9 @@
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/4">
                 <label class="view-text-label">Office Pin Code</label>
-                <p>{{appData.user.profileDetails && appData.user.profileDetails.employmentDetails &&
-                  appData.user.profileDetails.employmentDetails.pinCode ?
-                  appData.user.profileDetails.employmentDetails.pinCode : '-'}}</p>
+                <p>{{appData.user.profileDetails && appData.user.profileDetails.personalDetails &&
+                  appData.user.profileDetails.personalDetails.pinCode ?
+                  appData.user.profileDetails.personalDetails.pinCode : '-'}}</p>
               </div>
 
               <div class="md:w-1/4">
