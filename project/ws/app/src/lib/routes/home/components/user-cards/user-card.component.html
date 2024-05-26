@@ -750,7 +750,7 @@
 
           <div class="flex flex-row margin-top-l">
             <button mat-raised-button type="submit" (click)="onApprovalSubmit(panel)"
-              class="margin-right-m btn-success btn-responsive successbtn" [disabled]="!approveUserDataForm.valid">
+              class="margin-right-m btn-success btn-responsive successbtn" [disabled]="!enableUpdateButton(appData)">
               <span class="text-white" i18n>
                 Update
               </span>
