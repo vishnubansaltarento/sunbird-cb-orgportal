@@ -140,6 +140,21 @@ export class UserCardComponent implements OnInit, OnChanges {
     }
   }
 
+  enableUpdateButton(appData: any): boolean {
+    let enableBtn = true
+    if (appData.needApprovalList) {
+      appData.needApprovalList.forEach((field: any) => {
+        if (field.label === 'Group' && this.approveUserDataForm.get('approveGroup')!.invalid) {
+          enableBtn = false
+        }
+        if (field.label === 'Designation' && this.approveUserDataForm.get('approveDesignation')!.invalid) {
+          enableBtn = false
+        }
+      })
+    }
+    return enableBtn
+  }
+
   ngOnInit() {
 
     if (this.isApprovals && this.usersData) {
@@ -160,7 +175,11 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.usersData) {
-      this.usersData = _.orderBy(this.usersData, item => item.profileDetails.personalDetails.firstname, ['asc'])
+      this.usersData = _.orderBy(this.usersData, item => {
+        if (item.profileDetails && item.profileDetails.personalDetails) {
+          item.profileDetails.personalDetails.firstname
+        }
+      }, ['asc'])
     }
   }
 
