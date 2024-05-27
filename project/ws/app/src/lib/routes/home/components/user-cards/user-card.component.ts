@@ -107,9 +107,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -184,7 +184,8 @@ export class UserCardComponent implements OnInit, OnChanges {
         if (item.profileDetails && item.profileDetails.personalDetails) {
           return item.profileDetails.personalDetails.firstname
         }
-      },                         ['asc'])
+        // tslint:disable-next-line
+      }, ['asc'])
     }
   }
 
@@ -196,6 +197,30 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.usersSvc.getUserById(id).subscribe((res: any) => {
           if (res) {
             data.user = res
+
+            if (data.user) {
+              if (data.needApprovalList && data.needApprovalList.length === 1) {
+                data.noneedApprovalList = []
+                if (data.needApprovalList[0].feildName === 'group') {
+                  console.log('appdata.needApprovalList[0]', data)
+                  const obj = {
+                    label: 'Designation',
+                    feildName: 'designation',
+                    value: data.user.profileDetails.professionalDetails[0].designation || '',
+                  }
+                  data.noneedApprovalList.push(obj)
+                }
+                if (data.needApprovalList[0].feildName === 'designation') {
+                  console.log('appdata.needApprovalList[0]', data)
+                  const obj = {
+                    label: 'Group',
+                    feildName: 'group',
+                    value: data.user.profileDetails.professionalDetails[0].group || '',
+                  }
+                  data.noneedApprovalList.push(obj)
+                }
+              }
+            }
           }
         })
       }
@@ -222,7 +247,6 @@ export class UserCardComponent implements OnInit, OnChanges {
                       value: field.toValue[labelKey],
                       fieldKey: field.fieldKey,
                       wfId: wf.wfId,
-                      approvalrequested: true,
                     })
                   )
                 }
@@ -394,7 +418,6 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   setUserDetails(user: any) {
-
     if (user && user.profileDetails) {
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.externalSystemId) {
