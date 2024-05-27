@@ -327,7 +327,7 @@
             </div>
 
             <div class="flex flex-row margin-top-m">
-              <div class="md:w-1/1" *ngIf="!isMdoAdmin">
+              <div class="md:w-1/1" *ngIf="isMdoLeader || isBoth">
                 <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
                   aria-label="Roles label" i18n="Role label|Label which explains the user to select the roles">
                   Role
@@ -342,7 +342,7 @@
                 </div>
               </div>
 
-              <div class="md:w-1/2" *ngIf="isMdoAdmin">
+              <div class="md:w-1/2" *ngIf="!isMdoLeader">
                 <label class="view-text-label">Roles</label>
                 <div *ngIf="user?.organisations && user?.organisations[0].roles.length > 0">
                   <ul class="roleslist">
@@ -475,9 +475,9 @@
           <div class="flex flex-row margin-top-m">
             <div class="md:w-1/4">
               <label class="view-text-label">Office Pin Code</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails &&
-                user.profileDetails.personalDetails.pinCode ?
-                user.profileDetails.personalDetails.pinCode : '-'}}</p>
+              <p>{{user.profileDetails && user.profileDetails.employmentDetails &&
+                user.profileDetails.employmentDetails.pinCode ?
+                user.profileDetails.employmentDetails.pinCode : '-'}}</p>
             </div>
 
             <div class="md:w-1/4">
@@ -683,9 +683,9 @@
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/4">
                 <label class="view-text-label">Office Pin Code</label>
-                <p>{{appData.user.profileDetails && appData.user.profileDetails.personalDetails &&
-                  appData.user.profileDetails.personalDetails.pinCode ?
-                  appData.user.profileDetails.personalDetails.pinCode : '-'}}</p>
+                <p>{{appData.user.profileDetails && appData.user.profileDetails.employmentDetails &&
+                  appData.user.profileDetails.employmentDetails.pinCode ?
+                  appData.user.profileDetails.employmentDetails.pinCode : '-'}}</p>
               </div>
 
               <div class="md:w-1/4">

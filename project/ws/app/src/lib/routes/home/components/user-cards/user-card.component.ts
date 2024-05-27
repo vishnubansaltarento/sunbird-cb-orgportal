@@ -63,6 +63,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   orguserRoles: any = []
   isMdoAdmin = false
   isMdoLeader = false
+  isBoth = false
   updateUserDataForm: FormGroup
   approveUserDataForm: FormGroup
   designationsMeta: any = []
@@ -137,10 +138,14 @@ export class UserCardComponent implements OnInit, OnChanges {
     if (fullProfile.unMappedUser && fullProfile.unMappedUser.roles) {
       this.isMdoAdmin = fullProfile.unMappedUser.roles.includes('MDO_ADMIN')
       this.isMdoLeader = fullProfile.unMappedUser.roles.includes('MDO_LEADER')
+      this.isBoth = fullProfile.unMappedUser.roles.includes('MDO_LEADER') && fullProfile.unMappedUser.roles.includes('MDO_ADMIN')
     }
   }
 
   ngOnInit() {
+    if (this.usersData && this.usersData.length > 0) {
+      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
+    }
 
     if (this.isApprovals && this.usersData) {
       this.approvalData = this.usersData
@@ -160,7 +165,7 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.usersData) {
-      this.usersData = _.orderBy(this.usersData, item => item.profileDetails.personalDetails.firstname, ['asc'])
+      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
     }
   }
 
@@ -198,6 +203,7 @@ export class UserCardComponent implements OnInit, OnChanges {
                       value: field.toValue[labelKey],
                       fieldKey: field.fieldKey,
                       wfId: wf.wfId,
+                      approvalrequested: true,
                     })
                   )
                 }
