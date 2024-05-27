@@ -761,7 +761,8 @@
     <mat-dialog-content>
       <mat-form-field class="w-full mt-5" appearance="outline">
         <textarea matInput class="reason-text-area" [(ngModel)]="comment" name="reason"
-          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"></textarea>
+          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"
+          maxlength="100"></textarea>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions class="flex flex-wrap justify-end">
@@ -782,7 +783,8 @@
       <p class="margin-top-l margin-bottom-l" *ngIf="!showeditText">{{comment}}</p>
       <mat-form-field class="w-full mt-5" appearance="outline" *ngIf="showeditText">
         <textarea matInput class="reason-text-area" [(ngModel)]="comment" name="reason"
-          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"></textarea>
+          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"
+          maxlength="100"></textarea>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions class="flex flex-wrap justify-end" *ngIf="showeditText">
