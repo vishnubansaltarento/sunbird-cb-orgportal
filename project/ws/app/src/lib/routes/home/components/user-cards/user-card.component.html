@@ -4,7 +4,8 @@
 </div>
 <div *ngIf="!isApprovals">
   <mat-accordion [multi]="true">
-    <mat-expansion-panel class="user-card" *ngFor="let user of usersData" #panel (opened)="closeOtherPanels(panel)">
+    <mat-expansion-panel class="user-card" *ngFor="let user of usersData | orderBy: 'firstName':'asc'" #panel
+      (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user)">
         <div class="float-left width88" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-m">
@@ -202,7 +203,7 @@
             </div>
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Date of Birth</label>
+                <label class="margin-remove-bottom form-label">Date of Birth</label>
                 <mat-form-field appearance="outline" class="customdob">
                   <input id="birthDate" matInput #dob formControlName="dob" [matDatepicker]="picker" i18n-placeholder
                     (focus)="picker.open()" placeholder="Choose date of birth" [min]="1/1/1900" [max]="today">
@@ -216,7 +217,7 @@
               </div>
 
               <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Mother Tongue</label>
+                <label class="margin-remove-bottom form-label">Mother Tongue</label>
                 <mat-form-field appearance="outline">
                   <input id="language" matInput type="text" placeholder="Type here" i18n-placeholder="Mother Tongue"
                     formControlName="domicileMedium" [matAutocomplete]="motherTongueAuto" i18n-aria-label
@@ -239,7 +240,7 @@
               </div>
 
               <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Gender</label>
+                <label class="margin-remove-bottom form-label">Gender</label>
                 <mat-form-field appearance="outline">
                   <mat-select #gender formControlName="gender" i18n-placeholder placeholder="Select gender">
                     <mat-option [value]="gender" *ngFor="let gender of genderList">
@@ -255,7 +256,7 @@
 
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Office Pin Code</label>
+                <label class="margin-remove-bottom form-label">Office Pin Code</label>
                 <mat-form-field appearance="outline">
                   <input id="pinCode" #pincode type="text" matInput placeholder="Type here" formControlName="pincode"
                     i18n-aria-label aria-label="Pin Code input field" autocomplete="off"
@@ -269,12 +270,12 @@
               <div class="md:w-1/3">
                 <label class="margin-remove-bottom form-label">eHRMS ID</label>
                 <mat-form-field appearance="outline">
-                  <input type="text" matInput #ehrmsID formControlName="ehrmsID" placeholder="Type here">
+                  <input type="text" matInput #ehrmsID formControlName="ehrmsID">
                 </mat-form-field>
               </div>
 
               <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Category</label>
+                <label class="margin-remove-bottom form-label">Category</label>
                 <mat-form-field appearance="outline">
                   <mat-select #category formControlName="category" i18n-placeholder placeholder="Select category">
                     <mat-option [value]="ctg" *ngFor="let ctg of categoryList">
@@ -326,7 +327,7 @@
             </div>
 
             <div class="flex flex-row margin-top-m">
-              <div class="md:w-1/1" *ngIf="!isMdoAdmin">
+              <div class="md:w-1/1" *ngIf="isMdoLeader || isBoth">
                 <label for="roles" class="margin-remove-bottom form-label required" i18n-aria-label
                   aria-label="Roles label" i18n="Role label|Label which explains the user to select the roles">
                   Role
@@ -341,7 +342,7 @@
                 </div>
               </div>
 
-              <div class="md:w-1/2" *ngIf="isMdoAdmin">
+              <div class="md:w-1/2" *ngIf="!isMdoLeader">
                 <label class="view-text-label">Roles</label>
                 <div *ngIf="user?.organisations && user?.organisations[0].roles.length > 0">
                   <ul class="roleslist">
@@ -474,9 +475,9 @@
           <div class="flex flex-row margin-top-m">
             <div class="md:w-1/4">
               <label class="view-text-label">Office Pin Code</label>
-              <p>{{user.profileDetails && user.profileDetails.personalDetails &&
-                user.profileDetails.personalDetails.pinCode ?
-                user.profileDetails.personalDetails.pinCode : '-'}}</p>
+              <p>{{user.profileDetails && user.profileDetails.employmentDetails &&
+                user.profileDetails.employmentDetails.pinCode ?
+                user.profileDetails.employmentDetails.pinCode : '-'}}</p>
             </div>
 
             <div class="md:w-1/4">
@@ -523,7 +524,7 @@
 <!-- for Approvals page -->
 <div *ngIf="isApprovals">
   <mat-accordion [multi]="true" *ngIf="approvalData">
-    <mat-expansion-panel class="user-card" *ngFor="let appData of approvalData" #panel
+    <mat-expansion-panel class="user-card" *ngFor="let appData of approvalData | orderBy: 'firstName':'asc'" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(appData.user, appData.userWorkflow);">
         <div class="float-left width82" (click)="$event.stopPropagation();">
@@ -565,38 +566,13 @@
                 class="ws-mat-black40-text infoicon">info_outline</mat-icon>
             </div>
             <div class="flex flex-row margin-top-m">
-              <!-- <div class="md:w-1/3">
-                <label class="view-text-label">Designation</label>
-                <p>{{appData.user.profileDetails && appData.user.profileDetails.professionalDetails &&
-                  appData.user.profileDetails.professionalDetails.designation ?
-                  appData.user.profileDetails.professionalDetails.designation : '-'}} <mat-icon
-                    class="verified-icon">check_circle</mat-icon></p>
-                <mat-radio-group aria-label="Select an option" name="approveDesignation"
-                  formControlName="approveDesignation">
-                  <mat-radio-button value="approve" class="margin-right-s">Approve</mat-radio-button>
-                  <mat-radio-button value="reject" (click)="addRejection('designation')">Reject</mat-radio-button>
-                </mat-radio-group>
-              </div>
-
-              <div class="md:w-1/3">
-                <label class="view-text-label">Group</label>
-                <p>{{appData.user.profileDetails && appData.user.profileDetails.additionalProperties &&
-                  appData.user.profileDetails.additionalProperties.group ?
-                  appData.user.profileDetails.additionalProperties.group : '-'}} <mat-icon
-                    class="verified-icon">check_circle</mat-icon>
-                </p>
-
-                <mat-radio-group aria-label="Select an option" name="approveGroup" formControlName="approveGroup">
-                  <mat-radio-button value="approve" class="margin-right-s">Approve</mat-radio-button>
-                  <mat-radio-button value="reject" (click)="addRejection('group')">Reject</mat-radio-button>
-                </mat-radio-group>
-              </div> -->
               <ng-container *ngFor="let field of appData.needApprovalList">
                 <div class="md:w-1/3 margin-bottom-s" *ngIf="field.label === 'Group'">
                   <label class="view-text-label">Group</label>
                   <div>
                     <span>
-                      <input type="text" class="appr-text-field margin-bottom-s" [value]="field.value">
+                      <input type="text" class="appr-text-field margin-bottom-s" [value]="field.value"
+                        [disabled]="true">
                       <mat-icon class="verified-icon margin-left-s"
                         *ngIf="field.action === 'APPROVE'">check_circle</mat-icon>
                       <mat-icon class="nonverified-icon margin-left-s"
@@ -618,7 +594,8 @@
                   <label class="view-text-label">Designation</label>
                   <div>
                     <span>
-                      <input type="text" class="appr-text-field margin-bottom-s" [value]="field.value">
+                      <input type="text" class="appr-text-field margin-bottom-s" [value]="field.value"
+                        [disabled]="true">
                       <mat-icon class="verified-icon margin-left-s"
                         *ngIf="field.action === 'APPROVE'">check_circle</mat-icon>
                       <mat-icon class="nonverified-icon margin-left-s"
@@ -706,9 +683,9 @@
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/4">
                 <label class="view-text-label">Office Pin Code</label>
-                <p>{{appData.user.profileDetails && appData.user.profileDetails.personalDetails &&
-                  appData.user.profileDetails.personalDetails.pinCode ?
-                  appData.user.profileDetails.personalDetails.pinCode : '-'}}</p>
+                <p>{{appData.user.profileDetails && appData.user.profileDetails.employmentDetails &&
+                  appData.user.profileDetails.employmentDetails.pinCode ?
+                  appData.user.profileDetails.employmentDetails.pinCode : '-'}}</p>
               </div>
 
               <div class="md:w-1/4">
@@ -750,7 +727,8 @@
 
           <div class="flex flex-row margin-top-l">
             <button mat-raised-button type="submit" (click)="onApprovalSubmit(panel)"
-              class="margin-right-m btn-success btn-responsive successbtn" [disabled]="!enableUpdateButton(appData)">
+              class="margin-right-m btn-success btn-responsive successbtn"
+              [disabled]="appData.needApprovalList.length !== actionList.length">
               <span class="text-white" i18n>
                 Update
               </span>
@@ -783,7 +761,8 @@
     <mat-dialog-content>
       <mat-form-field class="w-full mt-5" appearance="outline">
         <textarea matInput class="reason-text-area" [(ngModel)]="comment" name="reason"
-          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"></textarea>
+          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"
+          maxlength="100"></textarea>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions class="flex flex-wrap justify-end">
@@ -804,7 +783,8 @@
       <p class="margin-top-l margin-bottom-l" *ngIf="!showeditText">{{comment}}</p>
       <mat-form-field class="w-full mt-5" appearance="outline" *ngIf="showeditText">
         <textarea matInput class="reason-text-area" [(ngModel)]="comment" name="reason"
-          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"></textarea>
+          placeholder="Type the description in fewer than 100 characters" i18n-placeholder resizable="none"
+          maxlength="100"></textarea>
       </mat-form-field>
     </mat-dialog-content>
     <mat-dialog-actions class="flex flex-wrap justify-end" *ngIf="showeditText">

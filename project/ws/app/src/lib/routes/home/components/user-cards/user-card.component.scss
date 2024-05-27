@@ -63,12 +63,15 @@
 
   .verified-icon {
     color: #1D8923;
+    vertical-align: bottom;
   }
   .nonverified-icon {
     color: #D13924;
+    vertical-align: bottom;
   }
   .notmyuser-icon {
     color: #e99e38;
+    vertical-align: bottom;
   }
 
  .button {
@@ -294,7 +297,7 @@ label {
   }
 }
 
-:host ::ng-deep .rejection-modal {
+::ng-deep .rejection-modal {
   .mat-dialog-container {
     padding: 0px !important;
   }
@@ -314,7 +317,7 @@ label {
   vertical-align: middle;
   color: #666 !important;
 }
-:host ::ng-deep .mat-dialog-container {
+::ng-deep .mat-dialog-container {
   padding: 0 !important;
   overflow: unset !important;
 }
