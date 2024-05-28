@@ -78,7 +78,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   masterLanguages: Observable<any[]> | undefined
   masterLanguagesEntries: any
   genderList = ['Male', 'Female', 'Others']
-  categoryList = ['General', 'OBC', 'SC', 'ST', 'Others']
+  categoryList = ['General', 'OBC', 'SC', 'ST']
   // needApprovalList: any[] = []
   profileData: any[] = []
   userwfData!: any
@@ -413,6 +413,7 @@ export class UserCardComponent implements OnInit, OnChanges {
         usrRoles.forEach((role: any) => {
           this.orguserRoles.push(role)
           this.modifyUserRoles(role)
+          this.updateUserDataForm.controls['roles'].setValue(usrRoles)
         })
       }
     } else {
