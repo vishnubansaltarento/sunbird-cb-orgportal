@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { PlatformWalkthroughComponent } from './platform-walkthrough.component'
 
@@ -6,7 +6,7 @@ describe('PlatformWalkthroughComponent', () => {
   let component: PlatformWalkthroughComponent
   let fixture: ComponentFixture<PlatformWalkthroughComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PlatformWalkthroughComponent],
     })

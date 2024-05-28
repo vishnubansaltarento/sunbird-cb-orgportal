@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialogRef, MatTableDataSource } from '@angular/material'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup } from '@angular/forms'
 import { SelectionModel } from '@angular/cdk/collections'
 import { Router } from '@angular/router'

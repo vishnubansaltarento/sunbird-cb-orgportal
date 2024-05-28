@@ -30,56 +30,57 @@
             "styles": [
               {
                 "input": "src/styles/libraries.scss",
-                "bundleName": "libraries"
+                "bundleName": "libraries",
+                "inject": true
               },
               "node_modules/material-icons/iconfont/material-icons.scss",
               "src/styles/mat-typography.scss",
               "src/styles/styles.scss",
               "node_modules/shepherd.js/dist/css/shepherd.css",
               {
+                "inject": true,
                 "input": "src/themes/theme-deep-purple.scss",
-                "bundleName": "theme-deep-purple",
-                "lazy": true
+                "bundleName": "theme-deep-purple"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-grey.scss",
-                "bundleName": "theme-grey",
-                "lazy": true
+                "bundleName": "theme-grey"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-indigo.scss",
-                "bundleName": "theme-indigo",
-                "lazy": true
+                "bundleName": "theme-indigo"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-lite-blue.scss",
-                "bundleName": "theme-lite-blue",
-                "lazy": true
+                "bundleName": "theme-lite-blue"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-orange.scss",
-                "bundleName": "theme-orange",
-                "lazy": true
+                "bundleName": "theme-orange"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-teal.scss",
-                "bundleName": "theme-teal",
-                "lazy": true
+                "bundleName": "theme-teal"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-blue.scss",
-                "bundleName": "theme-blue",
-                "lazy": true
+                "bundleName": "theme-blue"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-deep-blue.scss",
-                "bundleName": "theme-deep-blue",
-                "lazy": true
+                "bundleName": "theme-deep-blue"
               },
               {
+                "inject": true,
                 "input": "src/themes/theme-igot.scss",
-                "bundleName": "theme-igot",
-                "lazy": true
+                "bundleName": "theme-igot"
               },
               "node_modules/pdfjs-dist/web/pdf_viewer.css",
               "src/mdo-assets/fonts/lato/stylesheet.css",
@@ -89,7 +90,14 @@
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@project-sunbird/telemetry-sdk/index.js",
               "node_modules/shepherd.js/dist/js/shepherd.min.js"
-            ]
+            ],
+            "aot": false,
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -102,7 +110,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -113,6 +120,10 @@
                   "type": "initial",
                   "maximumWarning": "4mb",
                   "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": false,
@@ -128,7 +139,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -139,6 +149,10 @@
                   "type": "initial",
                   "maximumWarning": "4mb",
                   "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": false,
@@ -154,7 +168,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -165,6 +178,10 @@
                   "type": "initial",
                   "maximumWarning": "4mb",
                   "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": false,
@@ -180,7 +197,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -191,6 +207,10 @@
                   "type": "initial",
                   "maximumWarning": "4mb",
                   "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": false,
@@ -206,7 +226,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -217,12 +236,17 @@
                   "type": "initial",
                   "maximumWarning": "5mb",
                   "maximumError": "20mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ],
               "serviceWorker": false,
               "ngswConfigPath": "ngsw-config.json"
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -295,12 +319,17 @@
       "prefix": "ws-app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "project/ws/app/tsconfig.lib.json",
             "project": "project/ws/app/ng-package.json"
           }
-        },
+        ,          "configurations": {
+            "production": {
+              "tsConfig": "project/ws/app/tsconfig.lib.prod.json"
+            }
+          }
+},
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -327,7 +356,7 @@
   "defaultProject": "mdo",
   "schematics": {
     "@schematics/angular:component": {
-      "styleext": "scss"
+      "style": "scss"
     }
   },
   "cli": {

@@ -5,8 +5,12 @@
     "types": ["node", "@types/zip.js"]
   },
   "angularCompilerOptions": {
-    "enableIvy": false
+    // "enableIvy": false
+    "compilationMode": "partial"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["src/test.ts", "src/**/*.spec.ts"]
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "include": ["src/**/*.d.ts"]
 }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { ProfleApprovalBulkUploadComponent } from './profle-approval-bulk-upload.component'
 
@@ -6,7 +6,7 @@ describe('ProfleApprovalBulkUploadComponent', () => {
   let component: ProfleApprovalBulkUploadComponent
   let fixture: ComponentFixture<ProfleApprovalBulkUploadComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProfleApprovalBulkUploadComponent],
     })

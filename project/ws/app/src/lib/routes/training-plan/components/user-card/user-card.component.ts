@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, OnInit, ChangeDetectorRef, ViewChild, OnChanges } from '@angular/core'
-import { MatTableDataSource, MatPaginator, PageEvent } from '@angular/material'
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { TrainingPlanDataSharingService } from '../../services/training-plan-data-share.service'
 @Component({
   selector: 'ws-app-user-card',
@@ -13,7 +14,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   @Input() showPagination = false
   @Output() handleSelectedChips = new EventEmitter()
   @Output() userRemoved = new EventEmitter<any>()
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator | any
+  @ViewChild(MatPaginator) paginator: MatPaginator | any
   dataSource: any
   startIndex = 0
   lastIndex = 20

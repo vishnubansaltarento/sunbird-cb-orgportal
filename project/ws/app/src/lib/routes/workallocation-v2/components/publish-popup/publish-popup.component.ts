@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup } from '@angular/forms'
 import { UploadFileService } from '../../services/uploadfile.service'
 import { ConfigurationsService } from '@sunbird-cb/utils'
@@ -10,7 +10,7 @@ import { ConfigurationsService } from '@sunbird-cb/utils'
   styleUrls: ['./publish-popup.component.scss'],
 })
 export class PublishPopupComponent implements OnInit {
-  @ViewChild('file', { static: false }) file: any
+  @ViewChild('file') file: any
   public files: Set<File> = new Set()
   progress: any
   uploading = false

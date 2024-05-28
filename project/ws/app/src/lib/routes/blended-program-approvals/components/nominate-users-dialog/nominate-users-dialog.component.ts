@@ -1,6 +1,8 @@
 import { SelectionModel } from '@angular/cdk/collections'
 import { Component, Inject, OnInit, ViewChild } from '@angular/core'
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar, MatTableDataSource } from '@angular/material'
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
 import { UsersService } from '../../../users/services/users.service'
 import { MatSort } from '@angular/material/sort'
 import { BlendedApporvalService } from '../../services/blended-approval.service'
@@ -23,7 +25,7 @@ export class NominateUsersDialogComponent implements OnInit {
   learners: any = []
   userscount: any
 
-  @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
+  @ViewChild(MatSort) set matSort(sort: MatSort) {
     if (!this.dataSource.sort) {
       this.dataSource.sort = sort
     }

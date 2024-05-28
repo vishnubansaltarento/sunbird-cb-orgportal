@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import _ from 'lodash'
 /* tslint:enable */
 // import { environment } from 'src/environments/environment'
-import { PageEvent } from '@angular/material'
+import { PageEvent } from '@angular/material/paginator';
 import { EventService } from '@sunbird-cb/utils'
 import { NsContent } from '@sunbird-cb/collection'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'

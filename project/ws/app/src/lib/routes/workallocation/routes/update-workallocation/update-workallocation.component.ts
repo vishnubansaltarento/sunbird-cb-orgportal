@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
 import { FormGroup, Validators, FormBuilder, FormArray, FormControl } from '@angular/forms'
 import { ExportAsService, ExportAsConfig } from 'ngx-export-as'
 import { ActivatedRoute, Router } from '@angular/router'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AllocationService } from '../../services/allocation.service'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
@@ -13,7 +13,7 @@ import * as _ from 'lodash'
   styleUrls: ['./update-workallocation.component.scss'],
 })
 export class UpdateWorkallocationComponent implements OnInit {
-  @ViewChild('childNodes', { static: false })
+  @ViewChild('childNodes')
   inputvar!: ElementRef
   tabsData!: any[]
   userslist!: any[]

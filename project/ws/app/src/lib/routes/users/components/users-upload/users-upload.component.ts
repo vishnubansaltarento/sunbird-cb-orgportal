@@ -3,7 +3,9 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { FileService } from '../../services/upload.service'
 import { Observable, Subscription, interval } from 'rxjs'
 import { startWith, map, pairwise } from 'rxjs/operators'
-import { MatRadioChange, MatSnackBar, MatSort } from '@angular/material'
+import { MatRadioChange } from '@angular/material/radio';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator'
 import { MatTableDataSource } from '@angular/material/table'
 import { environment } from 'src/environments/environment'
@@ -68,9 +70,9 @@ export class UsersUploadComponent implements OnInit, AfterViewInit, OnDestroy {
   myRoles: any = []
 
   objDataSource = new MatTableDataSource<any>()
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator | null = null
+  @ViewChild(MatPaginator) paginator: MatPaginator | null = null
 
-  @ViewChild(MatPaginator, { static: false }) set matPaginator(paginator: MatPaginator) {
+  @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
     this.paginator = paginator
     this.setDataSourceAttributes()
   }

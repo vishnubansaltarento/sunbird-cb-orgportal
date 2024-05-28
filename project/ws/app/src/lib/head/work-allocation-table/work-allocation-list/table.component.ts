@@ -4,7 +4,9 @@ import {
 } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatTableDataSource } from '@angular/material/table'
-import { MatDialog, MatPaginator, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort'
 import * as _ from 'lodash'
 
@@ -50,7 +52,7 @@ export class WorkAllocationTableComponent implements OnInit, OnChanges {
   downloaddata: any = []
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator
   // @ViewChild(MatSort, { static: true }) sort?: MatSort
-  @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
+  @ViewChild(MatSort) set matSort(sort: MatSort) {
     if (!this.dataSource.sort) {
       this.dataSource.sort = sort
     }

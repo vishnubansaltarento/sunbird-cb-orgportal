@@ -10,19 +10,17 @@ import {
 import { WidgetResolverModule } from '@sunbird-cb/resolver'
 import { HomeModule } from '../home/home.module'
 import { RouterModule } from '@angular/router'
-import {
-  MatSidenavModule,
-  MatIconModule,
-  MatButtonModule,
-  MatBadgeModule,
-  MatTableModule,
-  MatCheckboxModule,
-  MatSortModule,
-  MatFormFieldModule,
-  MatDialogModule,
-  MatInputModule,
-  MatProgressSpinnerModule,
-} from '@angular/material'
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card'
 import { BatchDetailsComponent } from './components/batch-details/batch-details.component'
 import { BatchListComponent } from './components/batch-list/batch-list.component'

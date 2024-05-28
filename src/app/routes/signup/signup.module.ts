@@ -1,7 +1,11 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { MatFormFieldModule, MatChipsModule, MatInputModule, MatIconModule, MatButtonModule } from '@angular/material'
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { SignupComponent } from './signup.component'
 import { SignupRoutingModule } from './signup-routing.module'
 

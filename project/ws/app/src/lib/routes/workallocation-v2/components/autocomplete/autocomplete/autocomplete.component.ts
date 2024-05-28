@@ -18,8 +18,8 @@ import { merge } from 'rxjs'
   exportAs: 'wsAppAutocomplete',
 })
 export class AutocompleteComponent implements OnInit {
-  @ViewChild('root', { static: false }) rootTemplate!: TemplateRef<any>
-  @ContentChild(AutocompleteContentDirective, { static: false })
+  @ViewChild('root') rootTemplate!: TemplateRef<any>
+  @ContentChild(AutocompleteContentDirective)
   content: AutocompleteContentDirective | undefined
   @ContentChildren(OptionComponent) options!: QueryList<OptionComponent>
 

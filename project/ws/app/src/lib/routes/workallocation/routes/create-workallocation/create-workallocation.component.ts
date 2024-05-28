@@ -3,7 +3,8 @@ import { FormGroup, Validators, FormBuilder, FormArray, FormControl } from '@ang
 import { AllocationService } from '../../services/allocation.service'
 import { Router } from '@angular/router'
 import { ExportAsService, ExportAsConfig } from 'ngx-export-as'
-import { MatSnackBar, MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogConfirmComponent } from 'src/app/component/dialog-confirm/dialog-confirm.component'
 import { AllocationActionsComponent } from '../../components/allocation-actions/allocation-actions.component'
 import { ConfigurationsService, EventService } from '@sunbird-cb/utils'
@@ -15,7 +16,7 @@ import * as _ from 'lodash'
   styleUrls: ['./create-workallocation.component.scss'],
 })
 export class CreateWorkallocationComponent implements OnInit {
-  @ViewChild('childNodes', { static: false })
+  @ViewChild('childNodes')
   inputvar!: ElementRef
   tabsData!: any[]
   userslist!: any[]

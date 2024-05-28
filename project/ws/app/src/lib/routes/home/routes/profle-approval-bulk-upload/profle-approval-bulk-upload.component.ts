@@ -1,7 +1,9 @@
 import { DatePipe } from '@angular/common'
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms'
-import { MatSort, MatSnackBar, MatRadioChange } from '@angular/material'
+import { MatRadioChange } from '@angular/material/radio';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute } from '@angular/router'
 import { Observable, Subscription, interval } from 'rxjs'
 import { startWith, pairwise, map } from 'rxjs/operators'
@@ -70,9 +72,9 @@ export class ProfleApprovalBulkUploadComponent implements OnInit, OnDestroy, Aft
   myRoles: any = []
 
   objDataSource = new MatTableDataSource<any>()
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator | null = null
+  @ViewChild(MatPaginator) paginator: MatPaginator | null = null
 
-  @ViewChild(MatPaginator, { static: false }) set matPaginator(paginator: MatPaginator) {
+  @ViewChild(MatPaginator) set matPaginator(paginator: MatPaginator) {
     this.paginator = paginator
     this.setDataSourceAttributes()
   }

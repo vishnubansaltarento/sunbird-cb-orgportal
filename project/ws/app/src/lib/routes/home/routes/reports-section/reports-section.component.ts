@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DownloadReportService } from '../../services/download-report.service'
 import { DatePipe } from '@angular/common'
 import { mergeMap } from 'rxjs/operators'

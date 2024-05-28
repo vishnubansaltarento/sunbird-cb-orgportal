@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
 import { TrainingPlanDataSharingService } from '../../services/training-plan-data-share.service'
-import { MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
 import { PreviewDialogBoxComponent } from '../preview-dialog-box/preview-dialog-box.component'
 @Component({
   selector: 'ws-app-chip',

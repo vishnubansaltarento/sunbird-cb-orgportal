@@ -1,7 +1,9 @@
 import { Component, OnInit, OnChanges, ViewChild, SimpleChanges } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatTableDataSource } from '@angular/material/table'
-import { MatPaginator, MatDialogConfig, MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort'
 import { IColums, ITableData } from '../../interface/interfaces'
 import * as _ from 'lodash'
@@ -45,7 +47,7 @@ export class LeadershiptableComponent implements OnInit, OnChanges {
   deptID: any
   statedata = { param: 'MDOinfo', path: 'Leadership' }
   // tslint:disable-next-line:max-line-length
-  @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
+  @ViewChild(MatSort) set matSort(sort: MatSort) {
     if (!this.dataSource.sort) {
       this.dataSource.sort = sort
     }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { TrainingPlanDataSharingService } from '../../services/training-plan-data-share.service'
-import { MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
 import { PreviewDialogBoxComponent } from '../../components/preview-dialog-box/preview-dialog-box.component'
 @Component({
   selector: 'ws-app-create-timeline',

@@ -7,7 +7,8 @@ import { TrainingPlanDashboardService } from '../../services/training-plan-dashb
 import moment from 'moment'
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 import { TrainingPlanService } from '../../../training-plan/services/traininig-plan.service'
-import { MatDialog, MatSnackBar } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 /* tslint:disable */
 import _ from 'lodash'

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { AddTimelineFormComponent } from './add-timeline-form.component'
 
@@ -6,7 +6,7 @@ describe('AddTimelineFormComponent', () => {
   let component: AddTimelineFormComponent
   let fixture: ComponentFixture<AddTimelineFormComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AddTimelineFormComponent],
     })

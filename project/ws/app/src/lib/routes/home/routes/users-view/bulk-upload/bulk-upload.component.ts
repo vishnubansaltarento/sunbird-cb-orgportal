@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core'
-import { MatSnackBar, PageEvent, MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute } from '@angular/router'
 // tslint:disable-next-line

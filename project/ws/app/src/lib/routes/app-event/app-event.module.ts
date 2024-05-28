@@ -3,7 +3,14 @@ import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { AppEventComponent } from './components/app-event/app-event.component'
 import { AppEventRoutingModule } from './app-event-routing.module'
-import { MatFormFieldModule, MatInputModule, MatGridListModule, MatIconModule, MatButtonModule, MatSelectModule, MatProgressSpinnerModule, MatTabsModule } from '@angular/material'
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatDividerModule } from '@angular/material/divider'
 import { MatCardModule } from '@angular/material/card'
 import { ProfileDetailModule } from './components/profile-detail/profile-detail.module'

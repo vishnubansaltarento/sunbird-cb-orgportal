@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core'
-import { MatTabGroup, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatTabGroup } from '@angular/material/tabs';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms'
 import { AllocationService } from '../../services/allocation.service'
 
@@ -10,9 +11,9 @@ import { AllocationService } from '../../services/allocation.service'
 })
 export class AllocationActionsComponent implements OnInit {
 
-  @ViewChild('tabGroup', { static: false }) tabGroup!: MatTabGroup
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup
 
-  @ViewChild('childNodes', { static: false })
+  @ViewChild('childNodes')
 
   inputvar!: ElementRef
   tabsData!: any[]

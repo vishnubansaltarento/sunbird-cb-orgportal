@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnChanges, SimpleChanges } from '@angular/core'
 import { ConfigurationsService } from '@sunbird-cb/utils'
-import { MatPaginator, MatTabChangeEvent, MatTableDataSource } from '@angular/material'
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router'
 import { IColums, ITableData } from '../../interface/interfaces'
 import { MatSort } from '@angular/material/sort'
@@ -37,7 +39,7 @@ export class LeadershipComponent implements OnInit, AfterViewInit, OnChanges {
   displayedColumns: IColums[] | undefined
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator
   // tslint:disable-next-line:max-line-length
-  @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
+  @ViewChild(MatSort) set matSort(sort: MatSort) {
     if (!this.dataSource.sort) {
       this.dataSource.sort = sort
     }

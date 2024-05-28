@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
-import { MatDialog, MatSnackBar, PageEvent } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventService } from '@sunbird-cb/utils'
 
 /* tslint:disable */

@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild, SimpleChanges, OnChanges } from '@angular/core'
 import { SelectionModel } from '@angular/cdk/collections'
 import { MatTableDataSource } from '@angular/material/table'
-import { MatPaginator, MatSnackBar, MatDialogConfig, MatDialog, MatSelectChange } from '@angular/material'
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort'
 import { ITableData, IColums } from '../../interface/interfaces'
 import * as _ from 'lodash'
@@ -78,7 +81,7 @@ export class BudgetComponent implements OnInit, OnChanges {
   utilizedChange: any
   utilizedChangeError = false
   prevBudgetYear: any
-  @ViewChild(MatSort, { static: false }) set matSort(sort: MatSort) {
+  @ViewChild(MatSort) set matSort(sort: MatSort) {
     // if (!this.dataSource1.sort) {
     //   this.dataSource1.sort = sort
     // }

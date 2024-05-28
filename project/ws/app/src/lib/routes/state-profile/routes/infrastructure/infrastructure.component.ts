@@ -7,7 +7,7 @@ import { OrgProfileService } from '../../services/org-profile.service'
 /* tslint:disable*/
 import _ from 'lodash'
 import { DialogBoxComponent } from '../../components/dialog-box/dialog-box.component'
-import { MatDialog } from '@angular/material'
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'ws-app-infrastructure',
