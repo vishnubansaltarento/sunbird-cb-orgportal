@@ -140,6 +140,18 @@ export class UserCardComponent implements OnInit, OnChanges {
       this.isMdoLeader = fullProfile.unMappedUser.roles.includes('MDO_LEADER')
       this.isBoth = fullProfile.unMappedUser.roles.includes('MDO_LEADER') && fullProfile.unMappedUser.roles.includes('MDO_ADMIN')
     }
+
+    if (this.usersData && this.usersData.length > 0) {
+      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
+
+      // formatting profileStatusUpdatedOn value
+      this.usersData.forEach((u: any) => {
+        if (u.profileDetails.profileStatusUpdatedOn) {
+          const val = u.profileDetails.profileStatusUpdatedOn.split(' ')
+          u.profileDetails.profileStatusUpdatedOn = val[0]
+        }
+      })
+    }
   }
 
   enableUpdateButton(appData: any): boolean {
@@ -158,10 +170,6 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.usersData && this.usersData.length > 0) {
-      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
-    }
-
     if (this.isApprovals && this.usersData) {
       this.approvalData = this.usersData
       if (this.approvalData && this.approvalData.length > 0) {
