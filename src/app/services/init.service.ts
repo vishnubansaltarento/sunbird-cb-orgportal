@@ -19,7 +19,7 @@ import {
   NsInstanceConfig,
   // NsUser,
   UserPreferenceService,
-  AuthKeycloakService,
+  // AuthKeycloakService,
 } from '@sunbird-cb/utils'
 import { map } from 'rxjs/operators'
 import { environment } from '../../environments/environment'
@@ -53,7 +53,7 @@ export class InitService {
   constructor(
     private logger: LoggerService,
     private configSvc: ConfigurationsService,
-    private authSvc: AuthKeycloakService,
+    // private authSvc: AuthKeycloakService,
     private widgetResolverService: WidgetResolverService,
     private settingsSvc: BtnSettingsService,
     private userPreference: UserPreferenceService,
@@ -328,9 +328,12 @@ export class InitService {
           } else {
             this.configSvc.unMappedUser.orgProfile = null
           }
+          localStorage.setItem('login', 'true')
 
         } else {
-          this.authSvc.force_logout()
+          // this.authSvc.force_logout()
+          // await this.http.get('/apis/reset').toPromise()
+          window.location.href = `${this.defaultRedirectUrl}apis/reset`
         }
         const details = {
           group: [],
@@ -557,5 +560,14 @@ export class InitService {
       }
     })
     return returnValue
+  }
+
+  private get defaultRedirectUrl(): string {
+    try {
+      const baseUrl = document.baseURI
+      return baseUrl || location.origin
+    } catch (error) {
+      return location.origin
+    }
   }
 }
