@@ -107,9 +107,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -210,7 +210,6 @@ export class UserCardComponent implements OnInit, OnChanges {
               if (data.needApprovalList && data.needApprovalList.length === 1) {
                 data.noneedApprovalList = []
                 if (data.needApprovalList[0].feildName === 'group') {
-                  console.log('appdata.needApprovalList[0]', data)
                   const obj = {
                     label: 'Designation',
                     feildName: 'designation',
@@ -219,7 +218,6 @@ export class UserCardComponent implements OnInit, OnChanges {
                   data.noneedApprovalList.push(obj)
                 }
                 if (data.needApprovalList[0].feildName === 'designation') {
-                  console.log('appdata.needApprovalList[0]', data)
                   const obj = {
                     label: 'Group',
                     feildName: 'group',
