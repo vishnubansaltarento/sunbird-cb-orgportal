@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-6">
   <div class="flex flex-col gap-4 bulk-container">
-    <div class="flex font-bold">Bulk creation</div>
+    <div class="flex font-bold">Bulk Creation</div>
     <div class="flex flex-row gap-8">
       <div class="flex-1">
         <div class="flex flex-col gap-3 dashed-card">
@@ -30,8 +30,7 @@
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
               Browse files</div>
             <input hidden type="file" #fileInput (click)="handleFileClick($event)" (change)="handleOnFileChange($event)"
-              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();"
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx, .xls" />
+              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();" accept=".xlsx, .xls" />
             <!-- <div class="flex">or</div>
             <div class="flex">Drag file to upload</div> -->
           </div>

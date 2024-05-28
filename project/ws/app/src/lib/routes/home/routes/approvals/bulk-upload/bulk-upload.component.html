@@ -35,8 +35,7 @@
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
               Browse files</div>
             <input hidden type="file" #fileInput (click)="handleFileClick($event)" (change)="handleOnFileChange($event)"
-              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();"
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx, .xls" />
+              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();" accept=".xlsx, .xls" />
             <!-- <div class="flex">or</div>
             <div class="flex">Drag file to upload</div> -->
           </div>
