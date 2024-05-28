@@ -78,7 +78,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   masterLanguages: Observable<any[]> | undefined
   masterLanguagesEntries: any
   genderList = ['Male', 'Female', 'Others']
-  categoryList = ['General', 'OBC', 'SC', 'ST', 'Others']
+  categoryList = ['General', 'OBC', 'SC', 'ST']
   // needApprovalList: any[] = []
   profileData: any[] = []
   userwfData!: any
@@ -107,9 +107,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
@@ -269,6 +269,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     await this.loadGroups()
     await this.loadLangauages()
     await this.loadCountryCodes()
+    await this.loadRoles()
   }
 
   async loadDesignations() {
@@ -315,6 +316,13 @@ export class UserCardComponent implements OnInit, OnChanges {
       })
   }
 
+  async loadRoles() {
+    this.roleservice.getAllRoles().subscribe((_data: any) => {
+      const parseRoledata = JSON.parse(_data.result.response.value)
+      this.orgTypeList = parseRoledata.orgTypeList
+    })
+  }
+
   closeOtherPanels(openPanel: MatExpansionPanel) {
     this.panels.forEach(panel => {
       if (panel !== openPanel) {
@@ -359,6 +367,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     pnael.open()
     user.enableEdit = !user.enableEdit
     this.setUserDetails(user)
+    this.mapRoles(user)
   }
 
   getUerData(user: any, data: any) {
@@ -375,51 +384,41 @@ export class UserCardComponent implements OnInit, OnChanges {
       this.comment = ''
       this.getApprovalList(data)
     } else {
-      this.roleservice.getAllRoles().subscribe((_data: any) => {
-        const parseRoledata = JSON.parse(_data.result.response.value)
-        this.orgTypeList = parseRoledata.orgTypeList
+      this.mapRoles(user)
+    }
+  }
 
-        // New code for roles
-        for (let i = 0; i < this.orgTypeList.length; i += 1) {
-          if (this.orgTypeList[i].name === 'MDO') {
-            _.each(this.orgTypeList[i].roles, rolesObject => {
-              // if (this.isMdoAdmin) {
-              //   if (rolesObject === 'PUBLIC') {
-              //     this.uniqueRoles.push({
-              //       roleName: rolesObject, description: rolesObject,
-              //     })
-              //   }
-              //   if (rolesObject === 'MDO_DASHBOARD_USER') {
-              //     this.uniqueRoles.push({
-              //       roleName: rolesObject, description: rolesObject,
-              //     })
-              //   }
-              // } else {
-              // if (this.isMdoLeader) {
-              if (rolesObject !== 'MDO_LEADER') {
-                this.uniqueRoles.push({
-                  roleName: rolesObject, description: rolesObject,
-                })
-                // }
-              }
-              // }
-            })
-          }
-        }
-        this.uniqueRoles.forEach((role: any) => {
-          if (!this.rolesList.some((item: any) => item.roleName === role.roleName)) {
-            this.rolesList.push(role)
-          }
-        })
-        const usrRoles = profileDataAll.organisations[0] && profileDataAll.organisations[0].roles
-          ? profileDataAll.organisations[0].roles : []
-        if (usrRoles.length > 0) {
-          usrRoles.forEach((role: any) => {
-            this.orguserRoles.push(role)
-            this.modifyUserRoles(role)
+  mapRoles(user: any) {
+    if (this.orgTypeList && this.orgTypeList.length > 0) {
+      // New code for roles
+      for (let i = 0; i < this.orgTypeList.length; i += 1) {
+        if (this.orgTypeList[i].name === 'MDO') {
+          _.each(this.orgTypeList[i].roles, rolesObject => {
+            if (rolesObject !== 'MDO_LEADER') {
+              this.uniqueRoles.push({
+                roleName: rolesObject, description: rolesObject,
+              })
+            }
           })
         }
+      }
+      this.uniqueRoles.forEach((role: any) => {
+        if (!this.rolesList.some((item: any) => item.roleName === role.roleName)) {
+          this.rolesList.push(role)
+        }
       })
+      const usrRoles = user.organisations[0] && user.organisations[0].roles
+        ? user.organisations[0].roles : []
+      if (usrRoles.length > 0) {
+        usrRoles.forEach((role: any) => {
+          this.orguserRoles.push(role)
+          this.modifyUserRoles(role)
+          this.updateUserDataForm.controls['roles'].setValue(usrRoles)
+        })
+      }
+    } else {
+      this.loadRoles()
+      this.mapRoles(user)
     }
   }
 
@@ -818,5 +817,35 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.markStatus('NOT-VERIFIED', user)
       }
     })
+  }
+
+  confirmUpdate(template: any, updateUserDataForm: any, user: any, panel: any) {
+    const dialog = this.dialog.open(template, {
+      width: '500px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.onSubmit(updateUserDataForm, user, panel)
+      } else {
+        this.cancelSubmit(user)
+      }
+    })
+  }
+
+  confirmApproval(template: any, panel: any) {
+    const dialog = this.dialog.open(template, {
+      width: '500px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.onApprovalSubmit(panel)
+      } else {
+        panel.close()
+      }
+    })
+  }
+
+  onApprovalCancel(panel: any) {
+    panel.close()
   }
 }
