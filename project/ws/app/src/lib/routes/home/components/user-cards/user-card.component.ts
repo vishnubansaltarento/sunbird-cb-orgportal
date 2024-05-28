@@ -140,6 +140,18 @@ export class UserCardComponent implements OnInit, OnChanges {
       this.isMdoLeader = fullProfile.unMappedUser.roles.includes('MDO_LEADER')
       this.isBoth = fullProfile.unMappedUser.roles.includes('MDO_LEADER') && fullProfile.unMappedUser.roles.includes('MDO_ADMIN')
     }
+
+    if (this.usersData && this.usersData.length > 0) {
+      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
+
+      // formatting profileStatusUpdatedOn value
+      this.usersData.forEach((u: any) => {
+        if (u.profileDetails.profileStatusUpdatedOn) {
+          const val = u.profileDetails.profileStatusUpdatedOn.split(' ')
+          u.profileDetails.profileStatusUpdatedOn = val[0]
+        }
+      })
+    }
   }
 
   enableUpdateButton(appData: any): boolean {
@@ -158,10 +170,6 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.usersData && this.usersData.length > 0) {
-      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
-    }
-
     if (this.isApprovals && this.usersData) {
       this.approvalData = this.usersData
       if (this.approvalData && this.approvalData.length > 0) {
@@ -184,7 +192,8 @@ export class UserCardComponent implements OnInit, OnChanges {
         if (item.profileDetails && item.profileDetails.personalDetails) {
           return item.profileDetails.personalDetails.firstname
         }
-      },                         ['asc'])
+        // tslint:disable-next-line
+      }, ['asc'])
     }
   }
 
@@ -196,6 +205,28 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.usersSvc.getUserById(id).subscribe((res: any) => {
           if (res) {
             data.user = res
+
+            if (data.user) {
+              if (data.needApprovalList && data.needApprovalList.length === 1) {
+                data.noneedApprovalList = []
+                if (data.needApprovalList[0].feildName === 'group') {
+                  const obj = {
+                    label: 'Designation',
+                    feildName: 'designation',
+                    value: data.user.profileDetails.professionalDetails[0].designation || '',
+                  }
+                  data.noneedApprovalList.push(obj)
+                }
+                if (data.needApprovalList[0].feildName === 'designation') {
+                  const obj = {
+                    label: 'Group',
+                    feildName: 'group',
+                    value: data.user.profileDetails.professionalDetails[0].group || '',
+                  }
+                  data.noneedApprovalList.push(obj)
+                }
+              }
+            }
           }
         })
       }
@@ -222,7 +253,6 @@ export class UserCardComponent implements OnInit, OnChanges {
                       value: field.toValue[labelKey],
                       fieldKey: field.fieldKey,
                       wfId: wf.wfId,
-                      approvalrequested: true,
                     })
                   )
                 }
@@ -394,7 +424,6 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   setUserDetails(user: any) {
-
     if (user && user.profileDetails) {
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.externalSystemId) {
