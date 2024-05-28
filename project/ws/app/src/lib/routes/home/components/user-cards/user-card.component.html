@@ -339,7 +339,7 @@
                 </div>
               </div>
 
-              <div class="md:w-1/2" *ngIf="!isMdoLeader">
+              <div class="md:w-1/1" *ngIf="!isMdoLeader">
                 <label class="view-text-label">Roles</label>
                 <div *ngIf="user?.organisations && user?.organisations[0].roles.length > 0">
                   <ul class="roleslist">
@@ -352,7 +352,8 @@
             </div>
 
             <div class="flex flex-row margin-top-l">
-              <button mat-raised-button type="submit" (click)="onSubmit(updateUserDataForm, user, panel)"
+              <button mat-raised-button type="submit"
+                (click)="confirmUpdate(updateconfirm, updateUserDataForm, user, panel)"
                 class="margin-right-m btn-success btn-responsive successbtn" [disabled]="updateUserDataForm?.invalid">
                 <span class="text-white" i18n>
                   Update
@@ -734,14 +735,14 @@
           </div>
 
           <div class="flex flex-row margin-top-l">
-            <button mat-raised-button type="submit" (click)="onApprovalSubmit(panel)"
+            <button mat-raised-button type="submit" (click)="confirmApproval(approvalconfirm, panel)"
               class="margin-right-m btn-success btn-responsive successbtn"
               [disabled]="appData.needApprovalList.length !== actionList.length">
               <span class="text-white" i18n>
                 Update
               </span>
             </button>
-            <button mat-raised-button type="submit" (click)="onApprovalCancel()"
+            <button mat-raised-button type="submit" (click)="onApprovalCancel(panel)"
               class="btn-success btn-responsive cancelbtn">
               <span i18n>
                 Cancel
@@ -831,6 +832,28 @@
     <mat-icon class="infoIcon orangeicon-dialog">error_outline</mat-icon>
     <div mat-dialog-content i18n class="margin-top-xs blue-text">
       Are you sure you want to update?
+    </div>
+    <div mat-dialog-actions class="flex-center margin-top-s">
+      <button mat-raised-button type="submit" [mat-dialog-close]="false"
+        class="margin-right-m  btn-success btn-responsive cancelbtn">
+        <span i18n>
+          No
+        </span>
+      </button>
+      <button mat-raised-button type="submit" [mat-dialog-close]="true" class="btn-success btn-responsive successbtn">
+        <span class="text-white" i18n>
+          Yes
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #approvalconfirm>
+  <div class="confirm-dialog text-center padding-l">
+    <mat-icon class="infoIcon orangeicon-dialog">error_outline</mat-icon>
+    <div mat-dialog-content i18n class="margin-top-xs blue-text">
+      Are you sure you want to save changes?
     </div>
     <div mat-dialog-actions class="flex-center margin-top-s">
       <button mat-raised-button type="submit" [mat-dialog-close]="false"
