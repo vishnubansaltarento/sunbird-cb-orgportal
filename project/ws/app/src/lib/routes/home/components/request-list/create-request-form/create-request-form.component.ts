@@ -5,7 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { MatDialog, MatSnackBar } from '@angular/material'
 import { CompetencyViewComponent } from '../competency-view/competency-view.component'
 import { ConfirmationBoxComponent } from '../../../../training-plan/components/confirmation-box/confirmation.box.component'
+/* tslint:disable */
 import _ from 'lodash'
+/* tslint:enable */
 
 @Component({
   selector: 'ws-app-create-request-form',

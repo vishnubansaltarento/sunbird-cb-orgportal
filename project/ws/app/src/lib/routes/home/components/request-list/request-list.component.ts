@@ -4,9 +4,15 @@ import { ITableData } from '@sunbird-cb/collection/lib/ui-org-table/interface/in
 import { ProfileV2Service } from '../../services/home.servive'
 import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { MatDialog } from '@angular/material'
+import { MatDialog, MatTableDataSource } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
+export enum statusValue {
+  Assigned= "Assigned",
+  Unassigned = "Unassigned",
+  Inprogress = "Inprogress",
+  invalid = "invalid"
+}
 @Component({
   selector: 'ws-app-request-list',
   templateUrl: './request-list.component.html',
@@ -49,6 +55,10 @@ export class RequestListComponent implements OnInit {
   requestCount: any
   invalidRes: any
   detailsEvent: any
+  dataSource:any;
+  displayedColumns: string[] = ["RequestId", "title", "requestType", "requestStatus", "assignee", "requestedOn", "interests", "action"]
+  statusKey = statusValue
+
 
   constructor(private sanitizer: DomSanitizer,
               private homeService: ProfileV2Service,
@@ -63,6 +73,7 @@ export class RequestListComponent implements OnInit {
       `Your access to the report is available until.
       Please contact your MDO Leader to renew your access.`,
   ]
+
 
   ngOnInit() {
     this.configSvc = this.activeRoute.snapshot.data['configService']
@@ -98,18 +109,19 @@ export class RequestListComponent implements OnInit {
     }
   }
 
-  menuSelected(_event: any) {
-  switch (_event.action) {
+
+  onClickMenu(item: any,action:string) {
+  switch (action) {
     case 'viewContent':
 
       this.queryParams = {
-      id: _event.row.demand_id,
+      id: item.demand_id,
       name: 'view',
     }
       this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
       break
     case 'invalidContent':
-      this.showConformationModal(_event.row, _event.action)
+      this.showConformationModal(item, action)
       break
     case 'assignContent':
        this.openAssignlistPopup()
@@ -119,7 +131,7 @@ export class RequestListComponent implements OnInit {
       break
     case 'copyContent':
         this.queryParams = {
-          id: _event.row.demand_id,
+          id: item.demand_id,
           name: 'copy',
         }
           this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
@@ -230,7 +242,7 @@ export class RequestListComponent implements OnInit {
             this.invalid =  true
            }
         })
-
+        this.dataSource = new MatTableDataSource<any>(this.requestListData)
       }
 
     })

@@ -27,12 +27,20 @@ export class AssignListPopupComponent implements OnInit {
   ]
   displayedColumns: string[] = ['select', 'providerName', 'details', 'eta']
 
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit() {
+  constructor(private fb: FormBuilder,
+  ) {
     this.requestForm = this.fb.group({
       assignee: new FormControl(''),
     })
+  }
+
+  ngOnInit() {
+   
+  }
+
+
+  getAssigneeList(){
+
   }
 
   assign() {
