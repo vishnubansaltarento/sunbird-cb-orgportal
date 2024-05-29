@@ -62,6 +62,13 @@ export class BulkUploadComponent implements OnInit, AfterViewInit, OnDestroy {
     this.lastIndex = this.sizeOptions[0]
   }
 
+  onChangePage(pe: PageEvent) {
+    this.startIndex = pe.pageIndex * pe.pageSize
+    this.lastIndex = (pe.pageIndex + 1) * pe.pageSize
+
+    // this.startIndex = this.pageIndex
+  }
+
   getBulkStatusList(): void {
     this.fileService.getBulkUploadDataV1(this.rootOrgId)
       .pipe(takeUntil(this.destroySubject$))

@@ -62,6 +62,13 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
     this.lastIndex = this.sizeOptions[0]
   }
 
+  onChangePage(pe: PageEvent) {
+    this.startIndex = pe.pageIndex * pe.pageSize
+    this.lastIndex = (pe.pageIndex + 1) * pe.pageSize
+
+    // this.startIndex = this.pageIndex
+  }
+
   getBulkStatusList(): void {
     this.fileService.getBulkApprovalUploadDataV1()
       .pipe(takeUntil(this.destroySubject$))
