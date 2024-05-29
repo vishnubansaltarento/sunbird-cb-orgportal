@@ -26,9 +26,9 @@ export const MY_FORMATS = {
   },
 }
 
-const EMAIL_PATTERN = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
-const MOBILE_PATTERN = '^((\\+91-?)|0)?[0-9]{10}$'
-const PIN_CODE_PATTERN = '(^[0-9]{6}$)'
+const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+const MOBILE_PATTERN = /^[0]?[6789]\d{9}$/
+const PIN_CODE_PATTERN = /^[1-9][0-9]{5}$/
 
 @Component({
   selector: 'ws-single-user-creation',
