@@ -107,9 +107,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', [Validators.required]),
       group: new FormControl('', [Validators.required]),
