@@ -75,6 +75,10 @@ import { FileProgressComponent } from './routes/users-view/file-progress/file-pr
 import { UserCreationComponent } from './routes/users-view/user-creation/user-creation.component'
 import { SingleUserCreationComponent } from './routes/users-view/single-user-creation/single-user-creation.component'
 import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
+import { RequestListComponent } from './components/request-list/request-list.component'
+import { CreateRequestFormComponent } from './components/request-list/create-request-form/create-request-form.component'
+import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
+import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 
 @NgModule({
   declarations: [
@@ -115,6 +119,10 @@ import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk
     UserCreationComponent,
     SingleUserCreationComponent,
     BulkUploadApprovalComponent,
+    RequestListComponent,
+    CreateRequestFormComponent,
+    CompetencyViewComponent,
+    AssignListPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -183,6 +191,8 @@ import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk
     RejectionPopupComponent,
     VerifyOtpComponent,
     FileProgressComponent,
+    CompetencyViewComponent,
+    AssignListPopupComponent,
   ],
   providers: [
     InitResolver,
