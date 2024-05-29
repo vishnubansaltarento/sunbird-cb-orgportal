@@ -1,6 +1,6 @@
 <div class="searchfilter" *ngIf="!isApprovals">
   <ws-app-searchuser (handleApiData)="onSearch($event)" (handleapproveAll)="onApproveALL()"
-    [showApproveALL]="showApproveALL"></ws-app-searchuser>
+    [showApproveALL]="showApproveALL" [currentFilter]="currentFilter"></ws-app-searchuser>
 </div>
 
 <div *ngIf="!isApprovals">
@@ -36,19 +36,18 @@
               &&
               user?.profileDetails?.professionalDetails[0]?.designation ?
               user?.profileDetails?.professionalDetails[0]?.designation : '-'}}</div>
-            <div class="mat-caption ws-mat-black40-text"
+            <!-- <div class="mat-caption ws-mat-black40-text"
               *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED' && user?.profileDetails?.profileStatusVerifiedOn">
-              Verified on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
-            <div class="mat-caption ws-mat-black40-text"
-              *ngIf="user?.profileDetails?.profileStatus !== 'VERIFIED' && user?.profileDetails?.profileStatusVerifiedOn">
-              Marked on: {{user?.profileDetails?.profileStatusVerifiedOn | date: 'dd/MM/yyyy'}}</div>
-            <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusVerifiedOn">
+              Verified on: {{user?.profileDetails?.profileStatusUpdatedOn | date: 'dd/MM/yyyy'}}</div> -->
+            <div class="mat-caption ws-mat-black40-text" *ngIf="user?.profileDetails?.profileStatusUpdatedOn">
+              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn | date: 'dd/MM/yyyy'}}</div>
+            <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">
               -</div>
           </div>
         </div>
         <div class="float-right" *ngIf="isMdoAdmin || isMdoLeader">
           <div class="button margin-top-m mat-body" (click)="onEditUser(user, panel);$event.stopPropagation();"
-            *ngIf="currentFilter !== 'notmyuser'">
+            *ngIf="currentFilter !== 'notmyuser' && !user?.enableEdit">
             <mat-icon>edit</mat-icon> Edit
           </div>
           <div class="button margin-top-m mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
@@ -63,6 +62,9 @@
             <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
               <mat-slide-toggle (click)="markStatus('NOT-VERIFIED', user)">Mark this user as
                 non-verified</mat-slide-toggle>
+            </p>
+            <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+              <mat-slide-toggle (click)="markStatus('VERIFIED', user)">This is my user</mat-slide-toggle>
             </p>
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/3">

@@ -26,9 +26,9 @@ export const MY_FORMATS = {
   },
 }
 
-const EMAIL_PATTERN = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
-const MOBILE_PATTERN = /^[0]?[6789]\d{9}$/
-const PIN_CODE_PATTERN = /^[1-9][0-9]{5}$/
+const EMAIL_PATTERN = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
+const MOBILE_PATTERN = '^((\\+91-?)|0)?[0-9]{10}$'
+const PIN_CODE_PATTERN = '(^[0-9]{6}$)'
 
 @Component({
   selector: 'ws-single-user-creation',
@@ -47,9 +47,10 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
   masterData: any = {}
   rolesArr: string[] = []
   fullProfile: any
+  namePatern = `^[a-zA-Z\\s\\']{1,50}$`
   userCreationForm = this.formBuilder.group({
     email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
-    firstName: new FormControl('', [Validators.required]),
+    firstName: new FormControl('', [Validators.required, Validators.pattern(this.namePatern)]),
     phone: new FormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.minLength(10)]),
     channel: new FormControl(''),
     designation: new FormControl('', [Validators.required]),
@@ -122,7 +123,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .subscribe((_res: any) => {
         this.masterData['designation'] = _res.responseData
         this.masterData['designationBackup'] = _res.responseData
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch designation details, please try again later!')
         }
@@ -135,7 +136,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .subscribe((res: any) => {
         this.masterData['language'] = res.languages
         this.masterData['languageBackup'] = res.languages
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch master language details, please try again later!')
         }
@@ -147,7 +148,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
         this.masterData['group'] = res.result.response
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch group data, please try again later!')
         }
@@ -165,7 +166,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
             this.masterData['mdoRoles'] = mdoArray.roles
           }
         }
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open('Unable to fetch roles list, please try again later!')
         }
@@ -237,7 +238,7 @@ export class SingleUserCreationComponent implements OnInit, OnDestroy {
       .subscribe((_res: any) => {
         this.matSnackBar.open('User created successfully!')
         this.handleFormClear()
-      },         (_err: HttpErrorResponse) => {
+      }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
           this.matSnackBar.open(_.get(_err, 'error.params.errmsg') || 'Unable to create user, please try again later!')
         }
