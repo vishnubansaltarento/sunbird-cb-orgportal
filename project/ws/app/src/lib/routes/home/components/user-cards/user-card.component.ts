@@ -365,28 +365,28 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   onEditUser(user: any, pnael: any) {
+    let userval = user
     this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
       if (res) {
-        user = res
+        userval = res
         this.usersData.forEach((u: any) => {
           if (u.userId === user.userId) {
             u.enableEdit = true
-            user.enableEdit = true
+            userval.enableEdit = true
           } else {
             u.enableEdit = false
           }
         })
 
         pnael.open()
-        this.setUserDetails(user)
-        this.mapRoles(user)
+        this.setUserDetails(userval)
       }
     })
   }
 
   getUerData(user: any, data: any) {
     user.enableEdit = false
-    const profileDataAll = user
+    let profileDataAll = user
     this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
 
     const profileData = profileDataAll.profileDetails
@@ -400,9 +400,9 @@ export class UserCardComponent implements OnInit, OnChanges {
     } else {
       this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
         if (res) {
-          user = res
-          user.enableEdit = false
-          this.mapRoles(user)
+          profileDataAll = res
+          profileDataAll.enableEdit = false
+          this.mapRoles(profileDataAll)
         }
       })
     }
@@ -500,6 +500,7 @@ export class UserCardComponent implements OnInit, OnChanges {
           this.updateUserDataForm.controls['employeeID'].setValue(user.profileDetails.employmentDetails.employeeCode)
         }
       }
+      this.mapRoles(user)
     }
   }
 
