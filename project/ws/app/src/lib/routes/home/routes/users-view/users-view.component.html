@@ -81,7 +81,7 @@
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="activeUsersData"
           [totalRecords]="activeUsersDataCount" [tabChangeIndex]="pageIndex" [isApprovals]="false"
           (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
-          (updateList)="getUsers('')"></ws-widget-user-card>
+          (updateList)="getAllUsers('')"></ws-widget-user-card>
       </ng-container>
       <ng-container *ngIf="currentFilter === 'verified'">
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"

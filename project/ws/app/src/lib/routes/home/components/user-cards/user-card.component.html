@@ -85,7 +85,7 @@
                   cancel</mat-icon>
               </div>
               <div class="md:w-1/3">
-                <label class="margin-remove-bottom form-label required">Designation</label>
+                <label class="margin-remove-bottom form-label">Designation</label>
                 <mat-form-field appearance="outline">
                   <mat-select #designation formControlName="designation" i18n-placeholder
                     placeholder="Select designation"
@@ -95,10 +95,10 @@
                     </mat-option>
                     <mat-option [value]="'Other'">Other</mat-option>
                   </mat-select>
-                  <mat-error [hidden]="false" i18n="Designation Error | Explains designation is required"
+                  <!-- <mat-error [hidden]="false" i18n="Designation Error | Explains designation is required"
                     *ngIf="updateUserDataForm?.controls['designation'].errors?.required">
                     Designation is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
@@ -117,7 +117,7 @@
               <div class="md:w-1/3">
                 <label class="margin-remove-bottom form-label">Employee ID</label>
                 <mat-form-field appearance="outline">
-                  <input type="text" matInput #employeeID formControlName="employeeID">
+                  <input type="text" matInput #employeeID formControlName="employeeID" maxlength="15">
                 </mat-form-field>
               </div>
 
@@ -207,9 +207,9 @@
                   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker (closed)="dob.blur()" i18n-aria-label aria-label="Date picker">
                   </mat-datepicker>
-                  <mat-error [hidden]="false" i18n="Date of Birth Error | Explains name is required">
+                  <!-- <mat-error [hidden]="false" i18n="Date of Birth Error | Explains name is required">
                     Date of birth is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
 
@@ -223,11 +223,11 @@
                     i18n-aria-label aria-label="Please choose a value from the list provided above.">
                     Please choose a value from the list provided above
                   </mat-error> -->
-                  <mat-error [hidden]="false" i18n="domicileMedium Error|Explains Domicile Medium is required"
+                  <!-- <mat-error [hidden]="false" i18n="domicileMedium Error|Explains Domicile Medium is required"
                     *ngIf="updateUserDataForm?.controls['domicileMedium'].errors?.required" i18n-aria-label
                     aria-label="Domicile Medium is mandatory">
                     Mother Tongue is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
                 <mat-autocomplete #motherTongueAuto="matAutocomplete" autoActiveFirstOption="true">
                   <mat-option *ngFor="let option of masterLanguages | async" [value]="option.name">
@@ -244,9 +244,9 @@
                       {{gender}}
                     </mat-option>
                   </mat-select>
-                  <mat-error [hidden]="false" i18n="Gender Error | Explains gender is required">
+                  <!-- <mat-error [hidden]="false" i18n="Gender Error | Explains gender is required">
                     Gender is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
             </div>
@@ -258,9 +258,9 @@
                   <input id="pinCode" #pincode type="text" matInput placeholder="Type here" formControlName="pincode"
                     i18n-aria-label aria-label="Pin Code input field" autocomplete="off"
                     (keypress)="numericOnly($event)" maxlength="6">
-                  <mat-error [hidden]="false" i18n="Pin code | Explains pin code is required">
+                  <!-- <mat-error [hidden]="false" i18n="Pin code | Explains pin code is required">
                     Pin code is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
 
@@ -279,9 +279,9 @@
                       {{ctg}}
                     </mat-option>
                   </mat-select>
-                  <mat-error [hidden]="false" i18n="Category Error | Explains category is required">
+                  <!-- <mat-error [hidden]="false" i18n="Category Error | Explains category is required">
                     Category is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
             </div>
@@ -430,7 +430,7 @@
 
             <div class="md:w-1/4">
               <label class="view-text-label">Mobile Number</label>
-              <p>+91-{{user.profileDetails && user.profileDetails.personalDetails ?
+              <p>+91 {{user.profileDetails && user.profileDetails.personalDetails ?
                 user.profileDetails.personalDetails.mobile : '-'}}</p>
             </div>
 
@@ -648,7 +648,7 @@
 
               <div class="md:w-1/4">
                 <label class="view-text-label">Mobile Number</label>
-                <p>+91-{{appData.user.profileDetails && appData.user.profileDetails.personalDetails ?
+                <p>+91 {{appData.user.profileDetails && appData.user.profileDetails.personalDetails ?
                   appData.user.profileDetails.personalDetails.mobile : '-'}}</p>
               </div>
 
@@ -682,12 +682,12 @@
                   appData.user.profileDetails.personalDetails.category : '-'}}</p>
               </div>
 
-              <div class="md:w-1/4">
+              <!-- <div class="md:w-1/4">
                 <label class="view-text-label">Pay Band</label>
                 <p>{{appData.user.profileDetails && appData.user.profileDetails.employmentDetails &&
                   appData.user.profileDetails.employmentDetails.payType ?
                   appData.user.profileDetails.employmentDetails.payType : '-'}}</p>
-              </div>
+              </div> -->
             </div>
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/4">
