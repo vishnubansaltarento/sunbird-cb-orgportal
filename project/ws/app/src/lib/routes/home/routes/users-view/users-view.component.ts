@@ -208,12 +208,12 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
       this.activeUsersData = this.activeUsersData.filter((wf: any) => { return wf.profileDetails.profileStatus !== 'NOT-MY-USER' })
-      if (allusersData.count > this.activeUsersData.length) {
-        const count = allusersData.count - this.activeUsersData.length
-        this.activeUsersDataCount = allusersData.count - count
-      } else {
-        this.activeUsersDataCount = allusersData.count
-      }
+      // if (allusersData.count > this.activeUsersData.length) {
+      //   const count = allusersData.count - this.activeUsersData.length
+      //   this.activeUsersDataCount = allusersData.count - count
+      // } else {
+      this.activeUsersDataCount = allusersData.count
+      // }
     })
   }
   async getVUsers(query: string) {

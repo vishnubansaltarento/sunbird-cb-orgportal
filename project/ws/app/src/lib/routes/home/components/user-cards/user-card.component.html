@@ -95,10 +95,10 @@
                     </mat-option>
                     <mat-option [value]="'Other'">Other</mat-option>
                   </mat-select>
-                  <mat-error [hidden]="false" i18n="Designation Error | Explains designation is required"
+                  <!-- <mat-error [hidden]="false" i18n="Designation Error | Explains designation is required"
                     *ngIf="updateUserDataForm?.controls['designation'].errors?.required">
                     Designation is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
@@ -207,9 +207,9 @@
                   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                   <mat-datepicker #picker (closed)="dob.blur()" i18n-aria-label aria-label="Date picker">
                   </mat-datepicker>
-                  <mat-error [hidden]="false" i18n="Date of Birth Error | Explains name is required">
+                  <!-- <mat-error [hidden]="false" i18n="Date of Birth Error | Explains name is required">
                     Date of birth is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
 
@@ -223,11 +223,11 @@
                     i18n-aria-label aria-label="Please choose a value from the list provided above.">
                     Please choose a value from the list provided above
                   </mat-error> -->
-                  <mat-error [hidden]="false" i18n="domicileMedium Error|Explains Domicile Medium is required"
+                  <!-- <mat-error [hidden]="false" i18n="domicileMedium Error|Explains Domicile Medium is required"
                     *ngIf="updateUserDataForm?.controls['domicileMedium'].errors?.required" i18n-aria-label
                     aria-label="Domicile Medium is mandatory">
                     Mother Tongue is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
                 <mat-autocomplete #motherTongueAuto="matAutocomplete" autoActiveFirstOption="true">
                   <mat-option *ngFor="let option of masterLanguages | async" [value]="option.name">
@@ -244,9 +244,9 @@
                       {{gender}}
                     </mat-option>
                   </mat-select>
-                  <mat-error [hidden]="false" i18n="Gender Error | Explains gender is required">
+                  <!-- <mat-error [hidden]="false" i18n="Gender Error | Explains gender is required">
                     Gender is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
             </div>
@@ -258,9 +258,9 @@
                   <input id="pinCode" #pincode type="text" matInput placeholder="Type here" formControlName="pincode"
                     i18n-aria-label aria-label="Pin Code input field" autocomplete="off"
                     (keypress)="numericOnly($event)" maxlength="6">
-                  <mat-error [hidden]="false" i18n="Pin code | Explains pin code is required">
+                  <!-- <mat-error [hidden]="false" i18n="Pin code | Explains pin code is required">
                     Pin code is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
 
@@ -279,9 +279,9 @@
                       {{ctg}}
                     </mat-option>
                   </mat-select>
-                  <mat-error [hidden]="false" i18n="Category Error | Explains category is required">
+                  <!-- <mat-error [hidden]="false" i18n="Category Error | Explains category is required">
                     Category is mandatory
-                  </mat-error>
+                  </mat-error> -->
                 </mat-form-field>
               </div>
             </div>

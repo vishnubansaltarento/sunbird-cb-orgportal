@@ -90,6 +90,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
+  empIDPattern = `/^[a-z0-9]+$/i`
 
   userGroup: any
 
@@ -113,7 +114,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
-      employeeID: new FormControl('', []),
+      employeeID: new FormControl('', [Validators.pattern(this.empIDPattern)]),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', []),
       primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
