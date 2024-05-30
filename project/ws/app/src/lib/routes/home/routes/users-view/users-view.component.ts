@@ -253,7 +253,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
         if (i > -1) {
           this.nonverifiedUsersData.splice(i, 1)
-          this.nonverifiedUsersDataCount = this.nonverifiedUsersDataCount ? this.nonverifiedUsersDataCount - 1 : this.nonverifiedUsersDataCount
+          this.nonverifiedUsersDataCount = this.nonverifiedUsersDataCount ?
+            this.nonverifiedUsersDataCount - 1 : this.nonverifiedUsersDataCount
         }
       }
     })

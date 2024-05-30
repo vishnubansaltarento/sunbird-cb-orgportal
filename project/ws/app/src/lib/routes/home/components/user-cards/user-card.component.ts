@@ -512,12 +512,11 @@ export class UserCardComponent implements OnInit, OnChanges {
       const sv: string[] = dateString.split('T')
       if (sv && sv.length > 1) {
         return sv[0]
-      } else {
-        const splitValues: string[] = dateString.split('-')
-        const [dd, mm, yyyy] = splitValues
-        const dateToBeConverted = `${yyyy}-${mm}-${dd}`
-        return new Date(dateToBeConverted)
       }
+      const splitValues: string[] = dateString.split('-')
+      const [dd, mm, yyyy] = splitValues
+      const dateToBeConverted = `${yyyy}-${mm}-${dd}`
+      return new Date(dateToBeConverted)
     }
     return ''
   }
