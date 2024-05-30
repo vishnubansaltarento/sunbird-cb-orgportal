@@ -108,9 +108,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -384,28 +384,30 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  getUerData(user: any, data: any) {
-    user.enableEdit = false
-    let profileDataAll = user
-    this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
+  getUerData(user: any, data: any, panel: any) {
+    if (panel.expanded) {
+      user.enableEdit = false
+      let profileDataAll = user
+      this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
 
-    const profileData = profileDataAll.profileDetails
-    this.updateTags(profileData)
+      const profileData = profileDataAll.profileDetails
+      this.updateTags(profileData)
 
-    if (this.isApprovals) {
-      this.approveUserDataForm.reset()
-      user.needApprovalList = []
-      this.actionList = []
-      this.comment = ''
-      this.getApprovalList(data)
-    } else {
-      this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
-        if (res) {
-          profileDataAll = res
-          profileDataAll.enableEdit = false
-          this.mapRoles(profileDataAll)
-        }
-      })
+      if (this.isApprovals) {
+        this.approveUserDataForm.reset()
+        user.needApprovalList = []
+        this.actionList = []
+        this.comment = ''
+        this.getApprovalList(data)
+      } else {
+        this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+          if (res) {
+            profileDataAll = res
+            profileDataAll.enableEdit = false
+            this.mapRoles(profileDataAll)
+          }
+        })
+      }
     }
   }
 
@@ -507,10 +509,15 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   private getDateFromText(dateString: string): any {
     if (dateString) {
-      const splitValues: string[] = dateString.split('-')
-      const [dd, mm, yyyy] = splitValues
-      const dateToBeConverted = `${yyyy}-${mm}-${dd}`
-      return new Date(dateToBeConverted)
+      const sv: string[] = dateString.split('T')
+      if (sv && sv.length > 1) {
+        return sv[0]
+      } else {
+        const splitValues: string[] = dateString.split('-')
+        const [dd, mm, yyyy] = splitValues
+        const dateToBeConverted = `${yyyy}-${mm}-${dd}`
+        return new Date(dateToBeConverted)
+      }
     }
     return ''
   }
@@ -634,7 +641,6 @@ export class UserCardComponent implements OnInit, OnChanges {
                   roles: Array.from(this.userRoles),
                 },
               }
-
               this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
                 if (res) {
                   this.updateUserDataForm.reset({ roles: '' })
