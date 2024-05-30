@@ -111,7 +111,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     private route: ActivatedRoute, private snackBar: MatSnackBar,
     private events: EventService) {
     this.updateUserDataForm = new FormGroup({
-      designation: new FormControl('', [Validators.required]),
+      designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
       employeeID: new FormControl('', []),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
@@ -364,10 +364,23 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   onEditUser(user: any, pnael: any) {
-    pnael.open()
-    user.enableEdit = !user.enableEdit
-    this.setUserDetails(user)
-    this.mapRoles(user)
+    this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+      if (res) {
+        user = res
+        this.usersData.forEach((u: any) => {
+          if (u.userId === user.userId) {
+            u.enableEdit = true
+            user.enableEdit = true
+          } else {
+            u.enableEdit = false
+          }
+        })
+
+        pnael.open()
+        this.setUserDetails(user)
+        this.mapRoles(user)
+      }
+    })
   }
 
   getUerData(user: any, data: any) {
@@ -384,7 +397,13 @@ export class UserCardComponent implements OnInit, OnChanges {
       this.comment = ''
       this.getApprovalList(data)
     } else {
-      this.mapRoles(user)
+      this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+        if (res) {
+          user = res
+          user.enableEdit = false
+          this.mapRoles(user)
+        }
+      })
     }
   }
 
@@ -410,10 +429,10 @@ export class UserCardComponent implements OnInit, OnChanges {
       const usrRoles = user.organisations[0] && user.organisations[0].roles
         ? user.organisations[0].roles : []
       if (usrRoles.length > 0) {
+        this.updateUserDataForm.controls['roles'].setValue(usrRoles)
         usrRoles.forEach((role: any) => {
           this.orguserRoles.push(role)
           this.modifyUserRoles(role)
-          this.updateUserDataForm.controls['roles'].setValue(usrRoles)
         })
       }
     } else {
@@ -574,9 +593,6 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   onSubmit(form: any, user: any, panel: any) {
     if (form.valid) {
-      // const tags = user.profileDetails && user.profileDetails.additionalProperties && user.profileDetails.additionalProperties.tags ?
-      //   user.profileDetails.additionalProperties.tags : []
-      // if (tags !== this.selectedtags) {
       this.reqbody = {
         request: {
           userId: user.userId,
@@ -604,20 +620,6 @@ export class UserCardComponent implements OnInit, OnChanges {
           },
         },
       }
-      // } else {
-      //   this.reqbody = {
-      //     request: {
-      //       userId: user.userId,
-      //       profileDetails: {
-      //         professionalDetails: [
-      //           {
-      //             designation: this.updateUserDataForm.controls['designation'].value,
-      //           },
-      //         ],
-      //       },
-      //     },
-      //   }
-      // }
       this.usersSvc.updateUserDetails(this.reqbody).subscribe(dres => {
         if (dres) {
           if (this.isMdoLeader) {
@@ -638,15 +640,6 @@ export class UserCardComponent implements OnInit, OnChanges {
                   panel.close()
                   this.updateList.emit()
                   this.searchByEnterKey.emit('')
-                  // this.router.navigate(['/app/home/users/allusers'])
-
-                  // this.usersSvc.getUserById(user.userId).subscribe((_res: any) => {
-                  //   if (_res) {
-                  //     // tslint:disable-next-line
-                  //     user = _res
-                  //     user['enableEdit'] = false
-                  //   }
-                  // })
                 }
               })
             } else {
@@ -658,13 +651,6 @@ export class UserCardComponent implements OnInit, OnChanges {
             panel.close()
             this.updateList.emit()
             this.openSnackbar('User updated Successfully')
-            // this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
-            //   if (res) {
-            //     // tslint:disable-next-line
-            //     user = res
-            //     user.enableEdit = false
-            //   }
-            // })
           }
         }
       },
