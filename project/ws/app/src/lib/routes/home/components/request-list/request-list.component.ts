@@ -4,7 +4,7 @@ import { ITableData } from '@sunbird-cb/collection/lib/ui-org-table/interface/in
 import { ProfileV2Service } from '../../services/home.servive'
 import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { MatDialog, MatTableDataSource } from '@angular/material'
+import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
 export enum statusValue {
@@ -65,7 +65,8 @@ export class RequestListComponent implements OnInit {
               private datePipe: DatePipe,
               private activeRoute: ActivatedRoute,
               private dialog: MatDialog,
-              private router: Router
+              private router: Router,
+              private snackBar : MatSnackBar
   ) { }
   requestList: any[] = [
     `These reports contain Personally Identifiable Information (PII) data.
@@ -124,10 +125,10 @@ export class RequestListComponent implements OnInit {
       this.showConformationModal(item, action)
       break
     case 'assignContent':
-       this.openAssignlistPopup()
+       this.openAssignlistPopup(item)
       break
     case 'reAssignContent':
-      // this.showConformationModal(_event.row, _event.action)
+      this.openAssignlistPopup(item)
       break
     case 'copyContent':
         this.queryParams = {
@@ -181,28 +182,28 @@ export class RequestListComponent implements OnInit {
    this.homeService.markAsInvalid(request).subscribe(res => {
      this.invalidRes = res
      this.getRequestList()
+     this.snackBar.open('Marked as Invalid')
     }
   )
 
   }
 
-  openAssignlistPopup() {
+  openAssignlistPopup(item:any) {
     this.dialogRef = this.dialog.open(AssignListPopupComponent, {
       disableClose: false,
       width: '90%',
       height: '70vh',
-      data: {},
+      data: item,
       autoFocus: false,
     })
 
     this.dialogRef.afterClosed().subscribe((_res: any) => {
-      if (_res === 'confirmed') {
-        // if (_type === 'invalidContent') {
-        //   this.invalidContent(_selectedRow)
-        // }
-        //  else if (_type === 'publishContent') {
-        //   this.publishContentData(_selectedRow)
-        // }
+      if (_res && _res.data === 'confirmed') {
+         this.getRequestList()
+         this.snackBar.open('Assigned submitted Successfully')
+      }
+      else {
+        this.snackBar.open('error')
       }
     })
   }
