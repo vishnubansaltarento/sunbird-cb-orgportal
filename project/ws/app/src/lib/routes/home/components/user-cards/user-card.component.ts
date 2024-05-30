@@ -404,6 +404,7 @@ export class UserCardComponent implements OnInit, OnChanges {
           if (res) {
             profileDataAll = res
             profileDataAll.enableEdit = false
+            user = profileDataAll
             this.mapRoles(profileDataAll)
           }
         })
@@ -436,7 +437,8 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.updateUserDataForm.controls['roles'].setValue(usrRoles)
         usrRoles.forEach((role: any) => {
           this.orguserRoles.push(role)
-          this.modifyUserRoles(role)
+          this.userRoles.add(role)
+          // this.modifyUserRoles(role)
         })
       }
     } else {
