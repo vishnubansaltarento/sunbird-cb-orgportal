@@ -617,7 +617,7 @@ export class UserCardComponent implements OnInit {
   }
 
   // for approval & rejection
-  onClickHandleWorkflow(field: any, action: string) {
+  onClickHandleWorkflow(field: any, action: string, appData: any = undefined) {
     field.action = action
     const req = {
       action,
@@ -660,6 +660,21 @@ export class UserCardComponent implements OnInit {
         type: TelemetryEvents.EnumIdtype.APPLICATION,
       }
     )
+
+    if (this.currentFilter === 'transfers' && appData !== undefined) {
+      appData.needApprovalList.forEach((otherField: any) => {
+        if (otherField.label !== field.label) {
+          this.onClickHandleWorkflow(field, action)
+        }
+      })
+      if (field.label === 'Group') {
+        const designationValue = action === 'APPROVE' ? 'approvedesg' : 'rejectdesg'
+        this.approveUserDataForm.controls.approveDesignation.setValue(designationValue)
+      } else {
+        const groupValue = action === 'APPROVE' ? 'approvegroup' : 'rejectgroup'
+        this.approveUserDataForm.controls.approveGroup.setValue(groupValue)
+      }
+    }
   }
 
   // single aprrove or reject
