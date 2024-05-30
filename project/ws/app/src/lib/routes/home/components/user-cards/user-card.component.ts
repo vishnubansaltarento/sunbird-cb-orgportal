@@ -74,7 +74,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   separatorKeysCodes: number[] = [ENTER, COMMA]
   namePatern = `^[a-zA-Z ]*$`
   orgTypeList: any = []
-  public countryCodes: string[] = []
+  // public countryCodes: string[] = []
   masterLanguages: Observable<any[]> | undefined
   masterLanguagesEntries: any
   genderList = ['Male', 'Female', 'Others']
@@ -90,7 +90,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
-  empIDPattern = `/^[a-z0-9]+$/i`
+  empIDPattern = `^[a-z0-9]+$`
 
   userGroup: any
 
@@ -118,7 +118,7 @@ export class UserCardComponent implements OnInit, OnChanges {
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', []),
       primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
-      countryCode: new FormControl('+91', [Validators.required]),
+      // countryCode: new FormControl('+91', []),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
       tags: new FormControl('', [Validators.pattern(this.namePatern)]),
       roles: new FormControl('', [Validators.required]),
@@ -269,7 +269,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     await this.loadDesignations()
     await this.loadGroups()
     await this.loadLangauages()
-    await this.loadCountryCodes()
+    // await this.loadCountryCodes()
     await this.loadRoles()
   }
 
@@ -302,20 +302,20 @@ export class UserCardComponent implements OnInit, OnChanges {
       })
   }
 
-  async loadCountryCodes() {
-    this.usersSvc.getMasterNationlity().subscribe((data: any) => {
-      data.nationality.map((item: any) => {
-        this.countryCodes.push(item.countryCode)
-      })
+  // async loadCountryCodes() {
+  //   this.usersSvc.getMasterNationlity().subscribe((data: any) => {
+  //     data.nationality.map((item: any) => {
+  //       this.countryCodes.push(item.countryCode)
+  //     })
 
-      this.updateUserDataForm.patchValue({
-        countryCode: '+91',
-      })
-    },
-      // tslint:disable-next-line
-      (_err: any) => {
-      })
-  }
+  //     this.updateUserDataForm.patchValue({
+  //       countryCode: '+91',
+  //     })
+  //   },
+  //     // tslint:disable-next-line
+  //     (_err: any) => {
+  //     })
+  // }
 
   async loadRoles() {
     this.roleservice.getAllRoles().subscribe((_data: any) => {
@@ -393,7 +393,8 @@ export class UserCardComponent implements OnInit, OnChanges {
     this.updateTags(profileData)
 
     if (this.isApprovals) {
-      // this.needApprovalList = []
+      this.approveUserDataForm.reset()
+      user.needApprovalList = []
       this.actionList = []
       this.comment = ''
       this.getApprovalList(data)
@@ -684,7 +685,13 @@ export class UserCardComponent implements OnInit, OnChanges {
       updateFieldValues: JSON.parse(field.wf.updateFieldValues),
     }
     if (action === 'APPROVE') {
-      this.actionList.push(req)
+      // const index = this.actionList.indexOf(req.wfId)
+      const index = this.actionList.findIndex((x: any) => x.wfId === req.wfId)
+      if (index > -1) {
+        this.actionList[index] = req
+      } else {
+        this.actionList.push(req)
+      }
       // this.onApproveOrRejectClick(req)
     } else {
       this.comment = ''
@@ -696,7 +703,13 @@ export class UserCardComponent implements OnInit, OnChanges {
           // this.onApproveOrRejectClick(req)
           req.comment = this.comment
           field.comment = this.comment
-          this.actionList.push(req)
+          // const index = this.actionList.indexOf(req.wfId)
+          const index = this.actionList.findIndex((x: any) => x.wfId === req.wfId)
+          if (index > -1) {
+            this.actionList[index] = req
+          } else {
+            this.actionList.push(req)
+          }
         } else {
           dialogRef.close()
         }
@@ -732,17 +745,17 @@ export class UserCardComponent implements OnInit, OnChanges {
           req.comment = ''
         }
         this.onApproveOrRejectClick(req)
-
         if (index === datalength - 1) {
           panel.close()
           this.comment = ''
           setTimeout(() => {
             this.openSnackbar('Request approved successfully')
+            this.updateList.emit()
             // tslint:disable-next-line
           }, 100)
         }
         // tslint:disable-next-line
-        this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
+        // this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
         if (this.approvalData.length === 0) {
           this.disableButton.emit()
         }
@@ -833,7 +846,10 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  onApprovalCancel(panel: any) {
+  onApprovalCancel(panel: any, appData: any) {
     panel.close()
+    appData.needApprovalList.forEach((f: any) => {
+      f.action = ''
+    })
   }
 }
