@@ -74,7 +74,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   separatorKeysCodes: number[] = [ENTER, COMMA]
   namePatern = `^[a-zA-Z ]*$`
   orgTypeList: any = []
-  public countryCodes: string[] = []
+  // public countryCodes: string[] = []
   masterLanguages: Observable<any[]> | undefined
   masterLanguagesEntries: any
   genderList = ['Male', 'Female', 'Others']
@@ -90,7 +90,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
-  empIDPattern = `/^[a-z0-9]+$/i`
+  empIDPattern = `^[a-z0-9]+$`
 
   userGroup: any
 
@@ -108,9 +108,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -118,7 +118,7 @@ export class UserCardComponent implements OnInit, OnChanges {
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', []),
       primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
-      countryCode: new FormControl('+91', [Validators.required]),
+      // countryCode: new FormControl('+91', []),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
       tags: new FormControl('', [Validators.pattern(this.namePatern)]),
       roles: new FormControl('', [Validators.required]),
@@ -269,7 +269,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     await this.loadDesignations()
     await this.loadGroups()
     await this.loadLangauages()
-    await this.loadCountryCodes()
+    // await this.loadCountryCodes()
     await this.loadRoles()
   }
 
@@ -302,20 +302,20 @@ export class UserCardComponent implements OnInit, OnChanges {
       })
   }
 
-  async loadCountryCodes() {
-    this.usersSvc.getMasterNationlity().subscribe((data: any) => {
-      data.nationality.map((item: any) => {
-        this.countryCodes.push(item.countryCode)
-      })
+  // async loadCountryCodes() {
+  //   this.usersSvc.getMasterNationlity().subscribe((data: any) => {
+  //     data.nationality.map((item: any) => {
+  //       this.countryCodes.push(item.countryCode)
+  //     })
 
-      this.updateUserDataForm.patchValue({
-        countryCode: '+91',
-      })
-    },
-      // tslint:disable-next-line
-      (_err: any) => {
-      })
-  }
+  //     this.updateUserDataForm.patchValue({
+  //       countryCode: '+91',
+  //     })
+  //   },
+  //     // tslint:disable-next-line
+  //     (_err: any) => {
+  //     })
+  // }
 
   async loadRoles() {
     this.roleservice.getAllRoles().subscribe((_data: any) => {
@@ -384,27 +384,31 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  getUerData(user: any, data: any) {
-    user.enableEdit = false
-    let profileDataAll = user
-    this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
+  getUerData(user: any, data: any, panel: any) {
+    if (panel.expanded) {
+      user.enableEdit = false
+      let profileDataAll = user
+      this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
 
-    const profileData = profileDataAll.profileDetails
-    this.updateTags(profileData)
+      const profileData = profileDataAll.profileDetails
+      this.updateTags(profileData)
 
-    if (this.isApprovals) {
-      // this.needApprovalList = []
-      this.actionList = []
-      this.comment = ''
-      this.getApprovalList(data)
-    } else {
-      this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
-        if (res) {
-          profileDataAll = res
-          profileDataAll.enableEdit = false
-          this.mapRoles(profileDataAll)
-        }
-      })
+      if (this.isApprovals) {
+        this.approveUserDataForm.reset()
+        user.needApprovalList = []
+        this.actionList = []
+        this.comment = ''
+        this.getApprovalList(data)
+      } else {
+        this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+          if (res) {
+            profileDataAll = res
+            profileDataAll.enableEdit = false
+            user = profileDataAll
+            this.mapRoles(profileDataAll)
+          }
+        })
+      }
     }
   }
 
@@ -433,7 +437,8 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.updateUserDataForm.controls['roles'].setValue(usrRoles)
         usrRoles.forEach((role: any) => {
           this.orguserRoles.push(role)
-          this.modifyUserRoles(role)
+          this.userRoles.add(role)
+          // this.modifyUserRoles(role)
         })
       }
     } else {
@@ -506,6 +511,10 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   private getDateFromText(dateString: string): any {
     if (dateString) {
+      const sv: string[] = dateString.split('T')
+      if (sv && sv.length > 1) {
+        return sv[0]
+      }
       const splitValues: string[] = dateString.split('-')
       const [dd, mm, yyyy] = splitValues
       const dateToBeConverted = `${yyyy}-${mm}-${dd}`
@@ -633,7 +642,6 @@ export class UserCardComponent implements OnInit, OnChanges {
                   roles: Array.from(this.userRoles),
                 },
               }
-
               this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
                 if (res) {
                   this.updateUserDataForm.reset({ roles: '' })
@@ -684,7 +692,13 @@ export class UserCardComponent implements OnInit, OnChanges {
       updateFieldValues: JSON.parse(field.wf.updateFieldValues),
     }
     if (action === 'APPROVE') {
-      this.actionList.push(req)
+      // const index = this.actionList.indexOf(req.wfId)
+      const index = this.actionList.findIndex((x: any) => x.wfId === req.wfId)
+      if (index > -1) {
+        this.actionList[index] = req
+      } else {
+        this.actionList.push(req)
+      }
       // this.onApproveOrRejectClick(req)
     } else {
       this.comment = ''
@@ -696,7 +710,13 @@ export class UserCardComponent implements OnInit, OnChanges {
           // this.onApproveOrRejectClick(req)
           req.comment = this.comment
           field.comment = this.comment
-          this.actionList.push(req)
+          // const index = this.actionList.indexOf(req.wfId)
+          const index = this.actionList.findIndex((x: any) => x.wfId === req.wfId)
+          if (index > -1) {
+            this.actionList[index] = req
+          } else {
+            this.actionList.push(req)
+          }
         } else {
           dialogRef.close()
         }
@@ -732,17 +752,17 @@ export class UserCardComponent implements OnInit, OnChanges {
           req.comment = ''
         }
         this.onApproveOrRejectClick(req)
-
         if (index === datalength - 1) {
           panel.close()
           this.comment = ''
           setTimeout(() => {
             this.openSnackbar('Request approved successfully')
+            this.updateList.emit()
             // tslint:disable-next-line
           }, 100)
         }
         // tslint:disable-next-line
-        this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
+        // this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
         if (this.approvalData.length === 0) {
           this.disableButton.emit()
         }
@@ -833,7 +853,10 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  onApprovalCancel(panel: any) {
+  onApprovalCancel(panel: any, appData: any) {
     panel.close()
+    appData.needApprovalList.forEach((f: any) => {
+      f.action = ''
+    })
   }
 }
