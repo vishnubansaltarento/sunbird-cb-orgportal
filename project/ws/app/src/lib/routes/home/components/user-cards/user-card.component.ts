@@ -405,6 +405,7 @@ export class UserCardComponent implements OnInit, OnChanges {
             profileDataAll = res
             profileDataAll.enableEdit = false
             // user = profileDataAll
+            this.userRoles.clear()
             this.mapRoles(profileDataAll)
           }
         })
