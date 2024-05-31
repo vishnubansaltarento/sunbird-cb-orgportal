@@ -347,6 +347,9 @@ label {
   word-wrap: break-word;
 }
 
+.userName {
+  max-width: calc(100% - 100px);
+}
 .country-code {
     padding: 6px 0;
     text-align: center;

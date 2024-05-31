@@ -143,7 +143,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     }
 
     if (this.usersData && this.usersData.length > 0) {
-      this.usersData = _.orderBy(this.usersData, item => item.firstName, ['asc'])
+      this.usersData = _.orderBy(this.usersData, item => item.firstName.toUpperCase(), ['asc'])
 
       // formatting profileStatusUpdatedOn value
       this.usersData.forEach((u: any) => {
@@ -191,7 +191,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     if (this.usersData) {
       this.usersData = _.orderBy(this.usersData, item => {
         if (item.profileDetails && item.profileDetails.personalDetails) {
-          return item.profileDetails.personalDetails.firstname
+          return item.profileDetails.personalDetails.firstname.toUpperCase()
         }
         // tslint:disable-next-line
       }, ['asc'])

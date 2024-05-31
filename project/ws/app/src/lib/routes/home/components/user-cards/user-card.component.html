@@ -4,32 +4,35 @@
 </div>
 <div *ngIf="!isApprovals">
   <mat-accordion [multi]="true">
-    <mat-expansion-panel class="user-card" *ngFor="let user of usersData | orderBy: 'firstName':'asc'" #panel
-      (opened)="closeOtherPanels(panel)">
+    <mat-expansion-panel class="user-card" *ngFor="let user of usersData" #panel (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(user, '', panel)">
-        <div class="float-left width88" (click)="$event.stopPropagation();">
+        <div class="float-left width88 flex" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-m">
             <!-- <span>AB</span> -->
             <ws-widget-avatar-photo [name]="getUseravatarName(user)" [photoUrl]="user?.photo" size="l">
             </ws-widget-avatar-photo>
           </div>
           <div class="username display-inline-block">
-            <div class="mat-subheading-2 margin-remove">
-              <span *ngIf="user?.profileDetails && user?.profileDetails?.personalDetails">
-                {{user?.profileDetails?.personalDetails?.firstname}}
-              </span>
-              <span *ngIf="!user?.profileDetails?.personalDetails">
-                {{user?.firstName}}
-              </span>
-              <span class="status-label margin-left-s verified"
-                *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">Verified
-                <mat-icon>check_circle</mat-icon></span>
-              <span class="status-label margin-left-s nonverified"
-                *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">Non-verified
-                <mat-icon>check_circle</mat-icon></span>
-              <span class="status-label margin-left-s notmyuser"
-                *ngIf="user?.profileDetails?.profileStatus === 'NOT-MY-USER'">Not my user
-                <mat-icon>error</mat-icon></span>
+            <div class="mat-subheading-2 margin-remove flex">
+              <div class="word-wrap userName">
+                <span *ngIf="user?.profileDetails && user?.profileDetails?.personalDetails">
+                  {{user?.profileDetails?.personalDetails?.firstname}}
+                </span>
+                <span *ngIf="!user?.profileDetails?.personalDetails">
+                  {{user?.firstName}}
+                </span>
+              </div>
+              <div>
+                <span class="status-label margin-left-s verified"
+                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">Verified
+                  <mat-icon>check_circle</mat-icon></span>
+                <span class="status-label margin-left-s nonverified"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">Non-verified
+                  <mat-icon>check_circle</mat-icon></span>
+                <span class="status-label margin-left-s notmyuser"
+                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-MY-USER'">Not my user
+                  <mat-icon>error</mat-icon></span>
+              </div>
             </div>
             <div class="mat-body-2 ws-mat-black40-text">{{user?.profileDetails &&
               user?.profileDetails?.professionalDetails
@@ -41,8 +44,8 @@
             <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">-</div>
           </div>
         </div>
-        <div class="float-right" *ngIf="isMdoAdmin || isMdoLeader">
-          <div class="button margin-top-m mat-body" (click)="onEditUser(user, panel);$event.stopPropagation();"
+        <div class="float-right flex items-center" *ngIf="isMdoAdmin || isMdoLeader">
+          <div class="button mat-body" (click)="onEditUser(user, panel);$event.stopPropagation();"
             *ngIf="currentFilter !== 'notmyuser' && !user?.enableEdit">
             <mat-icon>edit</mat-icon> Edit
           </div>
@@ -533,7 +536,7 @@
     <mat-expansion-panel class="user-card" *ngFor="let appData of approvalData | orderBy: 'firstName':'asc'" #panel
       (opened)="closeOtherPanels(panel)">
       <mat-expansion-panel-header (click)="getUerData(appData.user, appData.userWorkflow);">
-        <div class="float-left width82" (click)="$event.stopPropagation();">
+        <div class="float-left width82 flex" (click)="$event.stopPropagation();">
           <div class="initialcircle display-inline-block margin-right-s" *ngIf="appData?.user">
             <ws-widget-avatar-photo [name]="getUseravatarName(appData?.user)" [photoUrl]="appData?.user?.photo"
               size="l">
@@ -544,7 +547,7 @@
             </ws-widget-avatar-photo>
           </div>
           <div class="username display-inline-block">
-            <div class="mat-subheading-2 margin-remove">
+            <div class="mat-subheading-2 margin-remove word-wrap">
               {{appData.userWorkflow.userInfo.first_name}}
             </div>
             <div class="mat-body-2 ws-mat-black40-text">{{appData.user &&
