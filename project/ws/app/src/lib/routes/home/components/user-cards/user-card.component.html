@@ -39,9 +39,9 @@
               &&
               user?.profileDetails?.professionalDetails[0]?.designation ?
               user?.profileDetails?.professionalDetails[0]?.designation : '-'}}</div>
-            <div class="mat-caption ws-mat-black40-text" *ngIf="user?.profileDetails?.profileStatusUpdatedOn">
-              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn}}</div>
-            <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">-</div>
+            <div class="mat-caption ws-mat-black40-text">
+              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn || ' -'}}</div>
+            <!-- <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">-</div> -->
           </div>
         </div>
         <div class="float-right flex items-center" *ngIf="isMdoAdmin || isMdoLeader">
