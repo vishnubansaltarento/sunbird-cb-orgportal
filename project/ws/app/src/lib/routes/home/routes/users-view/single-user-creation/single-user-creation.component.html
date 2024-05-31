@@ -140,7 +140,7 @@
         <div class="label">Tags</div>
         <input type="text" class="input-text" matInput i18n-placeholder="Type tag here"
           placeholder="Type tag here and press enter" [matChipInputFor]="chipListTags" autocomplete="off"
-          maxlength="100" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          maxlength="100" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (keypress)="handleValidTags($event)"
           (matChipInputTokenEnd)="handleAddTags($event)" />
         <mat-chip-list #chipListTags>
           <mat-chip *ngFor="let tag of userCreationForm?.get('tags')?.value" [selectable]="true" [removable]="true"
