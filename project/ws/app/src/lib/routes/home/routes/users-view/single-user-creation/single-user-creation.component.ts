@@ -216,6 +216,12 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
+  handleValidTags(event: any): any {
+    const charCode = event.charCode
+    // tslint:disable-next-line
+    return ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8 || charCode == 32 || (charCode >= 48 && charCode <= 57))
+  }
+
   handleRemoveTag(tag: any): void {
     if (this.userCreationForm.get('roles')) {
       // tslint:disable-next-line
