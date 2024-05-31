@@ -81,10 +81,10 @@
                   </mat-error>
                 </mat-form-field>
                 <mat-icon class="verified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileGroupStatus === 'VERIFIED'">
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileGroupStatus === 'NOT-VERIFIED'">
                   cancel</mat-icon>
               </div>
               <div class="md:w-1/3">
@@ -104,10 +104,10 @@
                   </mat-error> -->
                 </mat-form-field>
                 <mat-icon class="verified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileDesignationStatus === 'VERIFIED'">
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileDesignationStatus === 'NOT-VERIFIED'">
                   cancel</mat-icon>
               </div>
             </div>
@@ -396,10 +396,10 @@
                 user.profileDetails.professionalDetails[0].group ?
                 user.profileDetails.professionalDetails[0].group : '-'}}
                 <mat-icon class="verified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileGroupStatus === 'VERIFIED'">
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileGroupStatus === 'NOT-VERIFIED'">
                   cancel</mat-icon>
               </p>
             </div>
@@ -409,10 +409,10 @@
                 user.profileDetails.professionalDetails[0].designation ?
                 user.profileDetails.professionalDetails[0].designation : '-'}}
                 <mat-icon class="verified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileDesignationStatus === 'VERIFIED'">
                   check_circle</mat-icon>
                 <mat-icon class="nonverified-icon margin-left-xs"
-                  *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+                  *ngIf="user?.profileDetails?.profileDesignationStatus === 'NOT-VERIFIED'">
                   cancel</mat-icon>
               </p>
             </div>
