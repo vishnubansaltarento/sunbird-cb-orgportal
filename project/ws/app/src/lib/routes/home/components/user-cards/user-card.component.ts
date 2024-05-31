@@ -108,9 +108,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -404,7 +404,8 @@ export class UserCardComponent implements OnInit, OnChanges {
           if (res) {
             profileDataAll = res
             profileDataAll.enableEdit = false
-            // user = profileDataAll
+            user = profileDataAll
+            this.userRoles.clear()
             this.mapRoles(profileDataAll)
           }
         })
