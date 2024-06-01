@@ -13,7 +13,6 @@ import { NSProfileDataV2 } from '../../models/profile-v2.model'
 import { UsersService } from '../../../users/services/users.service'
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
-// import { ProfileV2UtillService } from '../../services/home-utill.service'
 import { ReportsVideoComponent } from '../reports-video/reports-video.component'
 
 @Component({
@@ -62,26 +61,22 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   pageIndex = 0
   searchQuery = ''
   rootOrgId: any
+  currentUserStatus: any
+
   constructor(
     public dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
-    // private snackBar: MatSnackBar,
     private events: EventService,
     private loaderService: LoaderService,
-    // private profileUtilSvc: ProfileV2UtillService,
     private sanitizer: DomSanitizer,
-    // private telemetrySvc: TelemetryService,
     // private configSvc: ConfigurationsService,
-    // private discussService: DiscussService,
-    // private configSvc: ConfigurationsService,
-    // private networkV2Service: NetworkV2Service,
-    // private profileV2Svc: ProfileV2Service
     private usersService: UsersService
   ) {
     this.Math = Math
     this.configSvc = this.route.parent && this.route.parent.snapshot.data.configService
     this.currentUser = this.configSvc.userProfile && this.configSvc.userProfile.userId
+    this.currentUserStatus = this.configSvc.unMappedUser.profileDetails.profileStatus
 
     // this.usersData = _.get(this.route, 'snapshot.data.usersList.data') || {}
     // this.filterData()
@@ -101,10 +96,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     }
     // this.filterData('')
 
+    this.getNMUsers('')
     this.getAllUsers('')
     this.getVUsers('')
     this.getNVUsers('')
-    this.getNMUsers('')
 
     this.reportsNoteList = [
       `Easily create users individually or in bulk.`,
@@ -207,7 +202,17 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
-      this.activeUsersDataCount = data.result.response.count
+      this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
+      this.activeUsersDataCount = allusersData.count
+      const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
+      if (i > -1) {
+        this.activeUsersData.splice(i, 1)
+        allusersData.count = allusersData.count - 1
+      }
+
+      if (this.notmyuserUsersDataCount && allusersData.count > this.notmyuserUsersDataCount) {
+        this.activeUsersDataCount = allusersData.count - this.notmyuserUsersDataCount
+      }
     })
   }
   async getVUsers(query: string) {
@@ -221,6 +226,14 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.verifiedUsersData = allusersData.content
       this.verifiedUsersDataCount = data.result.response.count
+
+      if (this.currentUserStatus === 'VERIFIED') {
+        const i = this.verifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
+        if (i > -1) {
+          this.verifiedUsersData.splice(i, 1)
+          this.verifiedUsersDataCount = this.verifiedUsersDataCount ? this.verifiedUsersDataCount - 1 : this.verifiedUsersDataCount
+        }
+      }
     })
   }
 
@@ -235,6 +248,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
+
+      if (this.currentUserStatus === 'NOT-VERIFIED') {
+        const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
+        if (i > -1) {
+          this.nonverifiedUsersData.splice(i, 1)
+          this.nonverifiedUsersDataCount = this.nonverifiedUsersDataCount ?
+            this.nonverifiedUsersDataCount - 1 : this.nonverifiedUsersDataCount
+        }
+      }
     })
   }
 
