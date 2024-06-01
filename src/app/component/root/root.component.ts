@@ -127,6 +127,9 @@ export class RootComponent implements OnInit, AfterViewInit {
         }
       }
       if (event instanceof NavigationStart) {
+        if (event.url.includes('public/home')) {
+          window.location.href = '/public/logout'
+        }
         if (event.url.includes('embed')) {
           this.isNavBarRequired = false
         } else if (event.url.includes('author/') && this.isInIframe) {
