@@ -49,7 +49,10 @@
   
               <ng-container matColumnDef="requestStatus">
                 <th mat-header-cell *matHeaderCellDef>Request Status </th>
-                <td mat-cell class="title-class" *matCellDef="let element">{{element?.status}}</td>
+                
+                <td mat-cell class="title-class" *matCellDef="let element">
+                  <span [ngClass]="getStatusClass(element.status)">{{element?.status}}</span>
+                </td>
               </ng-container>
   
               <ng-container matColumnDef="assignee">

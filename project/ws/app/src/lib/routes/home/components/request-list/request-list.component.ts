@@ -147,6 +147,23 @@ export class RequestListComponent implements OnInit {
   this.getRequestList()
   }
 
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'Unassigned':
+        return 'status-unassigned'
+      case 'Assigned':
+        return 'status-assigned'
+      case 'Invalid':
+        return 'status-invalid'
+      case 'Fulfill':
+        return 'status-fullfill'
+        case 'InProgress':
+          return 'status-inprogress'
+      default:
+        return ''
+    }
+  }
+
   showConformationModal(_selectedRow: any, _type: any) {
     this.dialogRef = this.dialog.open(ConfirmationBoxComponent, {
       disableClose: true,
