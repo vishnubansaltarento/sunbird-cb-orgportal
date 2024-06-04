@@ -104,7 +104,7 @@ export class AssignListPopupComponent implements OnInit {
         status: selectedProvider.status,
         createdOn: selectedProvider.createdOn ,
         updatedOn: selectedProvider.updatedOn,
-        assignedBy: this.userId,
+        // assignedBy: this.userId,
       }
       this.homeService.assignToOrg(request).subscribe(res => {
         if (res) {
