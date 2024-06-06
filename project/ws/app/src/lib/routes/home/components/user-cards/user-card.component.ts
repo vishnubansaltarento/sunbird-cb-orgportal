@@ -74,7 +74,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   reqbody: any
   isTagsEdited = false
   separatorKeysCodes: number[] = [ENTER, COMMA]
-  namePatern = `^[a-zA-Z ]*$`
+  namePatern = '^[a-zA-Z ]*$'
   orgTypeList: any = []
   // public countryCodes: string[] = []
   masterLanguages: Observable<any[]> | undefined
@@ -519,7 +519,7 @@ export class UserCardComponent implements OnInit, OnChanges {
       }
       const splitValues: string[] = dateString.split('-')
       const [dd, mm, yyyy] = splitValues
-      const dateToBeConverted = `${yyyy}-${mm}-${dd}`
+      const dateToBeConverted = dd.length !== 4 ? `${yyyy}-${mm}-${dd}` : `${dd}-${mm}-${yyyy}`
       return new Date(dateToBeConverted)
     }
     return ''
