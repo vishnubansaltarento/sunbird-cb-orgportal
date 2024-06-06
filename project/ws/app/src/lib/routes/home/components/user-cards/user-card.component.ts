@@ -21,6 +21,8 @@ import { ApprovalsService } from '../../services/approvals.service'
 import { EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
 
+const empIDPattern = /^[a-z0-9]+$/i
+
 @Component({
   selector: 'ws-widget-user-card',
   templateUrl: './user-card.component.html',
@@ -90,7 +92,6 @@ export class UserCardComponent implements OnInit, OnChanges {
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
-  empIDPattern = `^[a-z0-9]+$`
 
   userGroup: any
 
@@ -108,13 +109,13 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
-      employeeID: new FormControl('', [Validators.pattern(this.empIDPattern)]),
+      employeeID: new FormControl('', [Validators.pattern(empIDPattern)]),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', []),
       primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
@@ -628,6 +629,7 @@ export class UserCardComponent implements OnInit, OnChanges {
             },
             employmentDetails: {
               pinCode: this.updateUserDataForm.controls['pincode'].value,
+              employeeCode: this.updateUserDataForm.controls['employeeID'].value,
             },
           },
         },

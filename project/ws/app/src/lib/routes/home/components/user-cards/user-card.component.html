@@ -121,8 +121,8 @@
                 <label class="margin-remove-bottom form-label">Employee ID</label>
                 <mat-form-field appearance="outline">
                   <input type="text" matInput #employeeID formControlName="employeeID">
-                  <mat-error [hidden]="false" class="custom-error"
-                    *ngIf="updateUserDataForm?.controls['employeeID'].errors?.pattern" i18n-aria-label
+                  <mat-error [hidden]="false" class="custom-error" *ngIf="updateUserDataForm?.controls['employeeID'].touched &&
+                    updateUserDataForm?.controls['employeeID'].errors?.pattern" i18n-aria-label
                     aria-label="Please enter a valid id">
                     Please enter a valid employee Id
                   </mat-error>
