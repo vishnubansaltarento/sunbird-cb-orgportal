@@ -62,10 +62,10 @@
               <mat-slide-toggle (click)="markStatus('NOT-VERIFIED', user)">Mark this user as
                 non-verified</mat-slide-toggle>
             </p>
-            <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
+            <!-- <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
               <mat-slide-toggle (click)="markStatus('NOT-MY-USER', user)" [checked]="true">This is my
                 user</mat-slide-toggle>
-            </p>
+            </p> -->
             <div class="flex flex-row margin-top-m">
               <div class="md:w-1/3">
                 <label class="margin-remove-bottom form-label required">Group</label>
@@ -121,8 +121,8 @@
                 <label class="margin-remove-bottom form-label">Employee ID</label>
                 <mat-form-field appearance="outline">
                   <input type="text" matInput #employeeID formControlName="employeeID">
-                  <mat-error [hidden]="false" class="custom-error"
-                    *ngIf="updateUserDataForm?.controls['employeeID'].errors?.pattern" i18n-aria-label
+                  <mat-error [hidden]="false" class="custom-error" *ngIf="updateUserDataForm?.controls['employeeID'].touched &&
+                    updateUserDataForm?.controls['employeeID'].errors?.pattern" i18n-aria-label
                     aria-label="Please enter a valid id">
                     Please enter a valid employee Id
                   </mat-error>
@@ -308,12 +308,6 @@
                       [matChipInputFor]="chipListTags" autocomplete="off" maxlength="100"
                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                       (matChipInputTokenEnd)="addActivity($event)" />
-                    <p class="margin-left-xs">
-                      <mat-error class="hintErr" *ngIf="updateUserDataForm?.controls['tags'].errors?.pattern"
-                        i18n="name Error|Explains name is required">
-                        Only space and alphabets are supported
-                      </mat-error>
-                    </p>
                   </div>
                 </div>
                 <div class="right-input-div">
@@ -323,6 +317,12 @@
                     <span class="text-white" i18n>Add tag</span>
                   </button>
                 </div>
+                <p class="margin-left-xs mat-caption">
+                  <mat-error class="hintErr" *ngIf="updateUserDataForm?.controls['tags'].errors?.pattern"
+                    i18n="name Error|Explains name is required">
+                    Only space and alphabets are supported
+                  </mat-error>
+                </p>
                 <mat-chip-list #chipListTags>
                   <mat-chip *ngFor="let tag of selectedtags" [selectable]="true" [removable]="true"
                     (removed)="removeActivity(tag)">
