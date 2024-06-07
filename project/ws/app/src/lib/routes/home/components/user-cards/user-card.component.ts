@@ -616,13 +616,13 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   onSubmit(form: any, user: any, panel: any) {
     if (form.valid) {
-      const dob = this.datePipe.transform(this.updateUserDataForm.controls['dob'].value, 'dd-MM-yyyy')
+      const dobn = this.datePipe.transform(this.updateUserDataForm.controls['dob'].value, 'dd-MM-yyyy')
       this.reqbody = {
         request: {
           userId: user.userId,
           profileDetails: {
             personalDetails: {
-              dob,
+              dob: dobn,
               domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value,
               gender: this.updateUserDataForm.controls['gender'].value,
               category: this.updateUserDataForm.controls['category'].value,
