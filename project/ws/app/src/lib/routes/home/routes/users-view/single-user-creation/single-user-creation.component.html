@@ -1,3 +1,4 @@
+<div class="mat-title">Create a New User</div>
 <div class="flex flex-col gap-6 bulk-container">
   <div class="text-xl font-semibold">User Details</div>
 
@@ -37,7 +38,7 @@
 
       <div class="input-container">
         <div class="label required">Designation</div>
-        <mat-form-field class="profile-form-field">
+        <mat-form-field class="profile-form-field required-select" appearance="none">
           <div class="flex flex-row auto-complete-row">
             <input type="text" class="input-text" aria-label="Designation" matInput formControlName="designation"
               [matAutocomplete]="designationAuto" />
@@ -48,6 +49,10 @@
               {{ designation.name }}
             </mat-option>
           </mat-autocomplete>
+          <mat-error class="text-xs"
+            *ngIf="userCreationForm?.get('designation')?.touched && userCreationForm?.get('designation')?.invalid">
+            Please choose a designation
+          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -55,18 +60,22 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label required">Group</div>
-        <mat-form-field class="profile-form-field">
+        <mat-form-field class="profile-form-field required-select" appearance="none">
           <mat-select formControlName="group">
             <mat-option value="">Choose a group</mat-option>
             <mat-option *ngFor="let group of masterData.group" value="{{group}}">{{ group }}</mat-option>
           </mat-select>
+          <mat-error class="text-xs"
+            *ngIf="userCreationForm?.get('group')?.touched && userCreationForm?.get('group')?.invalid">
+            Please choose a group
+          </mat-error>
         </mat-form-field>
       </div>
       <div class="input-container">
         <div class="label">Date of birth</div>
         <mat-form-field class="profile-form-field">
-          <input matInput class="input-text icon-include-input" [matDatepicker]="picker" readonly
-            formControlName="dob" />
+          <input matInput class="input-text icon-include-input" [matDatepicker]="picker" readonly formControlName="dob"
+            [max]="today" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
@@ -117,7 +126,12 @@
       </div>
       <div class="input-container">
         <div class="label">Office pin code</div>
-        <input type="text" class="input-text" formControlName="pincode" placeholder="Type here" />
+        <input type="text" class="input-text" formControlName="pincode" placeholder="Type here" pattern="^[0-9]{1,6}$"
+          maxlength="6" />
+        <mat-error class="text-xs"
+          *ngIf="userCreationForm?.get('pincode')?.touched && userCreationForm?.get('pincode')?.invalid">
+          Please enter valid pin
+        </mat-error>
       </div>
     </div>
 
@@ -126,7 +140,7 @@
         <div class="label">Tags</div>
         <input type="text" class="input-text" matInput i18n-placeholder="Type tag here"
           placeholder="Type tag here and press enter" [matChipInputFor]="chipListTags" autocomplete="off"
-          maxlength="100" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          maxlength="100" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (keypress)="handleValidTags($event)"
           (matChipInputTokenEnd)="handleAddTags($event)" />
         <mat-chip-list #chipListTags>
           <mat-chip *ngFor="let tag of userCreationForm?.get('tags')?.value" [selectable]="true" [removable]="true"
@@ -143,10 +157,13 @@
       <div class="input-container">
         <div class="label required mb-2">Role</div>
         <div class="flex flex-col gap-4">
-          <div class="flex flex-row gap-4" *ngFor="let role of masterData?.mdoRoles">
-            <div class="flex-1">{{ role }}</div>
-            <mat-checkbox #rolesCheckbox (change)="handleRolesCheck($event, role)"></mat-checkbox>
-          </div>
+          <ng-container *ngFor="let role of masterData?.mdoRoles">
+            <div class="flex flex-row gap-4" *ngIf="role !== 'MDO_LEADER'">
+              <div class="flex-1">{{ role }}</div>
+              <mat-checkbox value="{{ role }}" #rolesCheckbox [checked]="role === 'PUBLIC'"
+                [disabled]="role === 'PUBLIC'" (change)="handleRolesCheck($event, role)"></mat-checkbox>
+            </div>
+          </ng-container>
         </div>
       </div>
       <div class="input-container"></div>

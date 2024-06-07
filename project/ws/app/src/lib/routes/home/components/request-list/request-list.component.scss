@@ -52,6 +52,39 @@ table tr .cdk-column-assignee {
   font-weight: 400;
   line-height: 16.8px;
 }
+.status-unassigned {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 5px;
+  border-radius: 4px;
+  color: white;
+}
+
+.status-assigned {
+  background: rgba(29, 137, 35, 1);
+  padding: 5px;
+  border-radius: 4px;
+  color: white;
+}
+
+.status-invalid {
+  background: rgba(209, 57, 36, 1);
+  padding: 5px;
+  border-radius: 4px;
+  color: white;
+}
+
+.status-fullfill {
+  background: rgba(27, 76, 161, 1);
+  padding: 5px;
+  border-radius: 4px;
+  color: white;
+}
+.status-inprogress {
+  background: rgba(243, 150, 47, 1);
+  padding: 5px;
+  border-radius: 4px;
+  color: white;
+}
 
 .search-border {
   border-color: #cecece;

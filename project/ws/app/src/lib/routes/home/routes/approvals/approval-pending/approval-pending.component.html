@@ -35,10 +35,10 @@
             mat-button (click)="filter('profileverification'); tabTelemetry('toapprove', 0)" role="button">Profile
             Verifications ({{profileVerificationCount}})</a>
 
-          <a routerLink="/app/home/approvals/transfers" class="filter-option"
+          <!-- <a routerLink="/app/home/approvals/transfers" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'transfers', 'ws-mat-accent-border font-medium':currentFilter !== 'transfers'}"
             mat-button (click)="filter('transfers'); tabTelemetry('transfers', 1)" role="button">Transfers
-            ({{transfersCount}})</a>
+            ({{transfersCount}})</a> -->
         </div>
       </div>
       <ng-container *ngIf="currentFilter === 'profileverification'">
@@ -50,10 +50,10 @@
           <!-- <ws-widget-org-user-table-v2 [tableData]="tabledata" [data]="data" (eOnRowClick)="onApprovalClick($event)"
             [totalRecords]="approvalTotalCount" (pageChangeClick)="onPaginateChange($event)">
           </ws-widget-org-user-table-v2> -->
-          <ws-widget-user-card [currentFilter]="currentFilter" [usersData]="profileVerificationData" [isApprovals]="true"
-            [totalRecords]="profileVerificationCount" [tabChangeIndex]="pageIndex"
+          <ws-widget-user-card [currentFilter]="currentFilter" [usersData]="profileVerificationData"
+            [isApprovals]="true" [totalRecords]="profileVerificationCount" [tabChangeIndex]="pageIndex"
             (searchByEnterKey)="onEnterkySearch($event)" (disableButton)="showButton()"
-            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+            (paginationData)="onPaginateChange($event)" (updateList)="fetchApprovals()"></ws-widget-user-card>
         </ng-container>
         <ng-container *ngIf="!profileVerificationData || profileVerificationData.length === 0">
           <p class="margin-top-xl margin-bottom-xl">No approvals</p>
@@ -63,9 +63,8 @@
         <!-- <ws-app-profle-approval-bulk-upload></ws-app-profle-approval-bulk-upload> -->
         <ng-container *ngIf="transfersData && transfersData.length > 0">
           <ws-widget-user-card [currentFilter]="currentFilter" [usersData]="transfersData" [isApprovals]="true"
-            [totalRecords]="transfersCount" [tabChangeIndex]="pageIndex"
-            (searchByEnterKey)="onEnterkySearch($event)" (disableButton)="showButton()"
-            (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
+            [totalRecords]="transfersCount" [tabChangeIndex]="pageIndex" (searchByEnterKey)="onEnterkySearch($event)"
+            (disableButton)="showButton()" (paginationData)="onPaginateChange($event)"></ws-widget-user-card>
         </ng-container>
         <ng-container *ngIf="!transfersData || transfersData.length === 0">
           <p class="margin-top-xl margin-bottom-xl">No approvals</p>

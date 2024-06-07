@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-6">
   <div class="flex flex-col gap-4 bulk-container">
-    <div class="flex font-bold">Bulk creation</div>
+    <div class="flex font-bold">Bulk Creation</div>
     <div class="flex flex-row gap-8">
       <div class="flex-1">
         <div class="flex flex-col gap-3 dashed-card">
@@ -25,19 +25,18 @@
             (dblclick)="$event.preventDefault()">
             <img src="/assets/icons/csv-file.svg" alt="CSV file logo" />
           </div>
-          <div *ngIf="showFileError" class="error-msg">Upload xsls format file only</div>
+          <div *ngIf="showFileError" class="error-msg">Upload xlsx format file only</div>
           <div class="flex flex-col items-center">
             <div class="text-primary cursor-pointer" (click)="fileInput.click()" (dblclick)="$event.preventDefault()">
               Browse files</div>
             <input hidden type="file" #fileInput (click)="handleFileClick($event)" (change)="handleOnFileChange($event)"
-              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();"
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .xlsx, .xls" />
+              name="file" placeholder="Choose file" (dblclick)="$event.preventDefault();" accept=".xlsx, .xls" />
             <!-- <div class="flex">or</div>
             <div class="flex">Drag file to upload</div> -->
           </div>
           <div class="flex flex-col items-center margin-bottom-m">
             <div class="flex">Max file size: 100 MB</div>
-            <div class="flex">Supported file types: xsls</div>
+            <div class="flex">Supported file types: xlsx</div>
           </div>
         </div>
       </div>
@@ -46,16 +45,16 @@
 
   <div class="text-base font-bold">File logs</div>
   <div class="flex flex-col gap-6">
-    <div class="file-container" *ngFor="let list of lastUploadList | orderBy:'dateCreatedOn':'desc'">
+    <div class="file-container"
+      *ngFor="let list of lastUploadList | slice : startIndex : lastIndex | orderBy:'dateCreatedOn':'desc'">
       <div class="flex flex-col gap-4">
         <div class="flex flex-row justify-between items-center">
           <div class="flex flex-row gap-1">
             <div class="font-bold">File Information</div>
           </div>
-          <div class="flex flex-row gap-2 outline-button items-center" *ngIf="list?.status !== 'SUCCESSFUL'"
-            (click)="handleDownloadFile(list)">
+          <div class="flex flex-row gap-2 outline-button items-center" (click)="handleDownloadFile(list)">
             <mat-icon>download_2</mat-icon>
-            Download error log
+            {{ list?.status !== 'SUCCESSFUL' ? 'Download error log' : 'Download file' }}
           </div>
         </div>
         <div class="grid grid-flow-row sm:grid-flow-col gap-10 grid-col grid-container-25">

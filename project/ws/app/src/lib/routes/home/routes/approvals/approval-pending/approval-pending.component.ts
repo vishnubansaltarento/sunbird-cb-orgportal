@@ -134,20 +134,6 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   fetchApprovals() {
-    // const conditions = [
-    //   ['location', 'Country'],
-    //   ['designation', 'Designation'],
-    //   ['group', 'Group'],
-    //   ['name', 'Organisation Name'],
-    //   ['orgNameOther', 'Other Organisation Name'],
-    //   ['industry', 'Industry'],
-    //   ['industryOther', 'Other Industry'],
-    //   ['doj', 'Date of Joining'],
-    //   ['organisationType', 'Type of Organisation'],
-    //   ['orgDesc', 'Organisation Description'],
-    //   ['verifiedKarmayogi', 'Verified Karmayogi'],
-    // ]
-
     if (this.departName) {
       const req = {
         serviceName: 'profile',
@@ -167,7 +153,6 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         this.data = []
         const newarray: any = []
         let currentdate: Date
-        // this.approvalTotalCount = res.result.count
         const resData = res.result.data
         resData.forEach((approval: any) => {
           // let keys = ''
@@ -315,7 +300,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.openSnackbar('All requests are Approved')
             this.fetchApprovals()
-          },         200)
+            /* tslint:disable */
+          }, 200)
         }
       })
     }
