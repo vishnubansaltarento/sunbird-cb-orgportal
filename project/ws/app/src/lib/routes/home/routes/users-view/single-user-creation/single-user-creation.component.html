@@ -74,8 +74,8 @@
       <div class="input-container">
         <div class="label">Date of birth</div>
         <mat-form-field class="profile-form-field">
-          <input matInput class="input-text icon-include-input" [matDatepicker]="picker" readonly
-            formControlName="dob" />
+          <input matInput class="input-text icon-include-input" [matDatepicker]="picker" readonly formControlName="dob"
+            [max]="today" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>

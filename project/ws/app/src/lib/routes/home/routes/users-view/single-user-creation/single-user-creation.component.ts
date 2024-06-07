@@ -64,6 +64,7 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
     tags: new FormControl([]),
     roles: new FormControl([], [Validators.required]),
   })
+  today = new Date()
 
   constructor(
     private formBuilder: FormBuilder,

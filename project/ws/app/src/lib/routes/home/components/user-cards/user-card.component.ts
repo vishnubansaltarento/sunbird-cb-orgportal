@@ -20,6 +20,7 @@ import { APP_DATE_FORMATS, AppDateAdapter } from '../../../events/routes/format-
 import { ApprovalsService } from '../../services/approvals.service'
 import { EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
+import { DatePipe } from '@angular/common'
 
 @Component({
   selector: 'ws-widget-user-card',
@@ -90,7 +91,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   pincodePattern = '(^[0-9]{6}$)'
   yearPattern = '(^[0-9]{4}$)'
-  empIDPattern = `^[a-z0-9]+$`
+  empIDPattern = `^[A-Za-z0-9]+$`
 
   userGroup: any
 
@@ -108,9 +109,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService, private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -172,16 +173,7 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if (this.isApprovals && this.usersData) {
-      this.approvalData = this.usersData
-      if (this.approvalData && this.approvalData.length > 0) {
-        this.getUserMappedData(this.approvalData)
-        this.approvalSvc.getProfileConfig().then((res: any) => {
-          this.profileData = res && res.profileData
-        })
-        if (this.profileData) {
-          this.getFieldsMappedData(this.approvalData)
-        }
-      }
+      this.getApprovalData()
     } else {
       this.init()
     }
@@ -191,10 +183,28 @@ export class UserCardComponent implements OnInit, OnChanges {
     if (this.usersData) {
       this.usersData = _.orderBy(this.usersData, item => {
         if (item.profileDetails && item.profileDetails.personalDetails) {
-          return item.profileDetails.personalDetails.firstname.toUpperCase()
+          return item.profileDetails.personalDetails.firstname ?
+            item.profileDetails.personalDetails.firstname.toUpperCase() : item.firstName.toUpperCase()
         }
         // tslint:disable-next-line
       }, ['asc'])
+
+      if (this.isApprovals) {
+        this.getApprovalData()
+      }
+    }
+  }
+
+  getApprovalData() {
+    this.approvalData = this.usersData
+    if (this.approvalData && this.approvalData.length > 0) {
+      this.getUserMappedData(this.approvalData)
+      this.approvalSvc.getProfileConfig().then((res: any) => {
+        this.profileData = res && res.profileData
+      })
+      if (this.profileData) {
+        this.getFieldsMappedData(this.approvalData)
+      }
     }
   }
 
@@ -450,6 +460,7 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   setUserDetails(user: any) {
     if (user && user.profileDetails) {
+      this.updateUserDataForm.reset()
       if (user.profileDetails.additionalProperties) {
         if (user.profileDetails.additionalProperties.externalSystemId) {
           this.updateUserDataForm.controls['ehrmsID'].setValue(user.profileDetails.additionalProperties.externalSystemId)
@@ -605,12 +616,13 @@ export class UserCardComponent implements OnInit, OnChanges {
 
   onSubmit(form: any, user: any, panel: any) {
     if (form.valid) {
+      const dob = this.datePipe.transform(this.updateUserDataForm.controls['dob'].value, 'dd-MM-yyyy')
       this.reqbody = {
         request: {
           userId: user.userId,
           profileDetails: {
             personalDetails: {
-              dob: this.updateUserDataForm.controls['dob'].value,
+              dob: dob,
               domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value,
               gender: this.updateUserDataForm.controls['gender'].value,
               category: this.updateUserDataForm.controls['category'].value,
@@ -647,7 +659,7 @@ export class UserCardComponent implements OnInit, OnChanges {
                 if (res) {
                   this.updateUserDataForm.reset({ roles: '' })
                   // this.openSnackbar('User role updated Successfully')q
-                  this.openSnackbar('User updated Successfully')
+                  this.openSnackbar('User updated Successfully, updated data will be reflecting in sometime.')
                   panel.close()
                   this.updateList.emit()
                   this.searchByEnterKey.emit('')
@@ -661,7 +673,7 @@ export class UserCardComponent implements OnInit, OnChanges {
 
             panel.close()
             this.updateList.emit()
-            this.openSnackbar('User updated Successfully')
+            this.openSnackbar('User updated Successfully, updated data will be reflecting in sometime.')
           }
         }
       },
