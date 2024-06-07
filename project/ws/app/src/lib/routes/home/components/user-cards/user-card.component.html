@@ -613,9 +613,9 @@
                     <mat-radio-group aria-label="Select an option" name="approveDesignation"
                       formControlName="approveDesignation" class="mat-caption margin-top-s">
                       <mat-radio-button value="approvedesg" class="margin-right-s"
-                        (click)="onClickHandleWorkflow(field,'APPROVE')">Approve</mat-radio-button>
+                        (click)="onClickHandleWorkflow(field,'APPROVE', appData)">Approve</mat-radio-button>
                       <mat-radio-button value="rejectdesg"
-                        (click)="onClickHandleWorkflow(field,'REJECT')">Reject</mat-radio-button>
+                        (click)="onClickHandleWorkflow(field,'REJECT', appData)">Reject</mat-radio-button>
                       <mat-icon class="margin-left-m editreasonicon cursor-pointer"
                         *ngIf="field.action === 'REJECT' && comment !== ''"
                         (click)="updateRejection(field)">chat_bubble</mat-icon>
