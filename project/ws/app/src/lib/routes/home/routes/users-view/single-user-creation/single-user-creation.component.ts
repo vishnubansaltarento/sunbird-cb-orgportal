@@ -26,7 +26,7 @@ export const MY_FORMATS = {
   },
 }
 
-const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+// const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const MOBILE_PATTERN = /^[0]?[6789]\d{9}$/
 const PIN_CODE_PATTERN = /^[1-9][0-9]{5}$/
 
@@ -49,8 +49,9 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
   rolesArr: string[] = []
   fullProfile: any
   namePatern = `^[a-zA-Z\\s\\']{1,50}$`
+  emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   userCreationForm = this.formBuilder.group({
-    email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
+    email: new FormControl('', [Validators.required, Validators.pattern(this.emailRegix)]),
     firstName: new FormControl('', [Validators.required, Validators.pattern(this.namePatern)]),
     phone: new FormControl('', [Validators.required, Validators.pattern(MOBILE_PATTERN), Validators.minLength(10)]),
     channel: new FormControl(''),
@@ -220,7 +221,7 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
   handleValidTags(event: any): any {
     const charCode = event.charCode
     // tslint:disable-next-line
-    return ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8 || charCode == 32 || (charCode >= 48 && charCode <= 57))
+    return ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123) || charCode == 8 || charCode == 32)
   }
 
   handleRemoveTag(tag: any): void {

@@ -680,7 +680,13 @@ export class UserCardComponent implements OnInit, OnChanges {
       },
         // tslint:disable-next-line: align
         (err: { error: any }) => {
-          this.openSnackbar(err.error.params.errmsg)
+          if (err.error.params.errmsg && err.error.params.errmsg !== 'null') {
+            this.openSnackbar(err.error.params.errmsg)
+            panel.close()
+          } else {
+            this.openSnackbar('Error in updating user')
+            panel.close()
+          }
         })
     }
   }
