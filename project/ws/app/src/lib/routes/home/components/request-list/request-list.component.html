@@ -31,7 +31,8 @@
     <div class="nav-container">
         <div class="sidenav-content">
           <div class="table-class">
-            <table mat-table [dataSource]="dataSource">
+            <ng-container *ngIf="dataSource?.filteredData?.length > 0">
+            <table mat-table   [dataSource]="dataSource" > 
               <ng-container matColumnDef="RequestId">
                 <th mat-header-cell *matHeaderCellDef>Request ID </th>
                 <td mat-cell class="title-class" *matCellDef="let element">{{element?.demand_id}}</td>
@@ -68,8 +69,10 @@
               <ng-container matColumnDef="interests">
                 <th mat-header-cell *matHeaderCellDef>Interests</th>
                 <td mat-cell class="title-class" *matCellDef="let element">
-                    <a class="action-btn-view"  (click)="showInterestPopup()"
+                    <a class="action-btn-view"  *ngIf="element?.interestCount!== 0" 
                     href="javascript:void(0)">{{element?.interestCount}}</a>
+                    <a class="" *ngIf="element?.interestCount === 0" 
+                    href="javascript:void(0)">{{element?.requestType == 'Single' ? 'N/A' : element?.interestCount}}</a>
                 </td>
               </ng-container>
   
@@ -121,8 +124,23 @@
   
   
             </table>
+          </ng-container>
+
+            <div class="no-cbp-data" *ngIf="dataSource?.filteredData?.length === 0">
+              <div><img src="/mdo-assets/images/no-content-data.svg"></div>
+              <!-- <div class="mat-subheading-1 margin-remove">No CBP plan created yet</div> -->
+              <div>No Request yet made</div>
+              <!-- <div class="margin-top-m">
+                  <button mat-button type="button" class="search-btn"
+                  [routerLink]="['/app/home/create-request-form']">Request Content</button>
+              </div> -->
+              <div class=" margin-top-m no-content-create">
+                <button mat-button type="button" class="search-btns" [routerLink]="['/app/home/create-request-form']">Request Content</button>
+            </div>
+
+          </div>
   
-            <mat-paginator [pageSize]="pageSize" [length]="this.requestCount" [pageSizeOptions]="[10,20,40]"
+            <mat-paginator *ngIf="dataSource?.filteredData?.length > 0" [pageSize]="pageSize" [length]="this.requestCount" [pageSizeOptions]="[10,20,40]"
               (page)="onChangePage($event)"></mat-paginator>
   
   

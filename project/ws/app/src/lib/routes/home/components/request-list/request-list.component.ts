@@ -8,10 +8,10 @@ import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
 export enum statusValue {
-  Assigned= "Assigned",
-  Unassigned = "Unassigned",
-  Inprogress = "Inprogress",
-  invalid = "invalid"
+  Assigned= 'Assigned',
+  Unassigned = 'Unassigned',
+  Inprogress = 'InProgress',
+  invalid = 'invalid',
 }
 @Component({
   selector: 'ws-app-request-list',
@@ -55,10 +55,9 @@ export class RequestListComponent implements OnInit {
   requestCount: any
   invalidRes: any
   detailsEvent: any
-  dataSource:any;
-  displayedColumns: string[] = ["RequestId", "title", "requestType", "requestStatus", "assignee", "requestedOn", "interests", "action"]
+  dataSource: any
+  displayedColumns: string[] = ['RequestId', 'title', 'requestType', 'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
   statusKey = statusValue
-
 
   constructor(private sanitizer: DomSanitizer,
               private homeService: ProfileV2Service,
@@ -66,15 +65,14 @@ export class RequestListComponent implements OnInit {
               private activeRoute: ActivatedRoute,
               private dialog: MatDialog,
               private router: Router,
-              private snackBar : MatSnackBar
+              private snackBar: MatSnackBar
   ) { }
   requestList: any[] = [
-    `These reports contain Personally Identifiable Information (PII) data.
-      Please use them cautiously.`,
-      `Your access to the report is available until.
-      Please contact your MDO Leader to renew your access.`,
+    `You can request new content by filling out the request form. You will have the option to choose your content provider and
+     if you are unsure then you can choose the option as broadcast your request.`,
+      `Please review the interest received from various providers and assign
+      to the provider of your choice among the list.`,
   ]
-
 
   ngOnInit() {
     this.configSvc = this.activeRoute.snapshot.data['configService']
@@ -110,8 +108,7 @@ export class RequestListComponent implements OnInit {
     }
   }
 
-
-  onClickMenu(item: any,action:string) {
+  onClickMenu(item: any, action: string) {
   switch (action) {
     case 'viewContent':
 
@@ -128,7 +125,16 @@ export class RequestListComponent implements OnInit {
        this.openAssignlistPopup(item)
       break
     case 'reAssignContent':
-      this.openAssignlistPopup(item)
+      if (item.requestType === 'Broadcast') {
+        this.openAssignlistPopup(item)
+      } else {
+        this.queryParams = {
+          id: item.demand_id,
+          name: 'reassign',
+        }
+          this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
+      }
+
       break
     case 'copyContent':
         this.queryParams = {
@@ -205,7 +211,7 @@ export class RequestListComponent implements OnInit {
 
   }
 
-  openAssignlistPopup(item:any) {
+  openAssignlistPopup(item: any) {
     this.dialogRef = this.dialog.open(AssignListPopupComponent, {
       disableClose: false,
       width: '90%',
@@ -218,9 +224,8 @@ export class RequestListComponent implements OnInit {
       if (_res && _res.data === 'confirmed') {
          this.getRequestList()
          this.snackBar.open('Assigned submitted Successfully')
-      }
-      else {
-        this.snackBar.open('error')
+      } else {
+        // this.snackBar.open('error')
       }
     })
   }
@@ -261,6 +266,7 @@ export class RequestListComponent implements OnInit {
            }
         })
         this.dataSource = new MatTableDataSource<any>(this.requestListData)
+
       }
 
     })

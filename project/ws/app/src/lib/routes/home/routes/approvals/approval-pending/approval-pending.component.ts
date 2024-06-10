@@ -188,13 +188,14 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
             userWorkflow: appr,
             tag: (appr.userInfo && appr.userInfo.tag) ? `${appr.userInfo.tag}` : '',
           }
-
+         /* tslint:disable */
           if (appr!.wfInfo[0] && appr!.wfInfo[0].orgTansferRequest) {
             this.transfersData.push(requestData)
           } else {
             this.profileVerificationData.push(requestData)
           }
         })
+        /* tslint:enable */
         this.transfersData.sort((a: any, b: any) => {
           const textA = a.fullname.toUpperCase()
           const textB = b.fullname.toUpperCase()
@@ -211,7 +212,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         this.allTransfersData = this.transfersData
         this.allprofileVerificationData = this.profileVerificationData
 
-        if ((this.transfersData && this.transfersData.length > 0) || (this.profileVerificationData && this.profileVerificationData.length > 0)) {
+        if ((this.transfersData && this.transfersData.length > 0) ||
+        (this.profileVerificationData && this.profileVerificationData.length > 0)) {
           this.showApproveALL = true
           this.disableApproveALL = false
         }
@@ -241,7 +243,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
     // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
     const filterValue = enterValue.toLowerCase()
     if (this.currentFilter === 'profileverification') {
-      this.profileVerificationData = this.allprofileVerificationData.filter((user: any) => user.fullname.toLowerCase().includes(filterValue))
+      this.profileVerificationData = this.allprofileVerificationData.filter((user: any) =>
+        user.fullname.toLowerCase().includes(filterValue))
     } else {
       this.transfersData = this.allTransfersData.filter((user: any) => user.fullname.toLowerCase().includes(filterValue))
     }
