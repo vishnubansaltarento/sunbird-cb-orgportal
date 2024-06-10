@@ -306,8 +306,8 @@
                     <input class="appr-text-field w-full-imp" #tags matInput i18n-placeholder="Type here"
                       placeholder="Type here" formControlName="tags" i18n-aria-label aria-label="Type here"
                       [matChipInputFor]="chipListTags" autocomplete="off" maxlength="100"
-                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                      (matChipInputTokenEnd)="addActivity($event)" />
+                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addActivity($event)"
+                      maxlength="100" />
                   </div>
                 </div>
                 <div class="right-input-div">

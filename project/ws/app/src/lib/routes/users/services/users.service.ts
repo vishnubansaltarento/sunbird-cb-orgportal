@@ -127,6 +127,9 @@ export class UsersService {
         limit: pageLimit,
         offset: offsetNum,
         query: searchText,
+        sort_by: {
+          firstName: 'asc',
+        },
       },
     }
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, reqBody)

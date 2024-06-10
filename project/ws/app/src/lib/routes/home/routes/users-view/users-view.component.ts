@@ -204,11 +204,11 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.activeUsersData = allusersData.content
       this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
       this.activeUsersDataCount = allusersData.count
-      const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
-      if (i > -1) {
-        this.activeUsersData.splice(i, 1)
-        allusersData.count = allusersData.count - 1
-      }
+      // const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
+      // if (i > -1) {
+      //   this.activeUsersData.splice(i, 1)
+      //   allusersData.count = allusersData.count - 1
+      // }
 
       if (this.notmyuserUsersDataCount && allusersData.count > this.notmyuserUsersDataCount) {
         this.activeUsersDataCount = allusersData.count - this.notmyuserUsersDataCount
@@ -227,13 +227,13 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.verifiedUsersData = allusersData.content
       this.verifiedUsersDataCount = data.result.response.count
 
-      if (this.currentUserStatus === 'VERIFIED') {
-        const i = this.verifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
-        if (i > -1) {
-          this.verifiedUsersData.splice(i, 1)
-          this.verifiedUsersDataCount = this.verifiedUsersDataCount ? this.verifiedUsersDataCount - 1 : this.verifiedUsersDataCount
-        }
-      }
+      // if (this.currentUserStatus === 'VERIFIED') {
+      //   const i = this.verifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
+      //   if (i > -1) {
+      //     this.verifiedUsersData.splice(i, 1)
+      //     this.verifiedUsersDataCount = this.verifiedUsersDataCount ? this.verifiedUsersDataCount - 1 : this.verifiedUsersDataCount
+      //   }
+      // }
     })
   }
 
@@ -249,14 +249,14 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
 
-      if (this.currentUserStatus === 'NOT-VERIFIED') {
-        const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
-        if (i > -1) {
-          this.nonverifiedUsersData.splice(i, 1)
-          this.nonverifiedUsersDataCount = this.nonverifiedUsersDataCount ?
-            this.nonverifiedUsersDataCount - 1 : this.nonverifiedUsersDataCount
-        }
-      }
+      // if (this.currentUserStatus === 'NOT-VERIFIED') {
+      //   const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
+      //   if (i > -1) {
+      //     this.nonverifiedUsersData.splice(i, 1)
+      //     this.nonverifiedUsersDataCount = this.nonverifiedUsersDataCount ?
+      //       this.nonverifiedUsersDataCount - 1 : this.nonverifiedUsersDataCount
+      //   }
+      // }
     })
   }
 
