@@ -38,7 +38,7 @@ export class AssignListPopupComponent implements OnInit {
     this.submitAssign = 'Assign'
     this.getInterestOrgList()
     if (this.configService['confService'].userProfile || this.configService['confService'].userProfileV2) {
-      this.fullProfile = this.configService['confService'].userProfile ? 
+      this.fullProfile = this.configService['confService'].userProfile ?
       this.configService['confService'].userProfile
        : this.configService['confService'].userProfileV2
       this.userId =  this.fullProfile.userId

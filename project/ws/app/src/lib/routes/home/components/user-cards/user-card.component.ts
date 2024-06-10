@@ -690,7 +690,7 @@ export class UserCardComponent implements OnInit, OnChanges {
       duration,
     })
   }
-
+  /* tslint:disable */
   // for approval & rejection
   onClickHandleWorkflow(field: any, action: string, appData: any = undefined) {
     field.action = action
@@ -763,7 +763,7 @@ export class UserCardComponent implements OnInit, OnChanges {
       }
     }
   }
-
+  /* tslint:enable */
   // single aprrove or reject
   onApproveOrRejectClick(req: any) {
     this.approvalSvc.handleWorkflow(req).subscribe((res: any) => {
