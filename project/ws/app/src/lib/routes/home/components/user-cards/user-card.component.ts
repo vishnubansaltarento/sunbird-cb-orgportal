@@ -109,9 +109,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService, private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService, private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -680,7 +680,13 @@ export class UserCardComponent implements OnInit, OnChanges {
       },
         // tslint:disable-next-line: align
         (err: { error: any }) => {
-          this.openSnackbar(err.error.params.errmsg)
+          if (err.error.params.errmsg && err.error.params.errmsg !== 'null') {
+            this.openSnackbar(err.error.params.errmsg)
+            panel.close()
+          } else {
+            this.openSnackbar('Error in updating user')
+            panel.close()
+          }
         })
     }
   }
