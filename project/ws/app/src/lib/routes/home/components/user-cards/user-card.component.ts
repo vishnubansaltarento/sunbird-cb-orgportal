@@ -1,4 +1,7 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core'
+import {
+  Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output,
+  QueryList, TemplateRef, ViewChild, ViewChildren
+} from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UsersService } from '../../../users/services/users.service'
 import {
@@ -52,6 +55,9 @@ export class UserCardComponent implements OnInit, OnChanges {
   updaterejectDialog!: TemplateRef<any>
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator | any
+
+  @ViewChild('toggleElement', { static: true }) ref!: ElementRef
+
   startIndex = 0
   lastIndex = 20
   pageSize = 20
@@ -109,9 +115,10 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService, private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService,
+    private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -216,6 +223,9 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.usersSvc.getUserById(id).subscribe((res: any) => {
           if (res) {
             data.user = res
+            if (this.currentFilter === 'transfers') {
+              data.enableToggle = res.profileDetails.profileStatus !== 'NOT-MY-USER' ? true : false
+            }
 
             if (data.user) {
               if (data.needApprovalList && data.needApprovalList.length === 1) {
@@ -698,7 +708,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
   /* tslint:disable */
   // for approval & rejection
-  onClickHandleWorkflow(field: any, action: string, appData: any = undefined) {
+  onClickHandleWorkflow(field: any, action: string) {
     field.action = action
     const req = {
       action,
@@ -754,20 +764,21 @@ export class UserCardComponent implements OnInit, OnChanges {
       }
     )
 
-    if (this.currentFilter === 'transfers' && appData !== undefined) {
-      appData.needApprovalList.forEach((otherField: any) => {
-        if (otherField.label !== field.label) {
-          this.onClickHandleWorkflow(field, action)
-        }
-      })
-      if (field.label === 'Group') {
-        const designationValue = action === 'APPROVE' ? 'approvedesg' : 'rejectdesg'
-        this.approveUserDataForm.controls.approveDesignation.setValue(designationValue)
-      } else {
-        const groupValue = action === 'APPROVE' ? 'approvegroup' : 'rejectgroup'
-        this.approveUserDataForm.controls.approveGroup.setValue(groupValue)
-      }
-    }
+    // if (this.currentFilter === 'transfers' && appData !== undefined) {
+    //   appData.needApprovalList.forEach((otherField: any) => {
+    //     if (otherField.label !== field.label) {
+    //       console.log('field', field)
+    //       this.onClickHandleWorkflow(field, action)
+    //     }
+    //   })
+    //   if (field.label === 'Group') {
+    //     const designationValue = action === 'APPROVE' ? 'approvedesg' : 'rejectdesg'
+    //     this.approveUserDataForm.controls.approveDesignation.setValue(designationValue)
+    //   } else {
+    //     const groupValue = action === 'APPROVE' ? 'approvegroup' : 'rejectgroup'
+    //     this.approveUserDataForm.controls.approveGroup.setValue(groupValue)
+    //   }
+    // }
   }
   /* tslint:enable */
   // single aprrove or reject
@@ -779,30 +790,80 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  onApprovalSubmit(panel: any) {
+  onApprovalSubmit(panel: any, appData: any) {
     if (this.actionList.length > 0) {
-      const datalength = this.actionList.length
-      this.actionList.forEach((req: any, index: any) => {
-        if (req.action === 'APPROVE') {
-          req.comment = ''
-        }
-        this.onApproveOrRejectClick(req)
-        if (index === datalength - 1) {
-          panel.close()
-          this.comment = ''
-          setTimeout(() => {
-            this.openSnackbar('Request approved successfully')
-            this.updateList.emit()
-            // tslint:disable-next-line
-          }, 100)
-        }
-        // tslint:disable-next-line
-        // this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
-        if (this.approvalData.length === 0) {
-          this.disableButton.emit()
-        }
-      })
+      if (this.currentFilter === 'transfers') {
+        this.onTransferSubmit(panel, appData)
+      } else {
+        const datalength = this.actionList.length
+        this.actionList.forEach((req: any, index: any) => {
+          if (req.action === 'APPROVE') {
+            req.comment = ''
+          }
+          this.onApproveOrRejectClick(req)
+          if (index === datalength - 1) {
+            panel.close()
+            this.comment = ''
+            setTimeout(() => {
+              this.openSnackbar('Request approved successfully')
+              this.updateList.emit()
+              // tslint:disable-next-line
+            }, 100)
+          }
+          // tslint:disable-next-line
+          // this.approvalData = this.approvalData.filter((wf: any) => { wf.userWorkflow.userInfo.wid !== req.userId })
+          if (this.approvalData.length === 0) {
+            this.disableButton.emit()
+          }
+        })
+      }
     }
+  }
+
+  onTransferSubmit(panel: any, appData: any) {
+    let orgReq = {}
+    appData.userWorkflow.wfInfo.forEach((wf: any) => {
+      const fields = JSON.parse(wf.updateFieldValues)
+      if (fields.length > 0) {
+        fields.forEach((field: any) => {
+          const labelKey = Object.keys(field.toValue)[0]
+          if (labelKey === 'name') {
+            orgReq = {
+              action: 'APPROVE',
+              actorUserId: wf.actorUUID,
+              applicationId: wf.applicationId,
+              serviceName: wf.serviceName,
+              state: 'SEND_FOR_APPROVAL',
+              updateFieldValues: fields,
+              userId: wf.userId,
+              wfId: wf.wfId,
+            }
+          }
+        })
+      }
+    })
+
+    this.actionList.push(orgReq)
+    const datalength = this.actionList.length
+    this.actionList.forEach((req: any, index: any) => {
+      if (req.action === 'APPROVE') {
+        req.comment = ''
+      }
+      this.onApproveOrRejectClick(req)
+      if (index === datalength - 1) {
+        panel.close()
+        this.comment = ''
+        setTimeout(() => {
+          this.openSnackbar('Request approved successfully')
+          this.updateList.emit()
+          // tslint:disable-next-line
+        }, 100)
+      }
+      if (this.approvalData.length === 0) {
+        this.disableButton.emit()
+      }
+    })
+
   }
 
   updateRejection(field: any) {
@@ -862,6 +923,22 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
+  confirmNotMyUser(template: any, data: any, event: any) {
+    data.enableToggle = true
+    const dialog = this.dialog.open(template, {
+      width: '500px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.markStatus('NOT-MY-USER', data.user)
+        data.enableToggle = false
+      } else {
+        event.source.checked = true
+        data.enableToggle = true
+      }
+    })
+  }
+
   confirmUpdate(template: any, updateUserDataForm: any, user: any, panel: any) {
     const dialog = this.dialog.open(template, {
       width: '500px',
@@ -875,13 +952,13 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  confirmApproval(template: any, panel: any) {
+  confirmApproval(template: any, panel: any, appData: any) {
     const dialog = this.dialog.open(template, {
       width: '500px',
     })
     dialog.afterClosed().subscribe((v: any) => {
       if (v) {
-        this.onApprovalSubmit(panel)
+        this.onApprovalSubmit(panel, appData)
       } else {
         panel.close()
       }
