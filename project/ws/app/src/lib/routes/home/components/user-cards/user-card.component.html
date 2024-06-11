@@ -40,7 +40,7 @@
               user?.profileDetails?.professionalDetails[0]?.designation ?
               user?.profileDetails?.professionalDetails[0]?.designation : '-'}}</div>
             <div class="mat-caption ws-mat-black40-text">
-              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn || ' -'}}</div>
+              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn || ' NA'}}</div>
             <!-- <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">-</div> -->
           </div>
         </div>
@@ -49,7 +49,7 @@
             *ngIf="currentFilter !== 'notmyuser' && !user?.enableEdit">
             <mat-icon>edit</mat-icon> Edit
           </div>
-          <div class="button margin-top-m mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
+          <div class="button mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
             *ngIf="currentFilter === 'notmyuser'">Reassign</div>
         </div>
       </mat-expansion-panel-header>
