@@ -19,12 +19,16 @@ import { ApprovalsService } from '../../../services/approvals.service'
 
 export class ApprovalPendingComponent implements OnInit, OnDestroy {
   data: any = []
+  profileVerificationData: any = []
+  transfersData: any = []
   approvalData: any = []
+  allTransfersData: any = []
+  allprofileVerificationData: any = []
   currentFilter = 'profileverification'
   discussionList!: any
   discussProfileData!: any
   departName = ''
-  approvalTotalCount = 0
+  // approvalTotalCount = 0
   limit = 20
   pageIndex = 0
   currentOffset = 0
@@ -32,6 +36,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   reportsNoteList: string[] = []
   showApproveALL = false
   disableApproveALL = false
+  transfersCount = 0
+  profileVerificationCount = 0
 
   constructor(
     private router: Router,
@@ -50,14 +56,15 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.currentFilter = this.route.snapshot.params['tab'] || 'profileverification'
+    this.currentFilter = this.route.snapshot.routeConfig && this.route.snapshot.routeConfig.path
+      ? this.route.snapshot.routeConfig.path : 'profileverification'
     // this.currentFilter = this.currentFilter === 'upload' ? 'uploadApprovals' : 'pending'
-    if (this.currentFilter === 'profileverification') {
-      this.fetchApprovals()
-    }
-    if (this.currentFilter !== 'profileverification') {
-      this.fetchApprovals()
-    }
+    // if (this.currentFilter === 'profileverification') {
+    this.fetchApprovals()
+    // }
+    // if (this.currentFilter !== 'profileverification') {
+    //   this.fetchApprovals()
+    // }
 
     this.reportsNoteList = [
       // tslint:disable-next-line: max-line-length
@@ -88,12 +95,12 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   filter(key: string | 'timestamp' | 'best' | 'saved') {
     if (key) {
       this.currentFilter = key
-      if (key === 'profileverification') {
-        this.fetchApprovals()
-      }
-      if (key === 'transfers') {
-        this.fetchApprovals()
-      }
+      // if (key === 'profileverification') {
+      this.fetchApprovals()
+      // }
+      // if (key === 'transfers') {
+      //   this.fetchApprovals()
+      // }
     }
   }
 
@@ -136,6 +143,13 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         offset: this.currentOffset,
         limit: this.limit,
       }
+      this.allTransfersData = []
+      this.transfersData = []
+      this.allprofileVerificationData = []
+      this.profileVerificationData = []
+      this.transfersCount = 0
+      this.profileVerificationCount = 0
+
       this.apprService.getApprovals(req).subscribe(res => {
         this.data = []
         const newarray: any = []
@@ -167,22 +181,38 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         })
 
         newarray.forEach((appr: any) => {
-          this.data.push({
+          const requestData = {
             fullname: appr.userInfo ? `${appr.userInfo.first_name}` : '--',
             requestedon: currentdate,
             // fields: this.replaceWords(keys, conditions),
             userWorkflow: appr,
             tag: (appr.userInfo && appr.userInfo.tag) ? `${appr.userInfo.tag}` : '',
-          })
-          this.data.sort((a: any, b: any) => {
-            const textA = a.fullname.toUpperCase()
-            const textB = b.fullname.toUpperCase()
-            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-          })
+          }
+          /* tslint:disable */
+          if (appr!.wfInfo[0] && appr!.wfInfo[0].orgTansferRequest) {
+            this.transfersData.push(requestData)
+          } else {
+            this.profileVerificationData.push(requestData)
+          }
         })
-        this.approvalTotalCount = this.data.length
-        this.approvalData = this.data
-        if (this.data && this.data.length > 0) {
+        /* tslint:enable */
+        this.transfersData.sort((a: any, b: any) => {
+          const textA = a.fullname.toUpperCase()
+          const textB = b.fullname.toUpperCase()
+          return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+        })
+        this.profileVerificationData.sort((a: any, b: any) => {
+          const textA = a.fullname.toUpperCase()
+          const textB = b.fullname.toUpperCase()
+          return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+        })
+        this.transfersCount = this.transfersData.length
+        this.profileVerificationCount = this.profileVerificationData.length
+
+        this.allTransfersData = this.transfersData
+        this.allprofileVerificationData = this.profileVerificationData
+
+        if (this.profileVerificationData && this.profileVerificationData.length > 0) {
           this.showApproveALL = true
           this.disableApproveALL = false
         }
@@ -205,13 +235,18 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    },                           inputString)
+    }, inputString)
   }
 
   onSearch(enterValue: any) {
     // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
     const filterValue = enterValue.toLowerCase()
-    this.data = this.approvalData.filter((user: any) => user.fullname.toLowerCase().includes(filterValue))
+    if (this.currentFilter === 'profileverification') {
+      this.profileVerificationData = this.allprofileVerificationData.filter((user: any) =>
+        user.fullname.toLowerCase().includes(filterValue))
+    } else {
+      this.transfersData = this.allTransfersData.filter((user: any) => user.fullname.toLowerCase().includes(filterValue))
+    }
   }
 
   onPaginateChange(event: PageEvent) {
