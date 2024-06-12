@@ -95,12 +95,12 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   filter(key: string | 'timestamp' | 'best' | 'saved') {
     if (key) {
       this.currentFilter = key
-      if (key === 'profileverification') {
-        this.fetchApprovals()
-      }
-      if (key === 'transfers') {
-        this.fetchApprovals()
-      }
+      // if (key === 'profileverification') {
+      this.fetchApprovals()
+      // }
+      // if (key === 'transfers') {
+      //   this.fetchApprovals()
+      // }
     }
   }
 
@@ -207,14 +207,13 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
           return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
         })
 
-        if ((this.transfersData && this.transfersData.length > 0) ||
-          (this.profileVerificationData && this.profileVerificationData.length > 0)) {
+        if (this.profileVerificationData && this.profileVerificationData.length > 0) {
           this.showApproveALL = true
           this.disableApproveALL = false
-          this.transfersCount = this.transfersData.length
+          // this.transfersCount = this.transfersData.length
           this.profileVerificationCount = this.profileVerificationData.length
 
-          this.allTransfersData = this.transfersData
+          // this.allTransfersData = this.transfersData
           this.allprofileVerificationData = this.profileVerificationData
         }
       })
