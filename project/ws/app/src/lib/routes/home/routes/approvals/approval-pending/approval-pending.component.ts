@@ -56,14 +56,15 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.currentFilter = this.route.snapshot.params['tab'] || 'profileverification'
+    this.currentFilter = this.route.snapshot.routeConfig && this.route.snapshot.routeConfig.path
+      ? this.route.snapshot.routeConfig.path : 'profileverification'
     // this.currentFilter = this.currentFilter === 'upload' ? 'uploadApprovals' : 'pending'
-    if (this.currentFilter === 'profileverification') {
-      this.fetchApprovals()
-    }
-    if (this.currentFilter !== 'profileverification') {
-      this.fetchApprovals()
-    }
+    // if (this.currentFilter === 'profileverification') {
+    this.fetchApprovals()
+    // }
+    // if (this.currentFilter !== 'profileverification') {
+    //   this.fetchApprovals()
+    // }
 
     this.reportsNoteList = [
       // tslint:disable-next-line: max-line-length
@@ -180,7 +181,6 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         })
 
         newarray.forEach((appr: any) => {
-
           const requestData = {
             fullname: appr.userInfo ? `${appr.userInfo.first_name}` : '--',
             requestedon: currentdate,
@@ -188,7 +188,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
             userWorkflow: appr,
             tag: (appr.userInfo && appr.userInfo.tag) ? `${appr.userInfo.tag}` : '',
           }
-         /* tslint:disable */
+          /* tslint:disable */
           if (appr!.wfInfo[0] && appr!.wfInfo[0].orgTansferRequest) {
             this.transfersData.push(requestData)
           } else {
@@ -206,16 +206,16 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
           const textB = b.fullname.toUpperCase()
           return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
         })
-        this.transfersCount = this.transfersData.length
-        this.profileVerificationCount = this.profileVerificationData.length
-
-        this.allTransfersData = this.transfersData
-        this.allprofileVerificationData = this.profileVerificationData
 
         if ((this.transfersData && this.transfersData.length > 0) ||
-        (this.profileVerificationData && this.profileVerificationData.length > 0)) {
+          (this.profileVerificationData && this.profileVerificationData.length > 0)) {
           this.showApproveALL = true
           this.disableApproveALL = false
+          this.transfersCount = this.transfersData.length
+          this.profileVerificationCount = this.profileVerificationData.length
+
+          this.allTransfersData = this.transfersData
+          this.allprofileVerificationData = this.profileVerificationData
         }
       })
     } else {
