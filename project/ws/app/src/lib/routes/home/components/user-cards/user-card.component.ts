@@ -930,7 +930,29 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
     dialog.afterClosed().subscribe((v: any) => {
       if (v) {
-        this.markStatus('NOT-MY-USER', data.user)
+        let orgReq = {}
+        data.userWorkflow.wfInfo.forEach((wf: any) => {
+          const fields = JSON.parse(wf.updateFieldValues)
+          if (fields.length > 0) {
+            fields.forEach((field: any) => {
+              const labelKey = Object.keys(field.toValue)[0]
+              if (labelKey === 'name') {
+                orgReq = {
+                  action: 'REJECT',
+                  actorUserId: wf.actorUUID,
+                  applicationId: wf.applicationId,
+                  serviceName: wf.serviceName,
+                  state: 'SEND_FOR_APPROVAL',
+                  updateFieldValues: fields,
+                  userId: wf.userId,
+                  wfId: wf.wfId,
+                }
+              }
+            })
+          }
+        })
+        this.onApproveOrRejectClick(orgReq)
+        // this.markStatus('NOT-MY-USER', data.user)
         data.enableToggle = false
       } else {
         event.source.checked = true
