@@ -7,11 +7,13 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
+import { LoaderService } from 'src/app/services/loader.service'
 export enum statusValue {
   Assigned= 'Assigned',
   Unassigned = 'Unassigned',
   Inprogress = 'InProgress',
-  invalid = 'invalid',
+  invalid = 'Invalid',
+  fullfill='Fulfill'
 }
 @Component({
   selector: 'ws-app-request-list',
@@ -65,7 +67,8 @@ export class RequestListComponent implements OnInit {
               private activeRoute: ActivatedRoute,
               private dialog: MatDialog,
               private router: Router,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private loaderService: LoaderService,
   ) { }
   requestList: any[] = [
     `You can request new content by filling out the request form. You will have the option to choose your content provider and
@@ -86,6 +89,17 @@ export class RequestListComponent implements OnInit {
   openVideoPopup() {
 
   }
+
+  handleClick(element: any): void {
+    if(element.status && element.status.length > 0){
+      if (element.status !== this.statusKey.Inprogress && 
+        element.status !== this.statusKey.invalid && 
+        element.status !== this.statusKey.fullfill) {
+        this.onClickMenu(element, 'assignContent');
+    }
+    }
+   
+}
 
   hasAccess() {
     let flag = false
@@ -204,7 +218,10 @@ export class RequestListComponent implements OnInit {
    }
    this.homeService.markAsInvalid(request).subscribe(res => {
      this.invalidRes = res
-     this.getRequestList()
+     if(res){
+      this.getRequestList()
+     }
+     
      this.snackBar.open('Marked as Invalid')
     }
   )
@@ -235,6 +252,7 @@ export class RequestListComponent implements OnInit {
   }
 
   getRequestList() {
+    this.loaderService.changeLoaderState(true)
     const request = {
         filterCriteriaMap: {},
         requestedFields: [],
@@ -247,6 +265,7 @@ export class RequestListComponent implements OnInit {
     this.homeService.getRequestList(request).subscribe(res => {
       this.requestListData = res.data
       if (this.requestListData) {
+        this.loaderService.changeLoaderState(false)
       this.requestCount = res.totalCount
         this.requestListData.map((data: any) => {
           if (data.createdOn) {

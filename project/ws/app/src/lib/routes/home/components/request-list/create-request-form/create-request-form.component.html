@@ -337,7 +337,7 @@
 
                 <div class="flex flex-start margin-top-l" *ngIf="!isHideData">
                     <button mat-button class="submit-btn margin-right-xs" type="button" (click)="showConformationPopUp()" [disabled]="!requestForm.valid">Submit</button>
-                    <button mat-button class="close-btn " type="button" >Cancel</button>
+                    <button mat-button class="close-btn" (click)="navigateBack()" type="button" >Cancel</button>
                    
                   </div>
 
