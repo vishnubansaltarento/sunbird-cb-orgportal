@@ -40,7 +40,7 @@
               user?.profileDetails?.professionalDetails[0]?.designation ?
               user?.profileDetails?.professionalDetails[0]?.designation : '-'}}</div>
             <div class="mat-caption ws-mat-black40-text">
-              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn || ' -'}}</div>
+              Marked on: {{user?.profileDetails?.profileStatusUpdatedOn || ' NA'}}</div>
             <!-- <div class="mat-caption ws-mat-black40-text" *ngIf="!user?.profileDetails?.profileStatusUpdatedOn">-</div> -->
           </div>
         </div>
@@ -49,7 +49,7 @@
             *ngIf="currentFilter !== 'notmyuser' && !user?.enableEdit">
             <mat-icon>edit</mat-icon> Edit
           </div>
-          <div class="button margin-top-m mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
+          <div class="button mat-body" (click)="confirmReassign(confirm, user);$event.stopPropagation();"
             *ngIf="currentFilter === 'notmyuser'">Reassign</div>
         </div>
       </mat-expansion-panel-header>
@@ -565,7 +565,7 @@
         </div>
       </mat-expansion-panel-header>
 
-      <div class="panel-body">
+      <div class="panel-body profile-box">
         <form [formGroup]="approveUserDataForm" class="margin-top-m">
           <!-- <button mat-button class="my-4 mr-4" (click)="addRejection()">add reason</button>
               <button mat-button class="my-4 mr-4" (click)="updateRejection()">update reason</button> -->
@@ -573,6 +573,11 @@
             <div class="margin-bottom-m">
               <span class="font-bold">Primary Details</span> <mat-icon
                 class="ws-mat-black40-text infoicon">info_outline</mat-icon>
+              <p class="float-right mat-body-2" *ngIf="currentFilter === 'transfers'">
+                <mat-slide-toggle #toggleElement (change)="confirmNotMyUser(notmyuserconfirm, appData, $event)"
+                  [checked]="appData.enableToggle">
+                  This is my user</mat-slide-toggle>
+              </p>
             </div>
             <div class="flex flex-row margin-top-m">
               <ng-container *ngFor="let field of appData.needApprovalList">
@@ -747,7 +752,7 @@
           </div>
 
           <div class="flex flex-row margin-top-l">
-            <button mat-raised-button type="submit" (click)="confirmApproval(approvalconfirm, panel)"
+            <button mat-raised-button type="submit" (click)="confirmApproval(approvalconfirm, panel, appData)"
               class="margin-right-m btn-success btn-responsive successbtn"
               [disabled]="appData.needApprovalList.length !== actionList.length">
               <span class="text-white" i18n>
@@ -866,6 +871,28 @@
     <mat-icon class="infoIcon orangeicon-dialog">error_outline</mat-icon>
     <div mat-dialog-content i18n class="margin-top-xs blue-text">
       Are you sure you want to save changes?
+    </div>
+    <div mat-dialog-actions class="flex-center margin-top-s">
+      <button mat-raised-button type="submit" [mat-dialog-close]="false"
+        class="margin-right-m  btn-success btn-responsive cancelbtn">
+        <span i18n>
+          No
+        </span>
+      </button>
+      <button mat-raised-button type="submit" [mat-dialog-close]="true" class="btn-success btn-responsive successbtn">
+        <span class="text-white" i18n>
+          Yes
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #notmyuserconfirm>
+  <div class="confirm-dialog text-center padding-l">
+    <mat-icon class="infoIcon orangeicon-dialog">error_outline</mat-icon>
+    <div mat-dialog-content i18n class="margin-top-xs blue-text">
+      Are you sure you want to cancel this transfer request?
     </div>
     <div mat-dialog-actions class="flex-center margin-top-s">
       <button mat-raised-button type="submit" [mat-dialog-close]="false"
