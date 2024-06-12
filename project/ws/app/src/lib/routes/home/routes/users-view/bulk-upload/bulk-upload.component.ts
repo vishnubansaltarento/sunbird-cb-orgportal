@@ -73,7 +73,8 @@ export class BulkUploadComponent implements OnInit, AfterViewInit, OnDestroy {
     this.fileService.getBulkUploadDataV1(this.rootOrgId)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
-        this.lastUploadList = res.result.content
+        this.lastUploadList = res.result.content.sort((a: any, b: any) =>
+          new Date(b.dateCreatedOn).getTime() - new Date(a.dateCreatedOn).getTime())
         // tslint:disable-next-line
       }, (error: HttpErrorResponse) => {
         if (!error.ok) {
