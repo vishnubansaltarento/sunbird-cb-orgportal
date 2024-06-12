@@ -202,7 +202,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
-      this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
+      // this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
       this.activeUsersDataCount = allusersData.count
       // const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
       // if (i > -1) {
