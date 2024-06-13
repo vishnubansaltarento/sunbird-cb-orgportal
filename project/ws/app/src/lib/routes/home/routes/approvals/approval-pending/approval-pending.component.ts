@@ -188,7 +188,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
             userWorkflow: appr,
             tag: (appr.userInfo && appr.userInfo.tag) ? `${appr.userInfo.tag}` : '',
           }
-         /* tslint:disable */
+          /* tslint:disable */
           if (appr!.wfInfo[0] && appr!.wfInfo[0].orgTansferRequest) {
             this.transfersData.push(requestData)
           } else {
@@ -213,7 +213,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         this.allprofileVerificationData = this.profileVerificationData
 
         if ((this.transfersData && this.transfersData.length > 0) ||
-        (this.profileVerificationData && this.profileVerificationData.length > 0)) {
+          (this.profileVerificationData && this.profileVerificationData.length > 0)) {
           this.showApproveALL = true
           this.disableApproveALL = false
         }
@@ -236,12 +236,12 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    },                           inputString)
+    }, inputString)
   }
 
   onSearch(enterValue: any) {
     // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
-    const filterValue = enterValue.toLowerCase()
+    const filterValue = enterValue.searchText.toLowerCase() ? enterValue.searchText : ''
     if (this.currentFilter === 'profileverification') {
       this.profileVerificationData = this.allprofileVerificationData.filter((user: any) =>
         user.fullname.toLowerCase().includes(filterValue))

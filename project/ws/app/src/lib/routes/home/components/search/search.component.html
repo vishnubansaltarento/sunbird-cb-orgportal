@@ -7,16 +7,30 @@
                 placeholder="Search" type="Standard" [ngClass]="{'disable': isContentLive}">
         </div>
     </div>
-    <!-- <div class="filter-section flex">
-        <button mat-button type="button" (click)="sort()" class="apply-filter margin-right-s">
+    <div class="filter-section flex">
+        <button mat-button type="button" (click)="sort()" class="apply-filter margin-right-s"
+            [matMenuTriggerFor]="cardMenu">
             <mat-icon class="margin-right-xs">sort</mat-icon> Sort
         </button>
+        <mat-menu #cardMenu="matMenu">
+            <ng-template matMenuContent>
+                <div mat-menu-item class="flex items-center" (click)="sortData('alphabetical')">
+                    <span>Alphabetical</span>
+                </div>
+                <div mat-menu-item class="flex items-center" (click)="sortData('newest')">
+                    <span>Newest</span>
+                </div>
+                <div mat-menu-item class="flex items-center" (click)="sortData('oldest')">
+                    <span>Oldest</span>
+                </div>
+            </ng-template>
+        </mat-menu>
     </div>
     <div class="filter-section flex">
         <button mat-button type="button" (click)="openFilter()" class="apply-filter margin-right-s">
             Apply Filter <mat-icon class="margin-right-xs">filter_list</mat-icon>
         </button>
-    </div> -->
+    </div>
     <div class="flex flex-end" *ngIf="!isApprovals && currentFilter === 'allusers'">
         <button mat-button type="button" class="search-btn" [routerLink]="['/app/home/user-creation']"
             [ngClass]="{'disable': isContentLive}">Create user</button>
@@ -32,5 +46,5 @@
 </div>
 
 <div [hidden]="!filterVisibilityFlag">
-    <ws-app-filter [from]="from"></ws-app-filter>
+    <ws-app-filter [from]="from" (toggleFilter)="hideFilter($event)"></ws-app-filter>
 </div>
