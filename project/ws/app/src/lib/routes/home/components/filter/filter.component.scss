@@ -155,6 +155,22 @@
     overflow-y: auto;
 }
 
+.filterSearch {
+    position: relative;
+
+    .filterSearch-icon {
+        position: absolute;
+        top: 11px;
+        font-size: 25px;
+        left: 10px;
+    }
+
+    .filterSinput {
+        width: 100% !important;
+        padding-left: 45px !important;
+    }
+}
+
 ::-webkit-scrollbar {
     width: 4px;
 }
