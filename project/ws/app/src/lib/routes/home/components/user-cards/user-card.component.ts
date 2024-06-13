@@ -115,10 +115,10 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService,
-              private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService,
+    private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -923,7 +923,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  confirmNotMyUser(template: any, data: any, event: any) {
+  confirmTransferRequest(template: any, data: any, event: any, panel: any) {
     data.enableToggle = true
     const dialog = this.dialog.open(template, {
       width: '500px',
@@ -951,7 +951,13 @@ export class UserCardComponent implements OnInit, OnChanges {
             })
           }
         })
-        this.onApproveOrRejectClick(orgReq)
+        this.approvalSvc.handleWorkflow(orgReq).subscribe((res: any) => {
+          if (res) {
+            this.openSnackbar('Request rejected successfully')
+            panel.close()
+            this.updateList.emit()
+          }
+        })
         // this.markStatus('NOT-MY-USER', data.user)
         data.enableToggle = false
       } else {

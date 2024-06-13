@@ -574,7 +574,8 @@
               <span class="font-bold">Primary Details</span> <mat-icon
                 class="ws-mat-black40-text infoicon">info_outline</mat-icon>
               <p class="float-right mat-body-2" *ngIf="currentFilter === 'transfers'">
-                <mat-slide-toggle #toggleElement (change)="confirmNotMyUser(notmyuserconfirm, appData, $event)"
+                <mat-slide-toggle #toggleElement
+                  (change)="confirmTransferRequest(notmyuserconfirm, appData, $event, panel)"
                   [checked]="appData.enableToggle">Approve transfer</mat-slide-toggle>
               </p>
             </div>
