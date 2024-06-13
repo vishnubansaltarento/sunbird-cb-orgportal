@@ -18,7 +18,7 @@ import { ApprovalsService } from '../../../services/approvals.service'
 })
 
 export class ApprovalPendingComponent implements OnInit, OnDestroy {
-  data: any = []
+  // data: any = []
   profileVerificationData: any = []
   transfersData: any = []
   approvalData: any = []
@@ -151,7 +151,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
       this.profileVerificationCount = 0
 
       this.apprService.getApprovals(req).subscribe(res => {
-        this.data = []
+        // this.data = []
         const newarray: any = []
         let currentdate: Date
         const resData = res.result.data
@@ -235,7 +235,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
-    },                           inputString)
+      // tslint:disable-next-line
+    }, inputString)
   }
 
   onSearch(enterValue: any) {
@@ -266,9 +267,9 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
   onApproveALL() {
     this.disableApproveALL = true
-    if (this.data && this.data.length > 0) {
-      const datalength = this.data.length
-      this.data.forEach((data: any, index: any) => {
+    if (this.profileVerificationData && this.profileVerificationData.length > 0) {
+      const datalength = this.profileVerificationData.length
+      this.profileVerificationData.forEach((data: any, index: any) => {
         if (data.userWorkflow.wfInfo && data.userWorkflow.wfInfo.length > 0) {
           const action = 'APPROVE'
           data.userWorkflow.wfInfo.forEach((wf: any) => {
