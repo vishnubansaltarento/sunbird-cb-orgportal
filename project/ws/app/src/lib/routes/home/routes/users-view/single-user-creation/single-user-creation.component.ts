@@ -49,6 +49,8 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
   rolesArr: string[] = []
   fullProfile: any
   namePatern = `^[a-zA-Z\\s\\']{1,50}$`
+
+  displayLoader = false
   // emailRegix = `^[\\w\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$`
   userCreationForm = this.formBuilder.group({
     email: new FormControl('', [Validators.required, Validators.pattern(EMAIL_PATTERN)]),
@@ -252,6 +254,7 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
   }
 
   handleUserCreation(): void {
+    this.displayLoader = true
     const dataToSubmit = { ...this.userCreationForm.value }
     if (dataToSubmit.dob) {
       // tslint:disable-next-line
@@ -271,11 +274,13 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
     this.usersService.createUser(postData)
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((_res: any) => {
+        this.displayLoader = false
         this.matSnackBar.open('User created successfully!')
         this.handleFormClear()
         // tslint:disable-next-line
       }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
+          this.displayLoader = false
           this.matSnackBar.open(_.get(_err, 'error.params.errmsg') || 'Unable to create user, please try again later!')
         }
       })
