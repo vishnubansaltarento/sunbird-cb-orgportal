@@ -305,7 +305,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   async loadGroups() {
     await this.usersSvc.getGroups().subscribe(
       (data: any) => {
-        const res = data.result.response
+        const res = data.result.response.filter((ele: any) => ele !== 'Others')
         this.groupsList = res
       },
       (_err: any) => {
@@ -801,6 +801,7 @@ export class UserCardComponent implements OnInit, OnChanges {
             req.comment = ''
           }
           this.onApproveOrRejectClick(req)
+
           if (index === datalength - 1) {
             panel.close()
             this.comment = ''
@@ -958,6 +959,11 @@ export class UserCardComponent implements OnInit, OnChanges {
             this.updateList.emit()
           }
         })
+
+
+
+
+        // setTimeout(handleRRequest, 1000)
         // this.markStatus('NOT-MY-USER', data.user)
         data.enableToggle = false
       } else {
@@ -966,6 +972,7 @@ export class UserCardComponent implements OnInit, OnChanges {
       }
     })
   }
+
 
   confirmUpdate(template: any, updateUserDataForm: any, user: any, panel: any) {
     const dialog = this.dialog.open(template, {
@@ -987,6 +994,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     dialog.afterClosed().subscribe((v: any) => {
       if (v) {
         this.onApprovalSubmit(panel, appData)
+
       } else {
         panel.close()
       }
