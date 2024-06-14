@@ -1,7 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { TrainingPlanDataSharingService } from './../../services/training-plan-data-share.service'
-import { MatDialog, MatSnackBar } from '@angular/material'
-import { AddContentDialogComponent } from '../../components/add-content-dialog/add-content-dialog.component'
+import { MatDialog } from '@angular/material'
+// import { AddContentDialogComponent } from '../../components/add-content-dialog/add-content-dialog.component'
+import { Router } from '@angular/router'
+import { ConfirmationBoxComponent } from '../../components/confirmation-box/confirmation.box.component'
 @Component({
   selector: 'ws-app-create-content',
   templateUrl: './create-content.component.html',
@@ -17,8 +19,17 @@ export class CreateContentComponent implements OnInit {
   selectContentCount = 0
   pageIndex: any
   pageSize: any
-  count = 0
-  constructor(private tpdsSvc: TrainingPlanDataSharingService, public dialog: MatDialog, private snackbar: MatSnackBar) { }
+  count = 0;
+  queryParams:any;
+  dialogRef:any;
+   /* tslint:disable */
+  confirmationText:string = 'You have unsaved progress on your CBP plan. Clicking "Yes" will discard it and take you to request new content screen. Would you like to continue?'
+  /* tslint:enable */
+
+  constructor(private tpdsSvc: TrainingPlanDataSharingService, public dialog: MatDialog,
+    //  private snackbar: MatSnackBar,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.categoryData = [
@@ -106,20 +117,47 @@ export class CreateContentComponent implements OnInit {
     this.handleSelectedChips(true)
   }
 
+  // showAddContentDialog() {
+  //   this.queryParams = {
+  //     name: 'trainingPlan',
+  //   }
+  //   this.router.navigate(['/app/home/create-request-form'],{ queryParams: this.queryParams })
+  //   // const dialogRef = this.dialog.open(AddContentDialogComponent, {
+  //   //   maxHeight: 'auto',
+  //   //   height: '60%',
+  //   //   width: '60%',
+  //   // })
+  //   // dialogRef.afterClosed().subscribe((response: any) => {
+  //   //   if (response) {
+  //   //     if (response.data.responseCode === 'OK') {
+  //   //       this.snackbar.open('Request shared successfully')
+  //   //     } else {
+  //   //       this.snackbar.open('Something went wrong please try again later!!')
+  //   //     }
+  //   //   }
+  //   // })
+  // }
+
   showAddContentDialog() {
-    const dialogRef = this.dialog.open(AddContentDialogComponent, {
-      maxHeight: 'auto',
-      height: '60%',
-      width: '60%',
+    this.dialogRef = this.dialog.open(ConfirmationBoxComponent, {
+      disableClose: true,
+      data: {
+        type: 'conformation',
+        icon: 'radio_on',
+        title: this.confirmationText,
+        subTitle: '',
+        primaryAction: 'Yes',
+        secondaryAction: 'No',
+      },
+      autoFocus: false,
     })
-    dialogRef.afterClosed().subscribe((response: any) => {
-      if (response) {
-        if (response.data.responseCode === 'OK') {
-          this.snackbar.open('Request shared successfully')
-        } else {
-          this.snackbar.open('Something went wrong please try again later!!')
-        }
+    this.dialogRef.afterClosed().subscribe((_res: any) => {
+      if (_res === 'confirmed') {
+        this.router.navigate(['/app/home/create-request-form'])
       }
     })
   }
+
+
+  
 }
