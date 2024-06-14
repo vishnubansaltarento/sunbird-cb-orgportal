@@ -25,6 +25,8 @@ export class SearchComponent implements OnInit {
   pageIndex = 0
   pageSize = 20
   isContentLive = false
+  filtersList: any
+  sortOrder: string = ''
   constructor(
     // private route: ActivatedRoute,
     private usersSvc: UsersService,
@@ -52,7 +54,18 @@ export class SearchComponent implements OnInit {
   }
 
   hideFilter(event: any) {
-    this.filterVisibilityFlag = event
+    switch (event.filter) {
+      case 'applyFilter':
+        this.applyFilters(event)
+        break
+      case 'clearFilter':
+        this.applyFilters(event)
+        break
+      case 'closeFilter':
+        break
+    }
+
+    this.filterVisibilityFlag = false
     this.usersSvc.filterToggle.next({ from: '', status: false })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
@@ -91,7 +104,27 @@ export class SearchComponent implements OnInit {
 
   searchData(event: any) {
     this.searchText = event.target.value
-    this.handleApiData.emit(this.searchText)
+    this.emitSearchRequest()
+
+  }
+
+  sortData(sortOrder: string) {
+    this.sortOrder = sortOrder
+    this.emitSearchRequest()
+  }
+
+  emitSearchRequest() {
+    const filterKeys = {
+      searchText: this.searchText,
+      filters: this.filtersList,
+      sortOrder: this.sortOrder
+    }
+    this.handleApiData.emit(filterKeys)
+  }
+
+  applyFilters(event: any) {
+    this.filtersList = event.filtersList
+    this.emitSearchRequest()
   }
 
   resetPageIndex() {

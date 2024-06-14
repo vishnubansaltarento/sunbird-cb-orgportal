@@ -147,7 +147,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     )
   }
 
-  filterData(query: string) {
+  filterData(query: any) {
     // this.getUsers(query, this.currentFilter)
     if (this.currentFilter === 'allusers') {
       this.getAllUsers(query)
@@ -191,7 +191,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   //   return blockedUsersData
   // }
 
-  async getAllUsers(query: string) {
+  async getAllUsers(query: any) {
     this.loaderService.changeLoad.next(true)
     // const usersData: any[] = []
     const filtreq = {
@@ -199,7 +199,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       status: 1,
     }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    const serchKey = query.searchText ? query.searchText : ''
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, serchKey).subscribe((data: any) => {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
       this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
@@ -215,14 +217,17 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       }
     })
   }
-  async getVUsers(query: string) {
+  async getVUsers(query: any) {
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'profileDetails.profileStatus': 'VERIFIED',
     }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+
+    const serchKey = query.searchText ? query.searchText : ''
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, serchKey).subscribe((data: any) => {
       const allusersData = data.result.response
       this.verifiedUsersData = allusersData.content
       this.verifiedUsersDataCount = data.result.response.count
@@ -237,14 +242,17 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     })
   }
 
-  async getNVUsers(query: string) {
+  async getNVUsers(query: any) {
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'profileDetails.profileStatus': 'NOT-VERIFIED',
     }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+
+    const serchKey = query.searchText ? query.searchText : ''
+
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, serchKey).subscribe((data: any) => {
       const allusersData = data.result.response
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
@@ -260,14 +268,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     })
   }
 
-  async getNMUsers(query: string) {
+  async getNMUsers(query: any) {
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'profileDetails.profileStatus': 'NOT-MY-USER',
     }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    const serchKey = query.searchText ? query.searchText : ''
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, serchKey).subscribe((data: any) => {
       const allusersData = data.result.response
       this.notmyuserUsersData = allusersData.content
       this.notmyuserUsersDataCount = data.result.response.count
