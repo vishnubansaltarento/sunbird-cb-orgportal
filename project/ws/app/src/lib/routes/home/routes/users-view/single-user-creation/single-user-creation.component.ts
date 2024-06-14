@@ -164,7 +164,7 @@ export class SingleUserCreationComponent implements OnInit, AfterViewInit, OnDes
     this.usersService.getGroups()
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
-        this.masterData['group'] = res.result.response
+        this.masterData['group'] = res.result.response.filter((ele: any) => ele !== 'Others')
         // tslint:disable-next-line
       }, (_err: HttpErrorResponse) => {
         if (!_err.ok) {
