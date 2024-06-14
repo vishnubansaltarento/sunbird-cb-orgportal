@@ -22,6 +22,10 @@ export class CreateContentComponent implements OnInit {
   count = 0;
   queryParams:any;
   dialogRef:any;
+   /* tslint:disable */
+  confirmationText:string = 'You have unsaved progress on your CBP plan. Clicking "Yes" will discard it and take you to request new content screen. Would you like to continue?'
+  /* tslint:enable */
+
   constructor(private tpdsSvc: TrainingPlanDataSharingService, public dialog: MatDialog,
     //  private snackbar: MatSnackBar,
     private router: Router
@@ -135,20 +139,18 @@ export class CreateContentComponent implements OnInit {
   // }
 
   showAddContentDialog() {
-    /* tslint:disable */
     this.dialogRef = this.dialog.open(ConfirmationBoxComponent, {
       disableClose: true,
       data: {
         type: 'conformation',
         icon: 'radio_on',
-        title: 'You have unsaved progress on your CBP plan. Clicking "Yes" will discard it and take you to request new content screen. Would you like to continue?',
+        title: this.confirmationText,
         subTitle: '',
         primaryAction: 'Yes',
         secondaryAction: 'No',
       },
       autoFocus: false,
     })
-   /* tslint:enable */
     this.dialogRef.afterClosed().subscribe((_res: any) => {
       if (_res === 'confirmed') {
         this.router.navigate(['/app/home/create-request-form'])

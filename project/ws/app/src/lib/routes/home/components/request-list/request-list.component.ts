@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
-import { LoaderService } from 'src/app/services/loader.service'
+import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 export enum statusValue {
   Assigned= 'Assigned',
   Unassigned = 'Unassigned',

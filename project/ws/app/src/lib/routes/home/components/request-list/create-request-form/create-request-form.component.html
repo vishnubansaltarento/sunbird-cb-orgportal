@@ -21,7 +21,7 @@
             <form [formGroup]="requestForm">
                 <div class="title-name">
                     <div class="fonm-element-label label-text">Title <span class="required"></span></div>
-                    <mat-form-field appearance="outline" class="w-full" fxFlex="40">
+                    <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
                         <input class="w-full" matInput placeholder="Enter Title" formControlName="TitleName" maxlength="70">
                         <mat-hint align="end">{{ requestForm.controls['TitleName'].value.length }} / 70</mat-hint>                    
                         <mat-error *ngIf="requestForm.controls['TitleName'].hasError('required')">
