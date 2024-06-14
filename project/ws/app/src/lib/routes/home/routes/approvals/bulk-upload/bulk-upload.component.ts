@@ -73,7 +73,8 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
     this.fileService.getBulkApprovalUploadDataV1()
       .pipe(takeUntil(this.destroySubject$))
       .subscribe((res: any) => {
-        this.lastUploadList = res.result.content
+        this.lastUploadList = res.result.content.sort((a: any, b: any) =>
+          new Date(b.datecreatedon).getTime() - new Date(a.datecreatedon).getTime())
       },         (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open('Unable to get Bulk status list')
