@@ -288,6 +288,12 @@ label {
 
   .customdob {
     width: 16.5em !important;
+    .mat-form-field-flex {
+      height: 45px !important;
+    }
+    .mat-form-field-infix {
+      line-height: 0 !important;
+    }
   }
   .mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
     background-color: rgba(29, 137, 35) !important;

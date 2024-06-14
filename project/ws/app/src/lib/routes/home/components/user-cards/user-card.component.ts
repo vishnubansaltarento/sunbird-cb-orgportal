@@ -25,6 +25,8 @@ import { EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
 import { DatePipe } from '@angular/common'
 
+const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9]*.[a-zA-Z]{2,}$/
+
 @Component({
   selector: 'ws-widget-user-card',
   templateUrl: './user-card.component.html',
@@ -115,17 +117,17 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService,
-              private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService,
+    private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
       employeeID: new FormControl('', [Validators.pattern(this.empIDPattern)]),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', []),
-      primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
+      primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(EMAIL_PATTERN)]),
       // countryCode: new FormControl('+91', []),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
       tags: new FormControl('', [Validators.pattern(this.namePatern)]),
@@ -418,15 +420,16 @@ export class UserCardComponent implements OnInit, OnChanges {
   getUerData(user: any, openPanel: MatExpansionPanel, index: any) {
     if (openPanel.expanded) {
       user.enableEdit = false
-      let profileDataAll = user
+      const profileDataAll = user
 
       const profileData = profileDataAll.profileDetails
       this.updateTags(profileData)
 
       this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
         if (res) {
+          // tslint:disable-next-line
           user = res
-          user.enableEdit = false
+          // user.enableEdit = false
           this.userRoles.clear()
           this.mapRoles(user)
           this.usersData[index] = user
