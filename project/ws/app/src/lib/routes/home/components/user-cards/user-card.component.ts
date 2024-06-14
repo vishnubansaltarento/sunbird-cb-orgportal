@@ -115,10 +115,10 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService,
-    private datePipe: DatePipe) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService,
+              private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -305,7 +305,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   async loadGroups() {
     await this.usersSvc.getGroups().subscribe(
       (data: any) => {
-        const res = data.result.response
+        const res = data.result.response.filter((ele: any) => ele !== 'Others')
         this.groupsList = res
       },
       (_err: any) => {
@@ -807,6 +807,7 @@ export class UserCardComponent implements OnInit, OnChanges {
             req.comment = ''
           }
           this.onApproveOrRejectClick(req)
+
           if (index === datalength - 1) {
             panel.close()
             this.comment = ''
@@ -964,6 +965,8 @@ export class UserCardComponent implements OnInit, OnChanges {
             this.updateList.emit()
           }
         })
+
+        // setTimeout(handleRRequest, 1000)
         // this.markStatus('NOT-MY-USER', data.user)
         data.enableToggle = false
       } else {
@@ -993,6 +996,7 @@ export class UserCardComponent implements OnInit, OnChanges {
     dialog.afterClosed().subscribe((v: any) => {
       if (v) {
         this.onApprovalSubmit(panel, appData)
+
       } else {
         panel.close()
       }
