@@ -115,10 +115,10 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService,
-    private datePipe: DatePipe) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService,
+              private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -960,9 +960,6 @@ export class UserCardComponent implements OnInit, OnChanges {
           }
         })
 
-
-
-
         // setTimeout(handleRRequest, 1000)
         // this.markStatus('NOT-MY-USER', data.user)
         data.enableToggle = false
@@ -972,7 +969,6 @@ export class UserCardComponent implements OnInit, OnChanges {
       }
     })
   }
-
 
   confirmUpdate(template: any, updateUserDataForm: any, user: any, panel: any) {
     const dialog = this.dialog.open(template, {
