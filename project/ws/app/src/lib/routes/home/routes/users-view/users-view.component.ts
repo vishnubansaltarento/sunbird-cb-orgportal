@@ -199,9 +199,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       status: 1,
     }
 
-    const serchKey = query.searchText ? query.searchText : ''
-
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, serchKey).subscribe((data: any) => {
+    // const serchKey = query.searchText ? query.searchText : ''
+    // console.log(serchKey, " serchKey==========")
+    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
       this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
@@ -326,8 +326,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   }
 
   onEnterkySearch(enterValue: any) {
+    console.log(enterValue, "enterValue=========")
     this.searchQuery = enterValue
     this.filterData(this.searchQuery)
+
   }
 
   onPaginateChange(event: PageEvent) {
