@@ -489,7 +489,7 @@ view(item?: any) {
       data: {
         type: 'conformation',
         icon: 'radio_on',
-        title: 'Are you sure you want to Create a demand?',
+        title:  this.actionBtnName === 'reassign'? 'Are you sure you want to Re-assign?': 'Are you sure you want to Create a demand?',
         // subTitle: 'You wont be able to revert this',
         primaryAction: 'Confirm',
         secondaryAction: 'Cancel',
@@ -565,6 +565,7 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
         this.dialogRefs.close()
         if (this.resData) {
           this.router.navigateByUrl('/app/home/request-list')
+          this.snackBar.open('Request submitted successfully ')
       }
       },         1000)
     }
