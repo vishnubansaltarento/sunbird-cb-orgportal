@@ -69,17 +69,37 @@
   //   width: 13% !important;
   // }
   
-  table tr .cdk-column-title {
-    width: 18% !important;
-  }
+  // table tr .cdk-column-title {
+  //   width: 18% !important;
+  // }
   
-  table tr .cdk-column-RequestId {
-    width: 9% !important;
+
+  table .table-row-data {
+    height: 56px !important;
   }
-  
-  table tr .cdk-column-assignee {
-    width: 17% !important;
-  }
+  table tr .row-heading {
+    font-family: 'Lato';
+    font-weight: 400;
+    font-size: 14px !important;
+    line-height: 21px;
+    color: rgba(0, 0, 0, 0.6);
+    border-bottom: none;
+    // width: 13% !important;
+    // padding: 0 13px 0 13px !important;
+}
+table tr .radio-width{
+  width: 6% !important;
+}
+
+table tr .cdk-column-providerName {
+  width: 21% !important;
+  padding: 0 4% 0 0px !important;
+}
+
+table tr .cdk-column-details {
+  width: 40%;
+  padding: 0 10% 0 0px !important
+}
   
   .action-btn-view {
     color: #1B4CA1;
@@ -92,9 +112,10 @@
   
   .title-class {
     font-family: Lato;
-    font-size: 14px;
+    font-size: 14px !important;
     font-weight: 400;
-    line-height: 16.8px;
+    line-height: 21px;
+    color: rgba(0, 0, 0, 0.6) !important;
   }
   
   .search-border {

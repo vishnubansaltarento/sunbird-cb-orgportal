@@ -69,7 +69,7 @@ export class CreateRequestFormComponent implements OnInit {
               private activatedRouter: ActivatedRoute,
               private snackBar: MatSnackBar,
               private router: Router,
-              public dialog: MatDialog,
+              public dialog: MatDialog
   ) {
     this.requestForm = this.formBuilder.group({
       TitleName: new FormControl('', [Validators.required, Validators.pattern(this.noSpecialChar), Validators.minLength(10)]),
@@ -79,7 +79,7 @@ export class CreateRequestFormComponent implements OnInit {
       compArea: new FormControl(''),
       referenceLink: new FormControl(''),
       requestType: new FormControl('', Validators.required),
-      assignee: new FormControl({}),
+      assignee: new FormControl(''),
       providers: new FormControl([[]]),
       providerText: new FormControl(''),
       queryThemeControl: new FormControl(''),
@@ -251,9 +251,10 @@ export class CreateRequestFormComponent implements OnInit {
      this.statusValue = 'Assigned'
      this.requestForm.controls['providers'].setValue('')
      this.requestForm.controls['providers'].clearValidators()
-     this.requestForm.controls['providers'].updateValueAndValidity() //
+     this.requestForm.controls['providers'].updateValueAndValidity()
      this.requestForm.controls['assignee'].setValidators([Validators.required])
      this.requestForm.controls['assignee'].updateValueAndValidity()
+
    } else if (item === 'Broadcast') {
     this.statusValue = 'Unassigned'
      this.isBroadCast = true

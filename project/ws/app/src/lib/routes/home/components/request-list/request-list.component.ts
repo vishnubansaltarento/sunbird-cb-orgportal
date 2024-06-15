@@ -43,10 +43,6 @@ export class RequestListComponent implements OnInit {
   }
   getTableData: any[] = []
   requestListData: any
-  isUnassigned = false
-  isAssigned = false
-  inProgress = false
-  invalid = false
   assignProvider: any
   pageConfig: any
   configSvc: any
@@ -58,7 +54,8 @@ export class RequestListComponent implements OnInit {
   invalidRes: any
   detailsEvent: any
   dataSource: any
-  displayedColumns: string[] = ['RequestId', 'title', 'requestType', 'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
+  displayedColumns: string[] = ['RequestId', 'title','requestor', 'requestType',
+   'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
   statusKey = statusValue
 
   constructor(private sanitizer: DomSanitizer,
@@ -263,6 +260,7 @@ export class RequestListComponent implements OnInit {
         orderDirection: 'ASC',
     }
     this.homeService.getRequestList(request).subscribe(res => {
+      if(res){
       this.requestListData = res.data
       if (this.requestListData) {
         this.loaderService.changeLoaderState(false)
@@ -274,19 +272,11 @@ export class RequestListComponent implements OnInit {
           if (data.assignedProvider) {
             data.assignedProvider = data.assignedProvider.providerName
           }
-          if (data.status === 'Unassigned') {
-           this.isUnassigned =  true
-          } else if (data.status === 'Assigned') {
-           this.isAssigned =  true
-          } else if (data.status === 'Inprogress') {
-            this.inProgress =  true
-           } else if (data.status === 'invalid') {
-            this.invalid =  true
-           }
         })
         this.dataSource = new MatTableDataSource<any>(this.requestListData)
 
       }
+    }
 
     })
 
