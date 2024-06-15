@@ -190,7 +190,7 @@
                         <th class="padding-xs ws-mat-black60-text mat-body-1">Theme</th>
                         <th class="padding-xs ws-mat-black60-text mat-body-1">Sub theme</th>
                       </tr>
-                      <tr   *ngFor="let comp of requestForm.controls?.competencies_v5?.value"  [attr.disabled]="isHideData ? true : null" (click)=view(comp)>
+                      <tr   *ngFor="let comp of requestForm.controls?.competencies_v5?.value"  [attr.disabled]="isCompetencyHide ? true : null" (click)=view(comp)>
                         <td  class="padding-xs mat-body-1 cursor-pointer">{{comp.competencyArea}}</td>
                         <td class="padding-xs mat-body-1 cursor-pointer">{{comp.competencyTheme || comp.name}}</td>
                         <td class="padding-xs mat-body-1 cursor-pointer">{{comp.competencySubTheme ||
@@ -302,7 +302,9 @@
                     <div class="">
                         <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
                             <mat-select class=" placeholder-text" placeholder="Choose the Assignee" formControlName="assignee">
-                              <mat-option *ngFor="let option of requestTypeData" [value]="option">{{option.orgName}}</mat-option>
+                              <input #search autocomplete="off" placeholder="Search" class="assigneeSearch"
+                               (keyup)="searchValueData('assigneeText')"  formControlName="assigneeText" matInput>
+                              <mat-option *ngFor="let option of filteredAssigneeType" [value]="option">{{option.orgName}}</mat-option>
                           
                             </mat-select>
                             <mat-error *ngIf="requestForm.controls['assignee'].hasError('required')">
@@ -329,7 +331,7 @@
                               </mat-select-trigger>
                               <mat-optgroup>
                                 <mat-form-field floatLabel="never">
-                                  <input #search autocomplete="off" placeholder="Search" (keyup)="searchValueData($event,'providerText')"  formControlName="providerText" matInput>
+                                  <input #search autocomplete="off" placeholder="Search" (keyup)="searchValueData('providerText')"  formControlName="providerText" matInput>
                                   <button [disableRipple]="true" *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear"
                                     (click)="clearSearch($event,'providerText')"><mat-icon>close</mat-icon></button>
                                 </mat-form-field>
@@ -338,7 +340,7 @@
                                 <div>No results found!</div>
                               </mat-optgroup>
                               <!-- <mat-option *ngFor="let option of requestObjData.preferredProvider" [value]="option.providerName">{{option.providerName}}</mat-option> -->
-                              <mat-option *ngFor="let option of filteredRequestType" [value]="option">{{option.orgName}}</mat-option>
+                              <mat-option *ngFor="let option of filteredRequestType"  [disabled]="isOptionDisabled(option)" [value]="option">{{option.orgName}}</mat-option>
                           
                             </mat-select>
                             <mat-error *ngIf="requestForm.controls['providerText'].hasError('required')">

@@ -42,7 +42,8 @@ export class CreateRequestFormComponent implements OnInit {
   isBroadCast = false
   filterCompetencyThemes: any[] = []
   filteredSubTheme: any[] = []
-  filteredRequestType: any[] = []
+  filteredRequestType: any[] = [];
+  filteredAssigneeType:any[]=[];
   subthemeCheckedList: any[] = []
   resData = ''
   fullProfile: any
@@ -57,7 +58,8 @@ export class CreateRequestFormComponent implements OnInit {
   demandId: any
   actionBtnName: any
   requestObjData: any
-  isHideData = false
+  isHideData = false;
+  isCompetencyHide:boolean = false;
 
   competencyCtrl!: FormControl
   competencyArea!: FormControl
@@ -85,6 +87,7 @@ export class CreateRequestFormComponent implements OnInit {
       queryThemeControl: new FormControl(''),
       querySubThemeControl: new FormControl(''),
       competencies_v5: [],
+      assigneeText: new FormControl('')
     })
 
    }
@@ -133,6 +136,7 @@ export class CreateRequestFormComponent implements OnInit {
       providerText: '',
       queryThemeControl: '',
       querySubThemeControl: '',
+      assigneeText: ''
     })
    const value = this.requestForm.controls.competencies_v5.value || []
    this.requestObjData.competencies.map((comp: any) => {
@@ -156,9 +160,9 @@ export class CreateRequestFormComponent implements OnInit {
   this.requestForm.controls['providers'].setValue(abc)
    }
 
-   if (this.requestTypeData) {
+   if (this.filteredAssigneeType) {
     if (this.requestObjData.assignedProvider) {
-      const assignData = this.requestTypeData.find(option =>
+      const assignData = this.filteredAssigneeType.find(option =>
         this.requestObjData.assignedProvider.providerName === option.orgName
        )
        if (assignData) {
@@ -172,18 +176,15 @@ export class CreateRequestFormComponent implements OnInit {
     this.router.navigateByUrl('/app/home/request-list')
   }
 
-  searchValueData(e: any, searchValue: any) {
-    if (searchValue === 'themeText') {
-      this.requestForm.controls['themeText'].valueChanges.subscribe((newValue: any) => {
-        this.filterCompetencyThemes = this.filterValues(newValue, this.allCompetencyTheme)
-      })
-    } else if (searchValue === 'subthemeText') {
-      this.requestForm.controls['subthemeText'].valueChanges.subscribe((newValue: any) => {
-        this.filteredSubTheme = this.filterValues(newValue, this.allCompetencySubtheme)
-      })
-    } else if (searchValue === 'providerText' || e) {
+  searchValueData(searchValue: any) {
+    if (searchValue === 'providerText') {
       this.requestForm.controls['providerText'].valueChanges.subscribe((newValue: any) => {
         this.filteredRequestType = this.filterOrgValues(newValue, this.requestTypeData)
+      })
+    }
+    if (searchValue === 'assigneeText') {
+      this.requestForm.controls['assigneeText'].valueChanges.subscribe((newValue: any) => {
+        this.filteredAssigneeType = this.filterOrgValues(newValue, this.requestTypeData)
       })
     }
 
@@ -229,14 +230,17 @@ export class CreateRequestFormComponent implements OnInit {
     this.homeService.getRequestTypeList(requestObj).subscribe(data => {
       this.requestTypeData = data
       this.filteredRequestType = [...this.requestTypeData]
+      this.filteredAssigneeType = [...this.requestTypeData]
       if (this.demandId) {
         this.getRequestDataById()
         if (this.actionBtnName === 'view') {
           this.requestForm.disable()
-          this.isHideData = true
+          this.isHideData = true;
+          this.isCompetencyHide = true;
         } else if (this.actionBtnName === 'reassign') {
             this.requestForm.disable()
-            // this.isHideData = true;
+             this.isCompetencyHide = true;
+            this.requestForm.controls['assigneeText'].enable()
             this.requestForm.controls['assignee'].enable()
         }
       }
@@ -466,6 +470,9 @@ view(item?: any) {
   })
 }
 
+
+
+
   onProviderRemoved(provider: any) {
     const compThemeControl = this.requestForm.get('providers') as FormControl | null
     if (compThemeControl) {
@@ -478,6 +485,15 @@ view(item?: any) {
         }
       }
     }
+  }
+
+  isOptionDisabled(option: any): boolean {
+    const control = this.requestForm.get('providers');
+    if (control) {
+      const selectedProviders = control.value;
+      return selectedProviders.length >= 5 && !selectedProviders.includes(option);
+    }
+    return false;
   }
 
   showSaveButton() {

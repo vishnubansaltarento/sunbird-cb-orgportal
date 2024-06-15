@@ -6,7 +6,7 @@
                 <h2 class="titleText">{{assignText}}</h2>
             </div>
             <div class="actions">
-                <button mat-button type="button" class="search-btn"  (click)="onSubmitAssign()"  [disabled]="!requestForm.valid" >{{submitAssign}}</button>
+                <button mat-button type="button" class="search-btn" [ngClass]="{'disableBtn': !requestForm.valid}"  (click)="onSubmitAssign()"  [disabled]="!requestForm.valid" >{{submitAssign}}</button>
 
                 <button mat-button class="cancel" (click)="cancel()">
                     <span>Cancel</span>
