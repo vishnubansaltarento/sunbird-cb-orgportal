@@ -200,7 +200,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     }
 
     // const serchKey = query.searchText ? query.searchText : ''
-    // console.log(serchKey, " serchKey==========")
     this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
@@ -326,7 +325,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   }
 
   onEnterkySearch(enterValue: any) {
-    console.log(enterValue, "enterValue=========")
     this.searchQuery = enterValue
     this.filterData(this.searchQuery)
 

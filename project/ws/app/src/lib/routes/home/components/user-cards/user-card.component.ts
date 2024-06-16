@@ -180,8 +180,6 @@ export class UserCardComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-      console.log(this.handleApiData, "handleApiData======")
-      console.log("page loaded;")
     if (this.isApprovals && this.usersData) {
       this.getApprovalData()
     } else {
