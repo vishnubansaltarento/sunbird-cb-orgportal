@@ -69,7 +69,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   sortOrder: any
   searchText = ''
 
-
   constructor(
     public dialog: MatDialog,
     private route: ActivatedRoute,
@@ -204,16 +203,16 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       status: 1,
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.group": this.getFilterGroup(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
     }
     if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.designation": this.getFilterDesignation(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
     }
     if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.role": this.getFilterRoles(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
     }
     if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.tag": this.getFilterTags(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
     }
     reqBody = {
       request: {
@@ -221,7 +220,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
-        sort_by: this.getSortOrder(query)
+        sort_by: this.getSortOrder(query),
       },
     }
     this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
@@ -248,16 +247,16 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       'profileDetails.profileStatus': 'VERIFIED',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.group": this.getFilterGroup(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
     }
     if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.designation": this.getFilterDesignation(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
     }
     if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.role": this.getFilterRoles(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
     }
     if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.tag": this.getFilterTags(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
     }
 
     reqBody = {
@@ -266,7 +265,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
-        sort_by: this.getSortOrder(query)
+        sort_by: this.getSortOrder(query),
       },
     }
     this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
@@ -292,16 +291,16 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       'profileDetails.profileStatus': 'NOT-VERIFIED',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.group": this.getFilterGroup(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
     }
     if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.designation": this.getFilterDesignation(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
     }
     if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.role": this.getFilterRoles(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
     }
     if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.tag": this.getFilterTags(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
     }
 
     reqBody = {
@@ -310,7 +309,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
-        sort_by: this.getSortOrder(query)
+        sort_by: this.getSortOrder(query),
       },
     }
     this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
@@ -337,16 +336,16 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       'profileDetails.profileStatus': 'NOT-MY-USER',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.group": this.getFilterGroup(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
     }
     if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.designation": this.getFilterDesignation(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
     }
     if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.role": this.getFilterRoles(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
     }
     if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
-      Object.assign(filtreq, { "profileDetails.professionalDetails.tag": this.getFilterTags(query) })
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
     }
 
     reqBody = {
@@ -355,7 +354,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
-        sort_by: this.getSortOrder(query)
+        sort_by: this.getSortOrder(query),
       },
     }
     this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
@@ -389,20 +388,19 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     return this.searchText = query && query.searchText ? query.searchText : ''
   }
   getSortOrder(query: any) {
-    let sort_by
+    let sortBy
     if (query && query.sortOrder) {
-      sort_by = query.sortOrder
-      if (sort_by === "alphabetical") {
+      sortBy = query.sortOrder
+      if (sortBy === 'alphabetical') {
         return { firstName: 'asc' }
       }
-      else if (sort_by === "oldest") {
-        return { createdDate: "desc" }
+      if (sortBy === 'oldest') {
+        return { createdDate: 'desc' }
       }
-      else if (sort_by === "newest") {
-        return { createdDate: "asc" }
-      } else {
-        return { firstName: 'asc' }
+      if (sortBy === 'newest') {
+        return { createdDate: 'asc' }
       }
+      return { firstName: 'asc' }
     }
   }
 

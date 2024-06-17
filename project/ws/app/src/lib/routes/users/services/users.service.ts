@@ -188,8 +188,6 @@ export class UsersService {
   //     // { "createdOn": "asc" ? (query.sortOrder == "newest") : '' },
   //     // (query.sortOrder == "alphabetical") ? ("firstName" : "asc")
 
-
-
   //   }
   // }
   getAllKongUsers(reqBody: any): Observable<any> {
