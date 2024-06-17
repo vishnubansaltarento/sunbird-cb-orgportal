@@ -42,6 +42,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   @Input() tabChangeIndex: any
   @Input() currentFilter: any
   @Input() isApprovals: any
+  @Input() handleApiData: any
 
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
@@ -115,10 +116,10 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService,
-              private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService,
+    private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),

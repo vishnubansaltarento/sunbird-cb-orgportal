@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs'
 import { map, retry } from 'rxjs/operators'
 // tslint:disable
 import _ from 'lodash'
+
 // tslint:enable
 
 const API_END_POINTS = {
@@ -45,6 +46,7 @@ export class UsersService {
   constructor(private http: HttpClient) { }
 
   getAllUsers(filter: object): Observable<any> {
+    // console.log()
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, filter).pipe(map(res => _.get(res, 'result.response')))
   }
 
@@ -119,20 +121,65 @@ export class UsersService {
     return this.http.post<any>(`${API_END_POINTS.NEW_USER_UN_BLOCK_API}`, org)
   }
 
-  getAllKongUsers(filters: any, pageLimit: number = 20, offsetNum: number = 0, searchText?: string): Observable<any> {
+  getAllKongUsers(filters: any, pageLimit: number = 20, offsetNum: number = 0, query?: any): Observable<any> {
     let reqBody
+    // if (query && query.sortOrder=="alphabetical") {
+    //   reqBody = {
+    //     request: {
+    //       filters,
+    //       limit: pageLimit,
+    //       offset: offsetNum,
+    //       query: query.searchText,
+    //       sort_by: {
+    //         firstName: 'asc',
+    //       },
+    //     },
+    //   }
+    // }
+    // if (query && query.sortOrder == "oldest") {
+    //   reqBody = {
+    //     request: {
+    //       filters,
+    //       limit: pageLimit,
+    //       offset: offsetNum,
+    //       query: query.searchText,
+    //       sort_by: {
+    //         "createdOn": "desc"
+    //       },
+    //     },
+    //   }
+    // }
+    // if (query && query.sortOrder == "newest") {
+    //   reqBody = {
+    //     request: {
+    //       filters,
+    //       limit: pageLimit,
+    //       offset: offsetNum,
+    //       query: query.searchText,
+    //       sort_by: {
+    //         "createdOn": "asc",
+    //       },
+    //     },
+    //   }
+    // }
     reqBody = {
       request: {
         filters,
         limit: pageLimit,
         offset: offsetNum,
-        query: searchText,
-        sort_by: {
-          firstName: 'asc',
-        },
-      },
+        query: query.searchText,
+        sort_by: { "firstName": "asc" }
+        //  ("firstName": "asc") ? (query.sortOrder == "alphabetical") :
+        // { "createdOn": "desc" ? (query.sortOrder == "oldest") : '' },
+        // { "createdOn": "asc" ? (query.sortOrder == "newest") : '' },
+        // (query.sortOrder == "alphabetical") ? ("firstName" : "asc")
+
+
+
+      }
     }
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, reqBody)
+    // return
   }
   // getAllRoleUsers(depId: string, role: {}): Observable<any> {
   getAllRoleUsers(depId: string, role: string): Observable<any> {
