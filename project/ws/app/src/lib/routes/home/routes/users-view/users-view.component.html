@@ -90,7 +90,7 @@
       <ng-container *ngIf="currentFilter === 'verified'">
         <div class="searchfilter">
           <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
-            [currentFilter]="currentFilter"></ws-app-searchuser>
+            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
         </div>
 
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"
@@ -103,7 +103,7 @@
       <ng-container *ngIf="currentFilter === 'nonverified'">
         <div class="searchfilter">
           <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
-            [currentFilter]="currentFilter"></ws-app-searchuser>
+            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
         </div>
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="nonverifiedUsersData"
           [totalRecords]="nonverifiedUsersDataCount" [tabChangeIndex]="pageIndex"
@@ -114,7 +114,7 @@
       <ng-container *ngIf="currentFilter === 'notmyuser'">
         <div class="searchfilter">
           <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
-            [currentFilter]="currentFilter"></ws-app-searchuser>
+            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
         </div>
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="notmyuserUsersData"
           [totalRecords]="notmyuserUsersDataCount" [tabChangeIndex]="pageIndex"

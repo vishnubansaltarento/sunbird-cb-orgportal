@@ -52,11 +52,14 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   }
 
   ngOnInit() {
-    this.designationList = this.filterFacetsData.designation && this.filterFacetsData.designation.length > 0 ?
-      this.filterFacetsData.designation : []
-    this.groupList = this.filterFacetsData.group && this.filterFacetsData.group.length > 0 ? this.filterFacetsData.group : []
-    this.rolesList = this.filterFacetsData.rolesList && this.filterFacetsData.rolesList > 0 ? this.filterFacetsData.rolesList : []
-    this.tagsList = this.filterFacetsData.tagsList && this.filterFacetsData.tagsList > 0 ? this.filterFacetsData.tagsList : []
+    if (this.filterFacetsData) {
+      this.designationList = this.filterFacetsData.designation && this.filterFacetsData.designation.length > 0 ?
+        this.filterFacetsData.designation : []
+      this.groupList = this.filterFacetsData.group && this.filterFacetsData.group.length > 0 ? this.filterFacetsData.group : []
+      this.rolesList = this.filterFacetsData.rolesList && this.filterFacetsData.rolesList > 0 ? this.filterFacetsData.rolesList : []
+      this.tagsList = this.filterFacetsData.tagsList && this.filterFacetsData.tagsList > 0 ? this.filterFacetsData.tagsList : []
+    }
+
 
     if (!this.usersSvc.filterToggle) { return }
     this.usersSvc.filterToggle.subscribe((data: any) => {
