@@ -27,6 +27,7 @@
         </mat-menu>
     </div>
     <div class="filter-section flex" *ngIf="!isApprovals">
+
         <button mat-button type="button" (click)="openFilter()" class="apply-filter margin-right-s">
             Apply Filter <mat-icon class="margin-right-xs">filter_list</mat-icon>
         </button>
@@ -45,7 +46,7 @@
     </div>
 </div>
 
-<div [hidden]="!filterVisibilityFlag">
+<div [hidden]="!filterVisibilityFlag" *ngIf="!isApprovals">
     <ws-app-filter [from]="from" (toggleFilter)="hideFilter($event)"
         [filterFacetsData]="filterFacetsData"></ws-app-filter>
 </div>
