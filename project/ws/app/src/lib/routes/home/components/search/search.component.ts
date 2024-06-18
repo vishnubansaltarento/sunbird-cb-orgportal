@@ -26,7 +26,7 @@ export class SearchComponent implements OnInit {
   pageSize = 20
   isContentLive = false
   filtersList: any
-  sortOrder: string = ''
+  sortOrder = ''
   constructor(
     // private route: ActivatedRoute,
     private usersSvc: UsersService,
@@ -117,7 +117,7 @@ export class SearchComponent implements OnInit {
     const filterKeys = {
       searchText: this.searchText,
       filters: this.filtersList,
-      sortOrder: this.sortOrder
+      sortOrder: this.sortOrder,
     }
     this.handleApiData.emit(filterKeys)
   }

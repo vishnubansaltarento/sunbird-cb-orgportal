@@ -121,63 +121,76 @@ export class UsersService {
     return this.http.post<any>(`${API_END_POINTS.NEW_USER_UN_BLOCK_API}`, org)
   }
 
-  getAllKongUsers(filters: any, pageLimit: number = 20, offsetNum: number = 0, query?: any): Observable<any> {
-    let reqBody
-    // if (query && query.sortOrder=="alphabetical") {
-    //   reqBody = {
-    //     request: {
-    //       filters,
-    //       limit: pageLimit,
-    //       offset: offsetNum,
-    //       query: query.searchText,
-    //       sort_by: {
-    //         firstName: 'asc',
-    //       },
-    //     },
-    //   }
-    // }
-    // if (query && query.sortOrder == "oldest") {
-    //   reqBody = {
-    //     request: {
-    //       filters,
-    //       limit: pageLimit,
-    //       offset: offsetNum,
-    //       query: query.searchText,
-    //       sort_by: {
-    //         "createdOn": "desc"
-    //       },
-    //     },
-    //   }
-    // }
-    // if (query && query.sortOrder == "newest") {
-    //   reqBody = {
-    //     request: {
-    //       filters,
-    //       limit: pageLimit,
-    //       offset: offsetNum,
-    //       query: query.searchText,
-    //       sort_by: {
-    //         "createdOn": "asc",
-    //       },
-    //     },
-    //   }
-    // }
-    reqBody = {
-      request: {
-        filters,
-        limit: pageLimit,
-        offset: offsetNum,
-        query: query.searchText,
-        sort_by: { "firstName": "asc" }
-        //  ("firstName": "asc") ? (query.sortOrder == "alphabetical") :
-        // { "createdOn": "desc" ? (query.sortOrder == "oldest") : '' },
-        // { "createdOn": "asc" ? (query.sortOrder == "newest") : '' },
-        // (query.sortOrder == "alphabetical") ? ("firstName" : "asc")
+  // getAllKongUsers(filters: any, pageLimit: number = 20, offsetNum: number = 0, query?: any): Observable<any> {
+  // console.log('query--==+++', query)
+  // let reqBody
+  // if (query && query.sortOrder == "alphabetical") {
+  //   reqBody = {
+  //     request: {
+  //       filters,
+  //       limit: pageLimit,
+  //       offset: offsetNum,
+  //       query: query.searchText,
+  //       sort_by: {
+  //         firstName: 'asc',
+  //       },
+  //     },
+  //   }
+  // }
+  // if (query && query.sortOrder == "oldest") {
+  //   reqBody = {
+  //     request: {
+  //       filters,
+  //       limit: pageLimit,
+  //       offset: offsetNum,
+  //       query: query.searchText,
+  //       sort_by: {
+  //         "createdDate": "desc"
+  //       },
+  //     },
+  //   }
+  // }
+  // if (query && query.sortOrder == "newest") {
+  //   reqBody = {
+  //     request: {
+  //       filters,
+  //       limit: pageLimit,
+  //       offset: offsetNum,
+  //       query: query.searchText,
+  //       sort_by: {
+  //         "createdDate": "asc",
+  //       },
+  //     },
+  //   }
+  // }
+  // if (!query) {
+  //   reqBody = {
+  //     request: {
+  //       filters,
+  //       limit: pageLimit,
+  //       offset: offsetNum,
+  //       query: query.searchText,
+  //       sort_by: {
+  //         firstName: 'asc',
+  //       },
+  //     },
+  //   }
+  // }
+  // reqBody = {
+  //   request: {
+  //     filters,
+  //     limit: pageLimit,
+  //     offset: offsetNum,
+  //     query: query.searchText,
+  //     sort_by: { "firstName": "asc" }
+  //     //  ("firstName": "asc") ? (query.sortOrder == "alphabetical") :
+  //     // { "createdOn": "desc" ? (query.sortOrder == "oldest") : '' },
+  //     // { "createdOn": "asc" ? (query.sortOrder == "newest") : '' },
+  //     // (query.sortOrder == "alphabetical") ? ("firstName" : "asc")
 
-
-
-      }
-    }
+  //   }
+  // }
+  getAllKongUsers(reqBody: any): Observable<any> {
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, reqBody)
     // return
   }

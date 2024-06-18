@@ -126,7 +126,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       this.groupList.forEach((groupName: any) => {
         if (groupName.toUpperCase().includes(searchKey)) {
           const formatedGroup: any = {
-            name: groupName
+            name: groupName,
           }
           if (this.assigneeFilterObj['group'] && this.assigneeFilterObj['group'].indexOf(groupName) > -1) {
             formatedGroup['selected'] = true
@@ -146,7 +146,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       this.designationList.forEach((designation: any) => {
         if (designation.name.toUpperCase().includes(searchKey)) {
           const formatedDesignation: any = {
-            name: designation.name
+            name: designation.name,
           }
           if (this.assigneeFilterObj['designation'] && this.assigneeFilterObj['designation'].indexOf(designation.name) > -1) {
             formatedDesignation['selected'] = true
@@ -166,7 +166,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       this.rolesList.forEach((rolesName: any) => {
         if (rolesName.toUpperCase().includes(searchKey)) {
           const formatedRoles: any = {
-            name: rolesName
+            name: rolesName,
           }
           if (this.assigneeFilterObj['roles'] && this.assigneeFilterObj['roles'].indexOf(rolesName) > -1) {
             formatedRoles['selected'] = true
@@ -186,7 +186,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       this.tagsList.forEach((tagsName: any) => {
         if (tagsName.toUpperCase().includes(searchKey)) {
           const formatedTags: any = {
-            name: tagsName
+            name: tagsName,
           }
           if (this.assigneeFilterObj['tags'] && this.assigneeFilterObj['tags'].indexOf(tagsName) > -1) {
             formatedTags['selected'] = true
@@ -233,8 +233,8 @@ export class FilterComponent implements OnInit, AfterContentChecked {
 
   hideFilter(filter: string) {
     const event = {
-      filter: filter,
-      filtersList: this.assigneeFilterObj
+      filter,
+      filtersList: this.assigneeFilterObj,
     }
     this.toggleFilter.emit(event)
     this.usersSvc.filterToggle.next({ from: '', status: false })
@@ -609,8 +609,6 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       //   }
       // })
     }
-
-
 
     // if (this.designationList) {
     //   this.designationList.map((pitem: any) => {
