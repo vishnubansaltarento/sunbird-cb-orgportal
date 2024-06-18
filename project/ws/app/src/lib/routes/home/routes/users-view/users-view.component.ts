@@ -68,6 +68,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   filterTags = []
   sortOrder: any
   searchText = ''
+  filterFacets = []
 
   constructor(
     public dialog: MatDialog,
@@ -217,6 +218,12 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     reqBody = {
       request: {
         filters: filtreq,
+        facets: [
+          'profileDetails.professionalDetails.group',
+          'profileDetails.professionalDetails.designation',
+          'profileDetails.additionalDetails.tag',
+          'profileDetails.organisations[0].roles',
+        ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -228,6 +235,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.activeUsersData = allusersData.content
       // this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
       this.activeUsersDataCount = allusersData.count
+      this.filterFacets = allusersData.facets ? allusersData.facets : []
       // const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
       // if (i > -1) {
       //   this.activeUsersData.splice(i, 1)
@@ -400,8 +408,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       if (sortBy === 'newest') {
         return { createdDate: 'asc' }
       }
-      return { firstName: 'asc' }
     }
+    return { firstName: 'asc' }
   }
 
   clickHandler(event: any) {

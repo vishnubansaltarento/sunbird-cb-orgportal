@@ -16,6 +16,7 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   @Output() toggleFilter = new EventEmitter()
   // @Output() getFilterData = new EventEmitter()
   @Input() from: any
+  @Input() filterFacetsData: any
   designationList: any = []
   providersList: any[] = []
   selectedProviders: any[] = []
@@ -51,41 +52,47 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   }
 
   ngOnInit() {
+    this.designationList = this.filterFacetsData.designation && this.filterFacetsData.designation.length > 0 ?
+      this.filterFacetsData.designation : []
+    this.groupList = this.filterFacetsData.group && this.filterFacetsData.group.length > 0 ? this.filterFacetsData.group : []
+    this.rolesList = this.filterFacetsData.rolesList && this.filterFacetsData.rolesList > 0 ? this.filterFacetsData.rolesList : []
+    this.tagsList = this.filterFacetsData.tagsList && this.filterFacetsData.tagsList > 0 ? this.filterFacetsData.tagsList : []
+
     if (!this.usersSvc.filterToggle) { return }
     this.usersSvc.filterToggle.subscribe((data: any) => {
       if (data && data.status) {
-        if (data.from === 'content') {
-          this.getFilterEntity()
-          // this.getProviders()
-        } else {
-          // if(this.usersSvc.trainingPlanAssigneeData &&
-          //   this.usersSvc.trainingPlanAssigneeData.category === 'Custom Users') {
-          //   this.getDesignation();
-          // }
-          if (!this.designationList.length) {
-            this.getDesignation()
-          } else {
-            this.getFilteredDesignationList()
-          }
-
-          if (!this.groupList.length) {
-            this.loadGroups()
-          } else {
-            this.getFilteredGroupList()
-          }
-
-          if (!this.rolesList.length) {
-            this.loadRoles()
-          } else {
-            this.getFilteredRolesList()
-          }
-
-          if (!this.tagsList.length) {
-            this.loadTags()
-          } else {
-            this.getFilteredTagsList()
-          }
+        // if (data.from === 'content') {
+        //   this.getFilterEntity()
+        // this.getProviders()
+        // } else {
+        // if(this.usersSvc.trainingPlanAssigneeData &&
+        //   this.usersSvc.trainingPlanAssigneeData.category === 'Custom Users') {
+        //   this.getDesignation();
+        // }
+        if (this.designationList && this.designationList.length > 0) {
+          //   this.getDesignation()
+          // } else {
+          this.getFilteredDesignationList()
         }
+
+        if (this.groupList && this.groupList.length > 0) {
+          //   this.loadGroups()
+          // } else {
+          this.getFilteredGroupList()
+        }
+
+        if (this.rolesList && this.rolesList.length > 0) {
+          //   this.loadRoles()
+          // } else {
+          this.getFilteredRolesList()
+        }
+
+        if (this.tagsList && this.tagsList.length > 0) {
+          //   this.loadTags()
+          // } else {
+          this.getFilteredTagsList()
+        }
+        // }
       }
     })
 
