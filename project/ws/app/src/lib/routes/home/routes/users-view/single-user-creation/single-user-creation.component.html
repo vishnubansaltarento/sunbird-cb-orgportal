@@ -18,10 +18,16 @@
       </div>
       <div class="input-container">
         <div class="label required">Email</div>
-        <input type="text" class="input-text" formControlName="email" placeholder="Type here" />
-        <mat-error class="text-xs"
-          *ngIf="userCreationForm?.get('email')?.touched && userCreationForm?.get('email')?.invalid">
+        <!-- <input type="email" class="input-text" formControlName="email" placeholder="Type here" />
+        <mat-error class="text-xs" *ngIf="userCreationForm?.controls['email'].errors?.pattern">
           Please enter a valid email address
+        </mat-error> -->
+
+        <input type="email" class="input-text" placeholder="Type here" #email formControlName="email" i18n-aria-label
+          aria-label="Primary Email readonly input" maxlength="320">
+        <mat-error [hidden]="false" class="custom-error" *ngIf="userCreationForm?.get('email')?.touched &&
+        userCreationForm?.controls['email'].errors?.pattern" i18n-aria-label aria-label="Please enter a valid email">
+          Please enter a valid email
         </mat-error>
       </div>
     </div>
@@ -40,8 +46,8 @@
         <div class="label required">Designation</div>
         <mat-form-field class="profile-form-field required-select" appearance="none">
           <div class="flex flex-row auto-complete-row">
-            <input type="text" class="input-text" aria-label="Designation" matInput formControlName="designation"
-              [matAutocomplete]="designationAuto" />
+            <input type="text" class="input-text" aria-label="Designation" placeholder="Select designation" matInput
+              formControlName="designation" [matAutocomplete]="designationAuto" />
             <mat-icon>arrow_drop_down</mat-icon>
           </div>
           <mat-autocomplete #designationAuto="matAutocomplete">
@@ -73,9 +79,9 @@
       </div>
       <div class="input-container">
         <div class="label">Date of birth</div>
-        <mat-form-field class="profile-form-field">
+        <mat-form-field class="profile-form-field" appearance="none">
           <input matInput class="input-text icon-include-input" [matDatepicker]="picker" readonly formControlName="dob"
-            [max]="today" />
+            [max]="today" placeholder="Choose date of birth" />
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
@@ -85,10 +91,10 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label">Mother tongue</div>
-        <mat-form-field class="profile-form-field">
+        <mat-form-field class="profile-form-field" appearance="none">
           <div class="flex flex-row auto-complete-row">
-            <input type="text" class="input-text" aria-label="Domicile medium" matInput formControlName="domicileMedium"
-              [matAutocomplete]="languageAuto" />
+            <input type="text" class="input-text" aria-label="Domicile medium" placeholder="Type here" matInput
+              formControlName="domicileMedium" [matAutocomplete]="languageAuto" />
             <mat-icon>arrow_drop_down</mat-icon>
           </div>
           <mat-autocomplete #languageAuto="matAutocomplete">
@@ -170,9 +176,12 @@
     </div>
 
     <div class="flex flex-row gap-4">
-      <button class="action-button" [ngClass]="{'disable-button': userCreationForm?.invalid}"
-        [disabled]="userCreationForm?.invalid" (click)="handleUserCreation()">Create user</button>
+      <button class="action-button" [ngClass]="{'disable-button': (userCreationForm?.invalid || displayLoader)}"
+        [disabled]="userCreationForm?.invalid || displayLoader" (click)="handleUserCreation()">Create user</button>
       <button class="outline-button" (click)="handleFormClear()">Clear</button>
+      <div *ngIf="displayLoader" class="pr-4 flex items-center justify-center">
+        <mat-spinner [diameter]="30"></mat-spinner>
+      </div>
     </div>
   </form>
 </div>

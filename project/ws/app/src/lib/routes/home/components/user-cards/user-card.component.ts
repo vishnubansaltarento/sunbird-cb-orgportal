@@ -25,6 +25,8 @@ import { EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
 import { DatePipe } from '@angular/common'
 
+const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9]*.[a-zA-Z]{2,}$/
+
 @Component({
   selector: 'ws-widget-user-card',
   templateUrl: './user-card.component.html',
@@ -63,7 +65,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   lastIndex = 20
   pageSize = 20
 
-  userStatus: any
+  // userStatus: any
   rolesList: any = []
   rolesObject: any = []
   uniqueRoles: any = []
@@ -116,17 +118,17 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService,
-              private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService,
+    private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
       employeeID: new FormControl('', [Validators.pattern(this.empIDPattern)]),
       ehrmsID: new FormControl({ value: '', disabled: true }, []),
       dob: new FormControl('', []),
-      primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(this.emailRegix)]),
+      primaryEmail: new FormControl('', [Validators.required, Validators.email, Validators.pattern(EMAIL_PATTERN)]),
       // countryCode: new FormControl('+91', []),
       mobile: new FormControl('', [Validators.required, Validators.pattern(this.phoneNumberPattern)]),
       tags: new FormControl('', [Validators.pattern(this.namePatern)]),
@@ -306,7 +308,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   async loadGroups() {
     await this.usersSvc.getGroups().subscribe(
       (data: any) => {
-        const res = data.result.response
+        const res = data.result.response.filter((ele: any) => ele !== 'Others')
         this.groupsList = res
       },
       (_err: any) => {
@@ -405,32 +407,35 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  getUerData(user: any, data: any, panel: any) {
-    if (panel.expanded) {
+  getApprovalUserData(user: any, data: any, openPanel: MatExpansionPanel) {
+    if (openPanel.expanded) {
       user.enableEdit = false
-      let profileDataAll = user
-      this.userStatus = profileDataAll.isDeleted ? 'Inactive' : 'Active'
+      this.approveUserDataForm.reset()
+      user.needApprovalList = []
+      this.actionList = []
+      this.comment = ''
+      this.getApprovalList(data)
+    }
+  }
+
+  getUerData(user: any, openPanel: MatExpansionPanel, index: any) {
+    if (openPanel.expanded) {
+      user.enableEdit = false
+      const profileDataAll = user
 
       const profileData = profileDataAll.profileDetails
       this.updateTags(profileData)
 
-      if (this.isApprovals) {
-        this.approveUserDataForm.reset()
-        user.needApprovalList = []
-        this.actionList = []
-        this.comment = ''
-        this.getApprovalList(data)
-      } else {
-        this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
-          if (res) {
-            profileDataAll = res
-            profileDataAll.enableEdit = false
-            // user = profileDataAll
-            this.userRoles.clear()
-            this.mapRoles(profileDataAll)
-          }
-        })
-      }
+      this.usersSvc.getUserById(user.userId).subscribe((res: any) => {
+        if (res) {
+          // tslint:disable-next-line
+          user = res
+          // user.enableEdit = false
+          this.userRoles.clear()
+          this.mapRoles(user)
+          this.usersData[index] = user
+        }
+      })
     }
   }
 
@@ -633,16 +638,18 @@ export class UserCardComponent implements OnInit, OnChanges {
           userId: user.userId,
           profileDetails: {
             personalDetails: {
-              dob: dobn,
-              domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value,
-              gender: this.updateUserDataForm.controls['gender'].value,
-              category: this.updateUserDataForm.controls['category'].value,
+              dob: dobn ? dobn : '',
+              domicileMedium: this.updateUserDataForm.controls['domicileMedium'].value ?
+                this.updateUserDataForm.controls['domicileMedium'].value : '',
+              gender: this.updateUserDataForm.controls['gender'].value ? this.updateUserDataForm.controls['gender'].value : '',
+              category: this.updateUserDataForm.controls['category'].value ? this.updateUserDataForm.controls['category'].value : '',
               mobile: this.updateUserDataForm.controls['mobile'].value,
               primaryEmail: this.updateUserDataForm.controls['primaryEmail'].value,
             },
             professionalDetails: [
               {
-                designation: this.updateUserDataForm.controls['designation'].value,
+                designation: this.updateUserDataForm.controls['designation'].value ?
+                  this.updateUserDataForm.controls['designation'].value : '',
                 group: this.updateUserDataForm.controls['group'].value,
               },
             ],
@@ -650,8 +657,10 @@ export class UserCardComponent implements OnInit, OnChanges {
               tag: this.selectedtags,
             },
             employmentDetails: {
-              pinCode: this.updateUserDataForm.controls['pincode'].value,
-              employeeCode: this.updateUserDataForm.controls['employeeID'].value,
+              pinCode: this.updateUserDataForm.controls['pincode'].value ?
+                this.updateUserDataForm.controls['pincode'].value : '',
+              employeeCode: this.updateUserDataForm.controls['employeeID'].value ?
+                this.updateUserDataForm.controls['employeeID'].value : '',
             },
           },
         },
@@ -924,14 +933,44 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
-  confirmNotMyUser(template: any, data: any, event: any) {
+  confirmTransferRequest(template: any, data: any, event: any, panel: any) {
     data.enableToggle = true
     const dialog = this.dialog.open(template, {
       width: '500px',
     })
     dialog.afterClosed().subscribe((v: any) => {
       if (v) {
-        this.markStatus('NOT-MY-USER', data.user)
+        let orgReq = {}
+        data.userWorkflow.wfInfo.forEach((wf: any) => {
+          const fields = JSON.parse(wf.updateFieldValues)
+          if (fields.length > 0) {
+            fields.forEach((field: any) => {
+              const labelKey = Object.keys(field.toValue)[0]
+              if (labelKey === 'name') {
+                orgReq = {
+                  action: 'REJECT',
+                  actorUserId: wf.actorUUID,
+                  applicationId: wf.applicationId,
+                  serviceName: wf.serviceName,
+                  state: 'SEND_FOR_APPROVAL',
+                  updateFieldValues: fields,
+                  userId: wf.userId,
+                  wfId: wf.wfId,
+                }
+              }
+            })
+          }
+        })
+        this.approvalSvc.handleWorkflow(orgReq).subscribe((res: any) => {
+          if (res) {
+            this.openSnackbar('Request rejected successfully')
+            panel.close()
+            this.updateList.emit()
+          }
+        })
+
+        // setTimeout(handleRRequest, 1000)
+        // this.markStatus('NOT-MY-USER', data.user)
         data.enableToggle = false
       } else {
         event.source.checked = true
