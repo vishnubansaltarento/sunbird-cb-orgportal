@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http'
 import * as fileSaver from 'file-saver'
 
 const API_ENDPOINTS = {
-  bulkUpload: `/apis/proxies/v8/user/v1/bulkupload`,
+  bulkUpload: `/apis/proxies/v8/user/v2/bulkupload`,
   downloadReport: `/apis/protected/v8/admin/userRegistration/bulkUploadReport`,
   getBulkUploadData: '/apis/proxies/v8/user/v1/bulkupload',
   getBulkApproval: '/apis/proxies/v8/workflow/admin/bulkupdate/getstatus',
