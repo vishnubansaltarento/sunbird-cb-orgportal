@@ -147,7 +147,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         deptName: this.departName,
         offset: this.currentOffset,
         limit: this.limit,
-        sort_by: sortValue ? sortValue : sortedVal
+        sort_by: sortValue ? sortValue : sortedVal,
 
       }
       this.allTransfersData = []

@@ -42,8 +42,8 @@ export class CreateRequestFormComponent implements OnInit {
   isBroadCast = false
   filterCompetencyThemes: any[] = []
   filteredSubTheme: any[] = []
-  filteredRequestType: any[] = [];
-  filteredAssigneeType:any[]=[];
+  filteredRequestType: any[] = []
+  filteredAssigneeType: any[] = []
   subthemeCheckedList: any[] = []
   resData = ''
   fullProfile: any
@@ -58,8 +58,8 @@ export class CreateRequestFormComponent implements OnInit {
   demandId: any
   actionBtnName: any
   requestObjData: any
-  isHideData = false;
-  isCompetencyHide:boolean = false;
+  isHideData = false
+  isCompetencyHide = false
 
   competencyCtrl!: FormControl
   competencyArea!: FormControl
@@ -87,7 +87,7 @@ export class CreateRequestFormComponent implements OnInit {
       queryThemeControl: new FormControl(''),
       querySubThemeControl: new FormControl(''),
       competencies_v5: [],
-      assigneeText: new FormControl('')
+      assigneeText: new FormControl(''),
     })
 
    }
@@ -136,7 +136,7 @@ export class CreateRequestFormComponent implements OnInit {
       providerText: '',
       queryThemeControl: '',
       querySubThemeControl: '',
-      assigneeText: ''
+      assigneeText: '',
     })
    const value = this.requestForm.controls.competencies_v5.value || []
    this.requestObjData.competencies.map((comp: any) => {
@@ -235,11 +235,11 @@ export class CreateRequestFormComponent implements OnInit {
         this.getRequestDataById()
         if (this.actionBtnName === 'view') {
           this.requestForm.disable()
-          this.isHideData = true;
-          this.isCompetencyHide = true;
+          this.isHideData = true
+          this.isCompetencyHide = true
         } else if (this.actionBtnName === 'reassign') {
             this.requestForm.disable()
-             this.isCompetencyHide = true;
+             this.isCompetencyHide = true
             this.requestForm.controls['assigneeText'].enable()
             this.requestForm.controls['assignee'].enable()
         }
@@ -470,9 +470,6 @@ view(item?: any) {
   })
 }
 
-
-
-
   onProviderRemoved(provider: any) {
     const compThemeControl = this.requestForm.get('providers') as FormControl | null
     if (compThemeControl) {
@@ -488,12 +485,12 @@ view(item?: any) {
   }
 
   isOptionDisabled(option: any): boolean {
-    const control = this.requestForm.get('providers');
+    const control = this.requestForm.get('providers')
     if (control) {
-      const selectedProviders = control.value;
-      return selectedProviders.length >= 5 && !selectedProviders.includes(option);
+      const selectedProviders = control.value
+      return selectedProviders.length >= 5 && !selectedProviders.includes(option)
     }
-    return false;
+    return false
   }
 
   showSaveButton() {

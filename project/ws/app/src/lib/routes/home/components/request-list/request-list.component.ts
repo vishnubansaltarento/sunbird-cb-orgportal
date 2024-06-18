@@ -54,7 +54,7 @@ export class RequestListComponent implements OnInit {
   invalidRes: any
   detailsEvent: any
   dataSource: any
-  displayedColumns: string[] = ['RequestId', 'title','requestor', 'requestType',
+  displayedColumns: string[] = ['RequestId', 'title', 'requestor', 'requestType',
    'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
   statusKey = statusValue
 
@@ -260,7 +260,7 @@ export class RequestListComponent implements OnInit {
         orderDirection: 'ASC',
     }
     this.homeService.getRequestList(request).subscribe(res => {
-      if(res){
+      if (res) {
       this.requestListData = res.data
       if (this.requestListData) {
         this.loaderService.changeLoaderState(false)

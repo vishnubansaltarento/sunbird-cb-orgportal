@@ -189,7 +189,7 @@ export class AllUsersComponent implements OnInit, OnDestroy {
     return blockedUsersData
   }
 
-  getUsers(query: string, currentFilter: any) {
+  getUsers(qText: string, currentFilter: any) {
     // console.log('currentFilter', currentFilter)
     this.loaderService.changeLoad.next(true)
     const usersData: any[] = []
@@ -215,7 +215,7 @@ export class AllUsersComponent implements OnInit, OnDestroy {
         filters: filtreq,
         limit: this.limit,
         offset: this.pageIndex,
-        query: query,
+        query: qText,
       },
     }
 

@@ -60,7 +60,6 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       this.tagsList = this.filterFacetsData.tagsList && this.filterFacetsData.tagsList > 0 ? this.filterFacetsData.tagsList : []
     }
 
-
     if (!this.usersSvc.filterToggle) { return }
     this.usersSvc.filterToggle.subscribe((data: any) => {
       if (data && data.status) {
