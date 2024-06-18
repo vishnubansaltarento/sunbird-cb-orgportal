@@ -235,7 +235,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.activeUsersData = allusersData.content
       // this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
       this.activeUsersDataCount = allusersData.count
-      this.filterFacets = allusersData.facets
+      this.filterFacets = allusersData.facets ? allusersData.facets : []
       // const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
       // if (i > -1) {
       //   this.activeUsersData.splice(i, 1)
