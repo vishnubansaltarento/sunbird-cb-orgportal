@@ -19,16 +19,16 @@ export class CreateContentComponent implements OnInit {
   selectContentCount = 0
   pageIndex: any
   pageSize: any
-  count = 0;
-  queryParams:any;
-  dialogRef:any;
+  count = 0
+  queryParams: any
+  dialogRef: any
    /* tslint:disable */
   confirmationText:string = 'You have unsaved progress on your CBP plan. Clicking "Yes" will discard it and take you to request new content screen. Would you like to continue?'
   /* tslint:enable */
 
   constructor(private tpdsSvc: TrainingPlanDataSharingService, public dialog: MatDialog,
     //  private snackbar: MatSnackBar,
-    private router: Router
+              private router: Router
   ) { }
 
   ngOnInit() {
@@ -158,6 +158,4 @@ export class CreateContentComponent implements OnInit {
     })
   }
 
-
-  
 }

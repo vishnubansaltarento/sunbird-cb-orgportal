@@ -13,7 +13,7 @@ export enum statusValue {
   Unassigned = 'Unassigned',
   Inprogress = 'InProgress',
   invalid = 'Invalid',
-  fullfill='Fulfill'
+  fullfill= 'Fulfill',
 }
 @Component({
   selector: 'ws-app-request-list',
@@ -91,14 +91,14 @@ export class RequestListComponent implements OnInit {
   }
 
   handleClick(element: any): void {
-    if(element.status && element.status.length > 0){
-      if (element.status !== this.statusKey.Inprogress && 
-        element.status !== this.statusKey.invalid && 
+    if (element.status && element.status.length > 0) {
+      if (element.status !== this.statusKey.Inprogress &&
+        element.status !== this.statusKey.invalid &&
         element.status !== this.statusKey.fullfill) {
-        this.onClickMenu(element, 'assignContent');
+        this.onClickMenu(element, 'assignContent')
     }
     }
-   
+
 }
 
   hasAccess() {
@@ -218,10 +218,10 @@ export class RequestListComponent implements OnInit {
    }
    this.homeService.markAsInvalid(request).subscribe(res => {
      this.invalidRes = res
-     if(res){
+     if (res) {
       this.getRequestList()
      }
-     
+
      this.snackBar.open('Marked as Invalid')
     }
   )
