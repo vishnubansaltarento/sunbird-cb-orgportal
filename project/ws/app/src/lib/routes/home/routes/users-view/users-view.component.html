@@ -80,15 +80,12 @@
       <ng-container *ngIf="currentFilter === 'allusers'">
         <div class="searchfilter">
           <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
-            [currentFilter]="currentFilter"></ws-app-searchuser>
+            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
         </div>
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="activeUsersData"
           [totalRecords]="activeUsersDataCount" [tabChangeIndex]="pageIndex" [isApprovals]="false"
           (paginationData)="onPaginateChange($event)" (updateList)="getAllUsers('')"></ws-widget-user-card>
-
       </ng-container>
-
-
 
       <ng-container *ngIf="currentFilter === 'verified'">
         <div class="searchfilter">
