@@ -210,8 +210,16 @@ export class AllUsersComponent implements OnInit, OnDestroy {
         'profileDetails.profileStatus': 'NOT-VERIFIED',
       }
     }
+    const reqBody = {
+      request: {
+        filters: filtreq,
+        limit: this.limit,
+        offset: this.pageIndex,
+        query: query,
+      },
+    }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
       this.usersData = data.result.response
       if (this.usersData && this.usersData.content && this.usersData.content.length > 0) {
         _.filter(this.usersData.content, { isDeleted: false }).forEach((user: any) => {
