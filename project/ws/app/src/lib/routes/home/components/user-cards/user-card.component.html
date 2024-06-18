@@ -61,11 +61,13 @@
           <div class="inner-body">
             Primary Details <mat-icon class="ws-mat-black40-text custominfo">info_outline</mat-icon>
             <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'VERIFIED'">
-              <mat-slide-toggle (click)="markStatus('NOT-VERIFIED', user)">Mark this user as
+              <mat-slide-toggle (change)="confirmUserRequest(updateconfirm,'NOT-VERIFIED', user, $event)">Mark this user
+                as
                 non-verified</mat-slide-toggle>
             </p>
             <p class="float-right mat-body-2" *ngIf="user?.profileDetails?.profileStatus === 'NOT-VERIFIED'">
-              <mat-slide-toggle (click)="markStatus('NOT-MY-USER', user)" [checked]="true">This is my
+              <mat-slide-toggle (change)="confirmUserRequest(updateconfirm,'NOT-MY-USER', user, $event)"
+                [checked]="true">This is my
                 user</mat-slide-toggle>
             </p>
             <div class="flex flex-row margin-top-m">
@@ -832,7 +834,7 @@
     <div class="mat-caption margin-top-xs">Note: The user will be shifted to non-verified tab</div>
     <div mat-dialog-actions class="flex-center margin-top-s">
       <button mat-raised-button type="submit" [mat-dialog-close]="false"
-        class="margin-right-m  btn-success btn-responsive cancelbtn">
+        class="margin-right-m btn-success btn-responsive cancelbtn">
         <span i18n>
           No
         </span>

@@ -118,10 +118,10 @@ export class UserCardComponent implements OnInit, OnChanges {
   today = new Date()
 
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-              private dialog: MatDialog, private approvalSvc: ApprovalsService,
-              private route: ActivatedRoute, private snackBar: MatSnackBar,
-              private events: EventService,
-              private datePipe: DatePipe) {
+    private dialog: MatDialog, private approvalSvc: ApprovalsService,
+    private route: ActivatedRoute, private snackBar: MatSnackBar,
+    private events: EventService,
+    private datePipe: DatePipe) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -975,6 +975,25 @@ export class UserCardComponent implements OnInit, OnChanges {
       } else {
         event.source.checked = true
         data.enableToggle = true
+      }
+    })
+  }
+
+  confirmUserRequest(template: any, status: any, data: any, event: any) {
+    data.enableToggle = true
+    const dialog = this.dialog.open(template, {
+      width: '500px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.markStatus(status, data)
+        data.enableToggle = false
+      } else {
+        if (status === 'NOT-MY-USER') {
+          event.source.checked = true
+        } else {
+          event.source.checked = false
+        }
       }
     })
   }
