@@ -35,12 +35,11 @@
         <button mat-button type="button" class="search-btn" [routerLink]="['/app/home/user-creation']"
             [ngClass]="{'disable': isContentLive}">Create user</button>
     </div>
-    <div class="flex flex-end margin-right-s"
-        *ngIf="isApprovals && showApproveALL && currentFilter === 'profileverification'">
+    <div class="flex flex-end margin-right-s" *ngIf="isApprovals && showApproveALL">
         <button mat-button type="button" class="search-btn" (click)="approveAll()"
             [disabled]="disableApproveALL">Approve all requests</button>
     </div>
-    <div class="flex flex-end" *ngIf="isApprovals && currentFilter === 'profileverification'">
+    <div class="flex flex-end" *ngIf="isApprovals && showBulkUpdate">
         <button mat-button type="button" class="search-btn" [routerLink]="['/app/home/approvals/bulkupdate']"
             [ngClass]="{'disable': isContentLive}">Bulk profile update</button>
     </div>
