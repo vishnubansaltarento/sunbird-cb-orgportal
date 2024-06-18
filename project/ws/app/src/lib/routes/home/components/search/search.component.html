@@ -37,7 +37,7 @@
             [ngClass]="{'disable': isContentLive}">Create user</button>
     </div>
     <div class="flex flex-end margin-right-s" *ngIf="isApprovals && showApproveALL">
-        <button mat-button type="button" class="search-btn" (click)="approveAll()"
+        <button mat-button type="button" class="search-btn" (click)="confirmApproval(approvalconfirm)"
             [disabled]="disableApproveALL">Approve all requests</button>
     </div>
     <div class="flex flex-end" *ngIf="isApprovals && showBulkUpdate">
@@ -50,3 +50,27 @@
     <ws-app-filter [from]="from" (toggleFilter)="hideFilter($event)"
         [filterFacetsData]="filterFacetsData"></ws-app-filter>
 </div>
+
+<ng-template #approvalconfirm>
+    <div class="confirm-dialog text-center padding-l">
+        <mat-icon class="infoIcon orangeicon-dialog">error_outline</mat-icon>
+        <div mat-dialog-content i18n class="margin-top-xs blue-text">
+            Are you sure you want to apporve all the requests of this page?
+        </div>
+        <div class="mat-caption margin-top-xs">Do you want to proceed?</div>
+        <div mat-dialog-actions class="flex-center margin-top-s">
+            <button mat-raised-button type="submit" [mat-dialog-close]="false"
+                class="margin-right-m  btn-success btn-responsive cancelbtn">
+                <span i18n>
+                    No
+                </span>
+            </button>
+            <button mat-raised-button type="submit" [mat-dialog-close]="true"
+                class="btn-success btn-responsive successbtn">
+                <span class="text-white" i18n>
+                    Yes
+                </span>
+            </button>
+        </div>
+    </div>
+</ng-template>
