@@ -100,6 +100,24 @@
   ::ng-deep.mat-option.mat-selected:not(.mat-option-disabled) {
     color: rgba(0, 0, 0, 0.87) !important;
   }
+
+  ::ng-deep .field-height .mat-form-field-flex {
+    width: 100% !important;
+    .placeholder-text {
+      font-size: 14px !important;
+      font-family: 'Lato' !important;
+       line-height: 16.8px !important;
+      font-weight: 400  !important;
+    }
+    
+}
+.assigneeSearch {
+  height: 50px !important;
+  font-size: 15px;
+  padding-left: 12px;
+  box-sizing: border-box;
+
+}
   .mat-button[disabled] {
     opacity: 0.6;
   }

@@ -42,6 +42,7 @@ export class UserCardComponent implements OnInit, OnChanges {
   @Input() tabChangeIndex: any
   @Input() currentFilter: any
   @Input() isApprovals: any
+  @Input() handleApiData: any
 
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()

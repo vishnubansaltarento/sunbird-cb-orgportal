@@ -62,6 +62,12 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   searchQuery = ''
   rootOrgId: any
   currentUserStatus: any
+  filetrGroup = []
+  filterDesignation = []
+  filterRoles = []
+  filterTags = []
+  sortOrder: any
+  searchText = ''
 
   constructor(
     public dialog: MatDialog,
@@ -94,7 +100,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     if (this.configSvc.unMappedUser && this.configSvc.unMappedUser.roles) {
       this.isMdoAdmin = this.configSvc.unMappedUser.roles.includes('MDO_ADMIN')
     }
-    // this.filterData('')
 
     this.getNMUsers('')
     this.getAllUsers('')
@@ -147,8 +152,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     )
   }
 
-  filterData(query: string) {
-    // this.getUsers(query, this.currentFilter)
+  filterData(query: any) {
     if (this.currentFilter === 'allusers') {
       this.getAllUsers(query)
     } else if (this.currentFilter === 'verified') {
@@ -191,15 +195,35 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   //   return blockedUsersData
   // }
 
-  async getAllUsers(query: string) {
+  async getAllUsers(query: any) {
     this.loaderService.changeLoad.next(true)
-    // const usersData: any[] = []
+    let reqBody
     const filtreq = {
       rootOrgId: this.rootOrgId,
       status: 1,
     }
-
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
+    }
+    if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
+    }
+    if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
+    }
+    if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
+    }
+    reqBody = {
+      request: {
+        filters: filtreq,
+        limit: this.limit,
+        offset: this.pageIndex,
+        query: this.getSearchText(query),
+        sort_by: this.getSortOrder(query),
+      },
+    }
+    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
       const allusersData = data.result.response
       this.activeUsersData = allusersData.content
       // this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
@@ -215,14 +239,36 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       }
     })
   }
-  async getVUsers(query: string) {
+  async getVUsers(query: any) {
+    let reqBody
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'profileDetails.profileStatus': 'VERIFIED',
     }
+    if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
+    }
+    if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
+    }
+    if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
+    }
+    if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
+    }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    reqBody = {
+      request: {
+        filters: filtreq,
+        limit: this.limit,
+        offset: this.pageIndex,
+        query: this.getSearchText(query),
+        sort_by: this.getSortOrder(query),
+      },
+    }
+    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
       const allusersData = data.result.response
       this.verifiedUsersData = allusersData.content
       this.verifiedUsersDataCount = data.result.response.count
@@ -237,14 +283,36 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     })
   }
 
-  async getNVUsers(query: string) {
+  async getNVUsers(query: any) {
+    let reqBody
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'profileDetails.profileStatus': 'NOT-VERIFIED',
     }
+    if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
+    }
+    if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
+    }
+    if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
+    }
+    if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
+    }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    reqBody = {
+      request: {
+        filters: filtreq,
+        limit: this.limit,
+        offset: this.pageIndex,
+        query: this.getSearchText(query),
+        sort_by: this.getSortOrder(query),
+      },
+    }
+    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
       const allusersData = data.result.response
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
@@ -260,18 +328,80 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     })
   }
 
-  async getNMUsers(query: string) {
+  async getNMUsers(query: any) {
+    let reqBody
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'profileDetails.profileStatus': 'NOT-MY-USER',
     }
+    if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
+    }
+    if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
+    }
+    if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
+    }
+    if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
+      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
+    }
 
-    this.usersService.getAllKongUsers(filtreq, this.limit, this.pageIndex, query).subscribe((data: any) => {
+    reqBody = {
+      request: {
+        filters: filtreq,
+        limit: this.limit,
+        offset: this.pageIndex,
+        query: this.getSearchText(query),
+        sort_by: this.getSortOrder(query),
+      },
+    }
+    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
       const allusersData = data.result.response
       this.notmyuserUsersData = allusersData.content
       this.notmyuserUsersDataCount = data.result.response.count
     })
+  }
+
+  getFilterGroup(query: any) {
+    if (query && query.filters && (query.filters.group).length > 0) {
+      return query.filters.group
+    }
+  }
+  getFilterDesignation(query: any) {
+    if (query && query.filters && (query.filters.designation).length > 0) {
+      return query.filters.designation
+    }
+  }
+  getFilterRoles(query: any) {
+    if (query && query.filters && (query.filters.roles).length > 0) {
+      return query.filters.roles
+    }
+  }
+  getFilterTags(query: any) {
+    if (query && query.filters && (query.filters.tags.length > 0)) {
+      return query.filters.tags
+    }
+  }
+  getSearchText(query: any) {
+    return this.searchText = query && query.searchText ? query.searchText : ''
+  }
+  getSortOrder(query: any) {
+    let sortBy
+    if (query && query.sortOrder) {
+      sortBy = query.sortOrder
+      if (sortBy === 'alphabetical') {
+        return { firstName: 'asc' }
+      }
+      if (sortBy === 'oldest') {
+        return { createdDate: 'desc' }
+      }
+      if (sortBy === 'newest') {
+        return { createdDate: 'asc' }
+      }
+      return { firstName: 'asc' }
+    }
   }
 
   clickHandler(event: any) {
@@ -319,6 +449,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   onEnterkySearch(enterValue: any) {
     this.searchQuery = enterValue
     this.filterData(this.searchQuery)
+
   }
 
   onPaginateChange(event: PageEvent) {

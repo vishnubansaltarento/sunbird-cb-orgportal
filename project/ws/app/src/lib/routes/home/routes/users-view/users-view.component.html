@@ -78,28 +78,50 @@
       </ws-widget-org-user-table-v2> -->
 
       <ng-container *ngIf="currentFilter === 'allusers'">
+        <div class="searchfilter">
+          <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
+            [currentFilter]="currentFilter"></ws-app-searchuser>
+        </div>
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="activeUsersData"
           [totalRecords]="activeUsersDataCount" [tabChangeIndex]="pageIndex" [isApprovals]="false"
-          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
-          (updateList)="getAllUsers('')"></ws-widget-user-card>
+          (paginationData)="onPaginateChange($event)" (updateList)="getAllUsers('')"></ws-widget-user-card>
+
       </ng-container>
+
+
+
       <ng-container *ngIf="currentFilter === 'verified'">
+        <div class="searchfilter">
+          <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
+            [currentFilter]="currentFilter"></ws-app-searchuser>
+        </div>
+
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"
           [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
-          (updateList)="getVUsers('')"></ws-widget-user-card>
+          (paginationData)="onPaginateChange($event)" (updateList)="getVUsers('')"></ws-widget-user-card>
       </ng-container>
+
+
+
       <ng-container *ngIf="currentFilter === 'nonverified'">
+        <div class="searchfilter">
+          <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
+            [currentFilter]="currentFilter"></ws-app-searchuser>
+        </div>
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="nonverifiedUsersData"
           [totalRecords]="nonverifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
-          (updateList)="getNVUsers('')"></ws-widget-user-card>
+          (paginationData)="onPaginateChange($event)" (updateList)="getNVUsers('')"></ws-widget-user-card>
       </ng-container>
+
+
       <ng-container *ngIf="currentFilter === 'notmyuser'">
+        <div class="searchfilter">
+          <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
+            [currentFilter]="currentFilter"></ws-app-searchuser>
+        </div>
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="notmyuserUsersData"
           [totalRecords]="notmyuserUsersDataCount" [tabChangeIndex]="pageIndex"
-          (searchByEnterKey)="onEnterkySearch($event)" (paginationData)="onPaginateChange($event)"
-          (updateList)="getNMUsers('')"></ws-widget-user-card>
+          (paginationData)="onPaginateChange($event)" (updateList)="getNMUsers('')"></ws-widget-user-card>
       </ng-container>
     </mat-card-content>
   </mat-card>

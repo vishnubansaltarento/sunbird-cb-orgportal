@@ -240,7 +240,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
 
   onSearch(enterValue: any) {
     // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
-    const filterValue = enterValue.toLowerCase()
+    const filterValue = enterValue.searchText.toLowerCase() ? enterValue.searchText : ''
     if (this.currentFilter === 'profileverification') {
       this.profileVerificationData = this.allprofileVerificationData.filter((user: any) =>
         user.fullname.toLowerCase().includes(filterValue))

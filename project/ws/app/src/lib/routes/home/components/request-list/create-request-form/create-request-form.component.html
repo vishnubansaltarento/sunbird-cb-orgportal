@@ -21,11 +21,11 @@
             <form [formGroup]="requestForm">
                 <div class="title-name">
                     <div class="fonm-element-label label-text">Title <span class="required"></span></div>
-                    <mat-form-field appearance="outline" class="w-full" fxFlex="40">
-                        <input class="w-full" matInput placeholder="Enter Title" formControlName="TitleName" maxlength="70">
+                    <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
+                        <input class="w-full placeholder-text" matInput placeholder="Enter the content name" formControlName="TitleName" maxlength="70">
                         <mat-hint align="end">{{ requestForm.controls['TitleName'].value.length }} / 70</mat-hint>                    
                         <mat-error *ngIf="requestForm.controls['TitleName'].hasError('required')">
-                        Title is Mandatory
+                          Please enter a title for the request."
                         </mat-error>
                         <mat-error
                         *ngIf="requestForm.controls['TitleName'].hasError('minlength') && !requestForm.controls['TitleName'].errors?.pattern"
@@ -44,10 +44,12 @@
                 <div class="title-name">
                     <div class="fonm-element-label label-text">Objective <span class="required"></span></div>
                     <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
-                        <input class="w-full" matInput placeholder="Enter Objective" formControlName="Objective" maxlength="500">
+                        <!-- <input class="w-full" matInput placeholder="Provide the objective of the content" formControlName="Objective" maxlength="500"> -->
+                        <textarea matInput class="w-full  placeholder-text" [matTextareaAutosize] [matAutosizeMaxRows]="10" [matAutosizeMinRows]="5"
+                        formControlName="Objective" placeholder="Provide the objective of the content" maxlength="500" i18n-placeholder></textarea>
                         <mat-hint align="end">{{ requestForm.controls['Objective'].value.length }} / 500</mat-hint>                    
                         <mat-error *ngIf="requestForm.controls['Objective'].hasError('required')">
-                        Objective is Mandatory
+                          Please enter the objective of the request.
                         </mat-error>
                         <mat-error
                         *ngIf="requestForm.controls['Objective'].hasError('minlength') && !requestForm.controls['Objective'].errors?.pattern"
@@ -66,7 +68,9 @@
                 <div class="title-name">
                     <div class="fonm-element-label label-text">Type of user</div>
                     <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
-                        <input class="w-full" matInput placeholder="Enter Type of user" formControlName="userType" maxlength="500">
+                        <!-- <input class="w-full" matInput placeholder="Example for ASO and above" formControlName="userType" maxlength="500"> -->
+                        <textarea matInput class="w-full  placeholder-text" [matTextareaAutosize] [matAutosizeMaxRows]="10" [matAutosizeMinRows]="2"
+                        formControlName="userType" placeholder="Example for ASO and above" maxlength="500" i18n-placeholder></textarea>
                         <mat-hint align="end">{{ requestForm.controls['userType'].value.length }} / 500</mat-hint>                    
                         <mat-error
                         *ngIf="requestForm.controls['userType'].hasError('minlength') && !requestForm.controls['userType'].errors?.pattern"
@@ -186,7 +190,7 @@
                         <th class="padding-xs ws-mat-black60-text mat-body-1">Theme</th>
                         <th class="padding-xs ws-mat-black60-text mat-body-1">Sub theme</th>
                       </tr>
-                      <tr   *ngFor="let comp of requestForm.controls?.competencies_v5?.value"  [attr.disabled]="isHideData ? true : null" (click)=view(comp)>
+                      <tr   *ngFor="let comp of requestForm.controls?.competencies_v5?.value"  [attr.disabled]="isCompetencyHide ? true : null" (click)=view(comp)>
                         <td  class="padding-xs mat-body-1 cursor-pointer">{{comp.competencyArea}}</td>
                         <td class="padding-xs mat-body-1 cursor-pointer">{{comp.competencyTheme || comp.name}}</td>
                         <td class="padding-xs mat-body-1 cursor-pointer">{{comp.competencySubTheme ||
@@ -276,7 +280,7 @@
                 <div class="title-text">
                     <div class="fonm-element-label label-text">Refrence Link</div>
                     <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
-                        <input class="w-full" matInput placeholder="Provide reference link" formControlName="referenceLink">
+                        <input class="w-full  placeholder-text" matInput placeholder="Provide reference link" formControlName="referenceLink">
                         </mat-form-field>
 
                     
@@ -286,6 +290,9 @@
                     <div class="mt-5">
                     <mat-radio-group aria-label="Select an option"    formControlName="requestType" >
                         <mat-radio-button class="learning-section"  *ngFor="let item of requestTypeList" [value]="item" (change)="selectRequestType(item)">{{item}}</mat-radio-button>
+                        <!-- <mat-error *ngIf="requestForm.controls['requestType'].hasError('required')">
+                          Please select a request type (Single Provider or Broadcast).
+                        </mat-error> -->
                     
                       </mat-radio-group>
                     </div>
@@ -294,10 +301,15 @@
                     <div class="fonm-element-label label-text">Assignee <span class="required"></span></div>
                     <div class="">
                         <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
-                            <mat-select placeholder="Choose the Assignee" formControlName="assignee">
-                              <mat-option *ngFor="let option of requestTypeData" [value]="option">{{option.orgName}}</mat-option>
+                            <mat-select class=" placeholder-text" placeholder="Choose the Assignee" formControlName="assignee">
+                              <input #search autocomplete="off" placeholder="Search" class="assigneeSearch"
+                               (keyup)="searchValueData('assigneeText')"  formControlName="assigneeText" matInput>
+                              <mat-option *ngFor="let option of filteredAssigneeType" [value]="option">{{option.orgName}}</mat-option>
                           
                             </mat-select>
+                            <mat-error *ngIf="requestForm.controls['assignee'].hasError('required')">
+                              Please select a provider/assignee for the request.
+                            </mat-error>
                           </mat-form-field>
                     </div>
                 </div>
@@ -305,7 +317,7 @@
                     <div class="fonm-element-label label-text">Preffered Providers <span class="required"></span></div>
                     <div class="">
                         <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
-                            <mat-select placeholder="Choose the provider" (openedChange)="openedChange($event,'providerText')" formControlName="providers"  multiple>
+                            <mat-select class=" placeholder-text" placeholder="Choose the provider" (openedChange)="openedChange($event,'providerText')" formControlName="providers"  multiple>
                           
                               <mat-select-trigger [ngClass]="{'disbaledSelect':isHideData}">
                                 <mat-chip-list>
@@ -319,7 +331,7 @@
                               </mat-select-trigger>
                               <mat-optgroup>
                                 <mat-form-field floatLabel="never">
-                                  <input #search autocomplete="off" placeholder="Search" (keyup)="searchValueData($event,'providerText')"  formControlName="providerText" matInput>
+                                  <input #search autocomplete="off" placeholder="Search" (keyup)="searchValueData('providerText')"  formControlName="providerText" matInput>
                                   <button [disableRipple]="true" *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear"
                                     (click)="clearSearch($event,'providerText')"><mat-icon>close</mat-icon></button>
                                 </mat-form-field>
@@ -328,16 +340,19 @@
                                 <div>No results found!</div>
                               </mat-optgroup>
                               <!-- <mat-option *ngFor="let option of requestObjData.preferredProvider" [value]="option.providerName">{{option.providerName}}</mat-option> -->
-                              <mat-option *ngFor="let option of filteredRequestType" [value]="option">{{option.orgName}}</mat-option>
+                              <mat-option *ngFor="let option of filteredRequestType"  [disabled]="isOptionDisabled(option)" [value]="option">{{option.orgName}}</mat-option>
                           
                             </mat-select>
+                            <mat-error *ngIf="requestForm.controls['providerText'].hasError('required')">
+                              Please select up to five preferred providers for the request.
+                            </mat-error>
                           </mat-form-field>
                     </div>
                 </div>
 
                 <div class="flex flex-start margin-top-l" *ngIf="!isHideData">
                     <button mat-button class="submit-btn margin-right-xs" type="button" (click)="showConformationPopUp()" [disabled]="!requestForm.valid">Submit</button>
-                    <button mat-button class="close-btn " type="button" >Cancel</button>
+                    <button mat-button class="close-btn" (click)="navigateBack()" type="button" >Cancel</button>
                    
                   </div>
 
