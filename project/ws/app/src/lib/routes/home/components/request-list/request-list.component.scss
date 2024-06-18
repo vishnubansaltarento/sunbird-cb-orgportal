@@ -15,26 +15,21 @@ table tr {
   height: 70px !important;
 }
 
-// ::ng-deep {
-//   table tr td .cdk-column-title .title-class {
-//     width: 13% !important;
-//   }
-// }
 
-// table tr td .cdk-column-title .cdk-column-assignee {
-//   width: 13% !important;
-// }
 
-table tr .cdk-column-title {
-  width: 18% !important;
+table .table-row-data {
+  height: 56px !important;
 }
 
-table tr .cdk-column-RequestId {
-  width: 9% !important;
-}
-
-table tr .cdk-column-assignee {
-  width: 20% !important;
+table tr .row-heading {
+    font-family: 'Lato';
+    font-weight: 400;
+    font-size: 14px !important;
+    line-height: 21px;
+    color: rgba(0, 0, 0, 0.6);
+    border-bottom: none;
+    width: 13% !important;
+    padding: 0 13px 0 13px !important;
 }
 
 .action-btn-view {
@@ -62,9 +57,13 @@ table tr .cdk-column-assignee {
 
 .title-class {
   font-family: Lato;
-  font-size: 14px;
+  font-size: 14px !important;
   font-weight: 400;
-  line-height: 16.8px;
+  line-height: 21px;
+  color: rgba(0, 0, 0, 0.6) !important;
+  width: 13% !important;
+  padding: 0 13px !important;
+  
 }
 .status-unassigned {
   background: rgba(0, 0, 0, 0.6);

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core'
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ProfileV2Service } from '../../../services/home.servive'
 import { MAT_DIALOG_DATA, MatDialogRef, MatTableDataSource } from '@angular/material'
 import { ConfigResolveService } from '../../../resolvers/config-resolve.service'
@@ -29,7 +29,7 @@ export class AssignListPopupComponent implements OnInit {
               public dialogRef: MatDialogRef<AssignListPopupComponent>,
   ) {
     this.requestForm = this.fb.group({
-      assignee: new FormControl(''),
+      assignee: new FormControl('', Validators.required),
     })
   }
 
