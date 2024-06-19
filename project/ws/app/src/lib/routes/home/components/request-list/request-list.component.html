@@ -45,7 +45,7 @@
 
               <ng-container matColumnDef="requestor">
                 <th mat-header-cell *matHeaderCellDef class="row-heading">Requestor </th>
-                <td mat-cell class="title-class" *matCellDef="let element">{{'N/A'}}</td>
+                <td mat-cell class="title-class" *matCellDef="let element">{{element?.ownerName}}</td>
               </ng-container>
   
               <ng-container matColumnDef="requestType">
