@@ -3,7 +3,6 @@ import {
   Output, QueryList, ViewChildren, ChangeDetectionStrategy, AfterContentChecked,
 } from '@angular/core'
 import { FormControl } from '@angular/forms'
-// import { TrainingPlanDataSharingService } from '../../../training-plan/services/training-plan-data-share.service'
 import { TrainingPlanService } from '../../../training-plan/services/traininig-plan.service'
 import { UsersService } from '../../../users/services/users.service'
 @Component({
@@ -52,49 +51,44 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   }
 
   ngOnInit() {
-    if (this.filterFacetsData) {
-      this.designationList = this.filterFacetsData.designation && this.filterFacetsData.designation.length > 0 ?
-        this.filterFacetsData.designation : []
-      this.groupList = this.filterFacetsData.group && this.filterFacetsData.group.length > 0 ? this.filterFacetsData.group : []
-      this.rolesList = this.filterFacetsData.rolesList && this.filterFacetsData.rolesList > 0 ? this.filterFacetsData.rolesList : []
-      this.tagsList = this.filterFacetsData.tagsList && this.filterFacetsData.tagsList > 0 ? this.filterFacetsData.tagsList : []
-    }
-
+    this.setData()
     if (!this.usersSvc.filterToggle) { return }
     this.usersSvc.filterToggle.subscribe((data: any) => {
       if (data && data.status) {
-        // if (data.from === 'content') {
-        //   this.getFilterEntity()
-        // this.getProviders()
-        // } else {
-        // if(this.usersSvc.trainingPlanAssigneeData &&
-        //   this.usersSvc.trainingPlanAssigneeData.category === 'Custom Users') {
-        //   this.getDesignation();
-        // }
-        if (this.designationList && this.designationList.length > 0) {
-          //   this.getDesignation()
-          // } else {
-          this.getFilteredDesignationList()
-        }
+        this.filterFacetsData = data.data
+        this.setData()
+        //     // if (data.from === 'content') {
+        //     //   this.getFilterEntity()
+        //     // this.getProviders()
+        //     // } else {
+        //     // if(this.usersSvc.trainingPlanAssigneeData &&
+        //     //   this.usersSvc.trainingPlanAssigneeData.category === 'Custom Users') {
+        //     //   this.getDesignation();
+        //     // }
+        //     if (this.designationList && this.designationList.length > 0) {
+        //       //   this.getDesignation()
+        //       // } else {
+        //       this.getFilteredDesignationList()
+        //     }
 
-        if (this.groupList && this.groupList.length > 0) {
-          //   this.loadGroups()
-          // } else {
-          this.getFilteredGroupList()
-        }
+        //     if (this.groupList && this.groupList.length > 0) {
+        //       //   this.loadGroups()
+        //       // } else {
+        //       this.getFilteredGroupList()
+        //     }
 
-        if (this.rolesList && this.rolesList.length > 0) {
-          //   this.loadRoles()
-          // } else {
-          this.getFilteredRolesList()
-        }
+        //     if (this.rolesList && this.rolesList.length > 0) {
+        //       //   this.loadRoles()
+        //       // } else {
+        //       this.getFilteredRolesList()
+        //     }
 
-        if (this.tagsList && this.tagsList.length > 0) {
-          //   this.loadTags()
-          // } else {
-          this.getFilteredTagsList()
-        }
-        // }
+        //     if (this.tagsList && this.tagsList.length > 0) {
+        //       //   this.loadTags()
+        //       // } else {
+        //       this.getFilteredTagsList()
+        //     }
+        //     // }
       }
     })
 
@@ -108,41 +102,64 @@ export class FilterComponent implements OnInit, AfterContentChecked {
     this.resetFilter()
   }
 
+  setData() {
+    if (this.filterFacetsData) {
+      this.filterFacetsData.forEach((item: any) => {
+        if (item.name === 'profileDetails.professionalDetails.group') {
+          if (item.values && item.values.length > 0) {
+            this.groupList = item.values
+            this.filteredGroupList = this.groupList
+          }
+        }
+        if (item.name === 'profileDetails.professionalDetails.designation') {
+          if (item.values && item.values.length > 0) {
+            this.designationList = item.values
+            this.filteredDesignationList = this.designationList
+          }
+        }
+        if (item.name === 'profileDetails.additionalDetails.tag') {
+          if (item.values && item.values.length > 0) {
+            this.tagsList = item.values
+            this.filteredTagsList = this.tagsList
+          }
+        }
+      })
+      // this.rolesList = this.filterFacetsData.rolesList && this.filterFacetsData.rolesList > 0 ? this.filterFacetsData.rolesList : []
+    }
+  }
+
   searchGroup(searchKey: string) {
-    this.groupSearchKey = searchKey.toUpperCase()
+    this.groupSearchKey = searchKey
     this.getFilteredGroupList()
   }
 
   searchDesignation(searchKey: string) {
-    this.designationSearchKey = searchKey.toUpperCase()
+    this.designationSearchKey = searchKey
     this.getFilteredDesignationList()
   }
 
   searchRoles(searchKey: string) {
-    this.rolesSearchKey = searchKey.toUpperCase()
+    this.rolesSearchKey = searchKey
     this.getFilteredRolesList()
   }
 
   searchTags(searchKey: string) {
-    this.tagsSearchKey = searchKey.toUpperCase()
+    this.tagsSearchKey = searchKey
     this.getFilteredTagsList()
   }
 
   getFilteredGroupList() {
     if (this.groupList.length) {
-      const searchKey = this.groupSearchKey ? this.groupSearchKey : ''
+      const searchKey = this.groupSearchKey ? this.groupSearchKey.toUpperCase() : ''
       this.filteredGroupList = []
       this.groupList.forEach((groupName: any) => {
-        if (groupName.toUpperCase().includes(searchKey)) {
-          const formatedGroup: any = {
-            name: groupName,
-          }
+        if (groupName.name.toUpperCase().includes(searchKey)) {
           if (this.assigneeFilterObj['group'] && this.assigneeFilterObj['group'].indexOf(groupName) > -1) {
-            formatedGroup['selected'] = true
+            groupName['selected'] = true
           } else {
-            formatedGroup['selected'] = false
+            groupName['selected'] = false
           }
-          this.filteredGroupList.push(formatedGroup)
+          this.filteredGroupList.push(groupName)
         }
       })
     }
@@ -150,19 +167,16 @@ export class FilterComponent implements OnInit, AfterContentChecked {
 
   getFilteredDesignationList() {
     if (this.designationList.length) {
-      const searchKey = this.designationSearchKey ? this.designationSearchKey : ''
+      const searchKey = this.designationSearchKey ? this.designationSearchKey.toUpperCase() : ''
       this.filteredDesignationList = []
       this.designationList.forEach((designation: any) => {
         if (designation.name.toUpperCase().includes(searchKey)) {
-          const formatedDesignation: any = {
-            name: designation.name,
-          }
           if (this.assigneeFilterObj['designation'] && this.assigneeFilterObj['designation'].indexOf(designation.name) > -1) {
-            formatedDesignation['selected'] = true
+            designation['selected'] = true
           } else {
-            formatedDesignation['selected'] = false
+            designation['selected'] = false
           }
-          this.filteredDesignationList.push(formatedDesignation)
+          this.filteredDesignationList.push(designation)
         }
       })
     }
@@ -170,19 +184,16 @@ export class FilterComponent implements OnInit, AfterContentChecked {
 
   getFilteredRolesList() {
     if (this.rolesList.length) {
-      const searchKey = this.rolesSearchKey ? this.rolesSearchKey : ''
+      const searchKey = this.rolesSearchKey ? this.rolesSearchKey.toUpperCase() : ''
       this.filteredRolesList = []
       this.rolesList.forEach((rolesName: any) => {
-        if (rolesName.toUpperCase().includes(searchKey)) {
-          const formatedRoles: any = {
-            name: rolesName,
-          }
+        if (rolesName.name.toUpperCase().includes(searchKey)) {
           if (this.assigneeFilterObj['roles'] && this.assigneeFilterObj['roles'].indexOf(rolesName) > -1) {
-            formatedRoles['selected'] = true
+            rolesName['selected'] = true
           } else {
-            formatedRoles['selected'] = false
+            rolesName['selected'] = false
           }
-          this.filteredRolesList.push(formatedRoles)
+          this.filteredRolesList.push(rolesName)
         }
       })
     }
@@ -190,19 +201,16 @@ export class FilterComponent implements OnInit, AfterContentChecked {
 
   getFilteredTagsList() {
     if (this.tagsList.length) {
-      const searchKey = this.tagsSearchKey ? this.tagsSearchKey : ''
+      const searchKey = this.tagsSearchKey ? this.tagsSearchKey.toUpperCase() : ''
       this.filteredTagsList = []
       this.tagsList.forEach((tagsName: any) => {
-        if (tagsName.toUpperCase().includes(searchKey)) {
-          const formatedTags: any = {
-            name: tagsName,
-          }
+        if (tagsName.name.toUpperCase().includes(searchKey)) {
           if (this.assigneeFilterObj['tags'] && this.assigneeFilterObj['tags'].indexOf(tagsName) > -1) {
-            formatedTags['selected'] = true
+            tagsName['selected'] = true
           } else {
-            formatedTags['selected'] = false
+            tagsName['selected'] = false
           }
-          this.filteredTagsList.push(formatedTags)
+          this.filteredTagsList.push(tagsName)
         }
       })
     }
@@ -211,34 +219,6 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   ngAfterContentChecked() {
     this.cdref.detectChanges()
   }
-
-  getFilterEntity() {
-    const filterObj = {
-      search: {
-        type: 'Competency Area',
-      },
-      filter: {
-        isDetail: true,
-      },
-    }
-    this.trainingPlanService.getFilterEntity(filterObj).subscribe((res: any) => {
-
-      this.competencyList = res
-
-    })
-  }
-  // getProviders() {
-  //   this.trainingPlanService.getProviders().subscribe((res: any) => {
-  //     this.providersList = res
-  //     this.providersList.map((pitem: any) => {
-  //       if (this.filterObj['providers'] && pitem && this.filterObj['providers'].indexOf(pitem.name) > -1) {
-  //         pitem['selected'] = true
-  //       } else {
-  //         pitem['selected'] = false
-  //       }
-  //     })
-  //   })
-  // }
 
   hideFilter(filter: string) {
     const event = {

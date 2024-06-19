@@ -49,12 +49,11 @@ export class SearchComponent implements OnInit {
 
   openFilter() {
     this.filterVisibilityFlag = true
-    this.usersSvc.filterToggle.next({ from: this.from, status: true })
+    this.usersSvc.filterToggle.next({ from: this.from, status: true, data: this.filterFacetsData })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
     //   ele.style.zIndex = '1'
     // }
-
   }
 
   hideFilter(event: any) {
@@ -70,7 +69,7 @@ export class SearchComponent implements OnInit {
     }
 
     this.filterVisibilityFlag = false
-    this.usersSvc.filterToggle.next({ from: '', status: false })
+    this.usersSvc.filterToggle.next({ from: '', status: false, data: this.filterFacetsData })
     // if (this.document.getElementById('top-nav-bar')) {
     //   const ele: any = this.document.getElementById('top-nav-bar')
     //   ele.style.zIndex = '1000'
@@ -109,7 +108,6 @@ export class SearchComponent implements OnInit {
   searchData(event: any) {
     this.searchText = event.target.value
     this.emitSearchRequest()
-
   }
 
   sortData(sortOrder: string) {
