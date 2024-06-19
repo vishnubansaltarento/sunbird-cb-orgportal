@@ -979,6 +979,25 @@ export class UserCardComponent implements OnInit, OnChanges {
     })
   }
 
+  confirmUserRequest(template: any, status: any, data: any, event: any) {
+    data.enableToggle = true
+    const dialog = this.dialog.open(template, {
+      width: '500px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.markStatus(status, data)
+        data.enableToggle = false
+      } else {
+        if (status === 'NOT-MY-USER') {
+          event.source.checked = true
+        } else {
+          event.source.checked = false
+        }
+      }
+    })
+  }
+
   confirmUpdate(template: any, updateUserDataForm: any, user: any, panel: any) {
     const dialog = this.dialog.open(template, {
       width: '500px',
