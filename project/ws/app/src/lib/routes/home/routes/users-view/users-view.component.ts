@@ -471,7 +471,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   onEnterkySearch(enterValue: any) {
     this.searchQuery = enterValue
     this.filterData(this.searchQuery)
-
   }
 
   onPaginateChange(event: PageEvent) {

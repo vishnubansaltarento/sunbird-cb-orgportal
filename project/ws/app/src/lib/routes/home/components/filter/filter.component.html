@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="filter-content-container">
-            <div class="filter-content flex flex-1">
+            <div class="filter-content flex flex-1" *ngIf="filteredGroupList && filteredGroupList.length > 0">
                 <mat-accordion>
                     <mat-expansion-panel disableRipple [expanded]="true">
                         <mat-expansion-panel-header>
@@ -34,7 +34,8 @@
                     </mat-expansion-panel>
                 </mat-accordion>
             </div>
-            <div class="filter-content flex flex-1">
+            <div class="filter-content flex flex-1"
+                *ngIf="filteredDesignationList && filteredDesignationList.length > 0">
                 <mat-accordion>
                     <mat-expansion-panel disableRipple [expanded]="true">
                         <mat-expansion-panel-header>
@@ -52,7 +53,8 @@
                             </div>
                             <div class="flex flex-1 flex-row category-item" *ngFor="let des of filteredDesignationList">
                                 <mat-checkbox #checkboxes disableRipple class="example-margin" [checked]="des?.selected"
-                                    (change)="manageSelectedDesignation($event, des)">{{des?.name |
+                                    (change)="manageSelectedDesignation($event, des)"
+                                    *ngIf="des?.name !== ''">{{des?.name |
                                     titlecase}}</mat-checkbox>
                             </div>
                         </div>
@@ -60,7 +62,7 @@
                 </mat-accordion>
             </div>
             <!-- roles -->
-            <div class="filter-content flex flex-1">
+            <div class="filter-content flex flex-1" *ngIf="filteredRolesList && filteredRolesList.length > 0">
                 <mat-accordion>
                     <mat-expansion-panel disableRipple [expanded]="true">
                         <mat-expansion-panel-header>
@@ -87,7 +89,7 @@
                 </mat-accordion>
             </div>
             <!-- tage -->
-            <div class="filter-content flex flex-1">
+            <div class="filter-content flex flex-1" *ngIf="filteredTagsList && filteredTagsList.length > 0">
                 <mat-accordion>
                     <mat-expansion-panel disableRipple [expanded]="true">
                         <mat-expansion-panel-header>
