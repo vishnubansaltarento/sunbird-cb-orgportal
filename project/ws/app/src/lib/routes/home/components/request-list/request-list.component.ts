@@ -8,6 +8,9 @@ import { MatDialog, MatSnackBar, MatTableDataSource } from '@angular/material'
 import { ConfirmationBoxComponent } from '../../../training-plan/components/confirmation-box/confirmation.box.component'
 import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.component'
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
+/* tslint:disable */
+import _ from 'lodash'
+/* tslint:enable */
 export enum statusValue {
   Assigned= 'Assigned',
   Unassigned = 'Unassigned',
@@ -57,7 +60,8 @@ export class RequestListComponent implements OnInit {
   displayedColumns: string[] = ['RequestId', 'title', 'requestor', 'requestType',
    'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
   statusKey = statusValue
-
+  fullProfile: any
+ rootOrgId: any
   constructor(private sanitizer: DomSanitizer,
               private homeService: ProfileV2Service,
               private datePipe: DatePipe,
@@ -76,6 +80,10 @@ export class RequestListComponent implements OnInit {
 
   ngOnInit() {
     this.configSvc = this.activeRoute.snapshot.data['configService']
+    this.fullProfile = _.get(this.activeRoute.snapshot, 'data.configService')
+    if (this.fullProfile && this.fullProfile.userProfile && this.fullProfile.userProfile.rootOrgId) {
+      this.rootOrgId = this.fullProfile.userProfile.rootOrgId
+    }
     this.getRequestList()
     this.pageConfig = this.activeRoute.snapshot.data['pageData']
     this.hasAccess()
@@ -251,7 +259,9 @@ export class RequestListComponent implements OnInit {
   getRequestList() {
     this.loaderService.changeLoaderState(true)
     const request = {
-        filterCriteriaMap: {},
+        filterCriteriaMap: {
+          rootOrgId: this.rootOrgId ? this.rootOrgId :'',
+        },
         requestedFields: [],
         facets: [],
         pageNumber: this.pageNo,
