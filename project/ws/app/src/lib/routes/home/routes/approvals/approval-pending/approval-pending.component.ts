@@ -38,6 +38,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   disableApproveALL = false
   transfersCount = 0
   profileVerificationCount = 0
+  getSortOrderValue: any
 
   constructor(
     private router: Router,
@@ -60,7 +61,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
       ? this.route.snapshot.routeConfig.path : 'profileverification'
     // this.currentFilter = this.currentFilter === 'upload' ? 'uploadApprovals' : 'pending'
     // if (this.currentFilter === 'profileverification') {
-    this.fetchApprovals()
+    this.fetchApprovals('')
     // }
     // if (this.currentFilter !== 'profileverification') {
     //   this.fetchApprovals()
@@ -96,7 +97,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
     if (key) {
       this.currentFilter = key
       // if (key === 'profileverification') {
-      this.fetchApprovals()
+      this.fetchApprovals('')
       // }
       // if (key === 'transfers') {
       //   this.fetchApprovals()
@@ -134,7 +135,11 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
 
   }
 
-  fetchApprovals() {
+  fetchApprovals(sortValue: any) {
+    // let sortedVal = {}
+    if (!sortValue) {
+      // sortedVal = { firstName: 'asc' }
+    }
     if (this.departName) {
       const req = {
         serviceName: 'profile',
@@ -142,6 +147,8 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         deptName: this.departName,
         offset: this.currentOffset,
         limit: this.limit,
+        // sort_by: sortValue ? sortValue : sortedVal,
+
       }
       this.allTransfersData = []
       this.transfersData = []
@@ -237,6 +244,23 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   //   return this.data
   // }
 
+  getSortOrder(query: any) {
+    let sortBy
+    if (query && query.sortOrder) {
+      sortBy = query.sortOrder
+      if (sortBy === 'alphabetical') {
+        return { firstName: 'asc' }
+      }
+      if (sortBy === 'oldest') {
+        return { createdDate: 'desc' }
+      }
+      if (sortBy === 'newest') {
+        return { createdDate: 'asc' }
+      }
+    }
+    return { firstName: 'asc' }
+  }
+
   replaceWords(inputString: any, wordConditions: any) {
     return wordConditions.reduce((acc: any, [word, condition]: any) => {
       return acc.replace(new RegExp(word, 'gi'), condition)
@@ -245,6 +269,10 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   onSearch(enterValue: any) {
+    this.getSortOrderValue = this.getSortOrder(enterValue.sortOrder)
+    if (this.getSortOrderValue) {
+      this.fetchApprovals(this.getSortOrderValue)
+    }
     // this.data.filter((user: any) => enterValue.includes(user.userInfo.first_name))
     const filterValue = enterValue.searchText.toLowerCase() ? enterValue.searchText : ''
     if (this.currentFilter === 'profileverification') {
@@ -259,7 +287,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex
     this.limit = event.pageSize
     this.currentOffset = event.pageIndex
-    this.fetchApprovals()
+    this.fetchApprovals('')
   }
 
   ngOnDestroy(): void { }
@@ -307,7 +335,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         if (index === datalength - 1) {
           setTimeout(() => {
             this.openSnackbar('All requests are Approved')
-            this.fetchApprovals()
+            this.fetchApprovals('')
             /* tslint:disable */
           }, 200)
         }

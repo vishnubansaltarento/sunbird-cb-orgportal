@@ -162,17 +162,17 @@
     <div class="flex flex-row gap-6">
       <div class="input-container">
         <div class="label required mb-2">Role</div>
-        <div class="flex flex-col gap-4">
+        <div class="custom-roles">
           <ng-container *ngFor="let role of masterData?.mdoRoles">
-            <div class="flex flex-row gap-4" *ngIf="role !== 'MDO_LEADER'">
-              <div class="flex-1">{{ role }}</div>
+            <div class="rolehead" *ngIf="role !== 'MDO_LEADER'">
+              <div class="roletitle">{{ role }}</div>
               <mat-checkbox value="{{ role }}" #rolesCheckbox [checked]="role === 'PUBLIC'"
                 [disabled]="role === 'PUBLIC'" (change)="handleRolesCheck($event, role)"></mat-checkbox>
             </div>
           </ng-container>
         </div>
       </div>
-      <div class="input-container"></div>
+      <!-- <div class="input-container"></div> -->
     </div>
 
     <div class="flex flex-row gap-4">

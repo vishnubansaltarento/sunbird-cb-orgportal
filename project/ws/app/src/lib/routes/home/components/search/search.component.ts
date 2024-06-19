@@ -5,6 +5,7 @@ import _ from 'lodash'
 /* tslint:enable */
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 import { UsersService } from '../../../users/services/users.service'
+import { MatDialog } from '@angular/material'
 @Component({
   selector: 'ws-app-searchuser',
   templateUrl: './search.component.html',
@@ -31,6 +32,7 @@ export class SearchComponent implements OnInit {
   sortOrder = ''
   constructor(
     // private route: ActivatedRoute,
+    private dialog: MatDialog,
     private usersSvc: UsersService,
     private loadingService: LoaderService
   ) { }
@@ -136,6 +138,17 @@ export class SearchComponent implements OnInit {
 
   approveAll() {
     this.handleapproveAll.emit()
+  }
+
+  confirmApproval(template: any) {
+    const dialog = this.dialog.open(template, {
+      width: '500px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.handleapproveAll.emit()
+      }
+    })
   }
 
   sort() { }
