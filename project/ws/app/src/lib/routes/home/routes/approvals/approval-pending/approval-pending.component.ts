@@ -136,9 +136,9 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
   }
 
   fetchApprovals(sortValue: any) {
-    let sortedVal = {}
+    // let sortedVal = {}
     if (!sortValue) {
-      sortedVal = { firstName: 'asc' }
+      // sortedVal = { firstName: 'asc' }
     }
     if (this.departName) {
       const req = {
@@ -147,7 +147,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
         deptName: this.departName,
         offset: this.currentOffset,
         limit: this.limit,
-        sort_by: sortValue ? sortValue : sortedVal,
+        // sort_by: sortValue ? sortValue : sortedVal,
 
       }
       this.allTransfersData = []
