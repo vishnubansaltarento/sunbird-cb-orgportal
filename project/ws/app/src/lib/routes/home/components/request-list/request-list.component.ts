@@ -260,7 +260,7 @@ export class RequestListComponent implements OnInit {
     this.loaderService.changeLoaderState(true)
     const request = {
         filterCriteriaMap: {
-          rootOrgId: this.rootOrgId ? this.rootOrgId :'',
+          rootOrgId: this.rootOrgId ? this.rootOrgId : '',
         },
         requestedFields: [],
         facets: [],
