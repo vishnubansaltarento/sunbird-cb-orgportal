@@ -81,7 +81,7 @@ export class RequestListComponent implements OnInit {
   ngOnInit() {
     this.configSvc = this.activeRoute.snapshot.data['configService']
     this.fullProfile = _.get(this.activeRoute.snapshot, 'data.configService')
-    if (this.fullProfile.userProfile && this.fullProfile.userProfile.rootOrgId) {
+    if (this.fullProfile && this.fullProfile.userProfile && this.fullProfile.userProfile.rootOrgId) {
       this.rootOrgId = this.fullProfile.userProfile.rootOrgId
     }
     this.getRequestList()
@@ -260,7 +260,7 @@ export class RequestListComponent implements OnInit {
     this.loaderService.changeLoaderState(true)
     const request = {
         filterCriteriaMap: {
-          rootOrgId: this.rootOrgId,
+          rootOrgId: this.rootOrgId ? this.rootOrgId :'',
         },
         requestedFields: [],
         facets: [],
