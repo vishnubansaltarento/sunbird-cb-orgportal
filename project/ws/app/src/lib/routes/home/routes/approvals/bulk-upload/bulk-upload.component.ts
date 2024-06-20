@@ -75,7 +75,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content.sort((a: any, b: any) =>
           new Date(b.datecreatedon).getTime() - new Date(a.datecreatedon).getTime())
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open('Unable to get Bulk status list')
         }
@@ -117,7 +117,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
         if (!resendFlag) {
           this.verifyOTP(contactType)
         }
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open(_.get(error, 'error.params.errmsg') || `Unable to send OTP to your ${contactType}, please try again later!`)
         }
@@ -132,7 +132,8 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
       this.fileName = file.name
       this.fileSelected = file
       if (this.fileService.validateFile(this.fileName)) {
-        this.sendOTP()
+        // this.sendOTP()
+        this.verifyOTP(this.userProfile.email ? 'email' : 'phone')
       } else {
         this.showFileError = true
       }
@@ -169,7 +170,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
             this.fileName = ''
             this.fileSelected = ''
             this.getBulkStatusList()
-          },         (_err: HttpErrorResponse) => {
+          }, (_err: HttpErrorResponse) => {
             if (!_err.ok) {
               this.matSnackBar.open('Uploading CSV file failed due to some error, please try again later!')
             }
