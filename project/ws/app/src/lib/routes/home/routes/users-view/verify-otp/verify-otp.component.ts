@@ -56,7 +56,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
         clearInterval(this.interval)
         this.showResendOTP = true
       }
-    }, 1000)
+    },                          1000)
   }
 
   handleCloseModal(): void {
@@ -84,7 +84,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
       .subscribe((_res: any) => {
         this.handleCloseModal()
         this.otpVerified.emit(true)
-      }, (error: HttpErrorResponse) => {
+      },         (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackbar.open('Unable to verify OTP, please try again later!')
         }
@@ -97,7 +97,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
       .subscribe((_res: any) => {
         this.handleCloseModal()
         this.otpVerified.emit(true)
-      }, (error: HttpErrorResponse) => {
+      },         (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackbar.open('Unable to verify OTP, please try again later!')
         }
