@@ -132,7 +132,8 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
       this.fileName = file.name
       this.fileSelected = file
       if (this.fileService.validateFile(this.fileName)) {
-        this.sendOTP()
+        // this.sendOTP()
+        this.verifyOTP(this.userProfile.email ? 'email' : 'phone')
       } else {
         this.showFileError = true
       }

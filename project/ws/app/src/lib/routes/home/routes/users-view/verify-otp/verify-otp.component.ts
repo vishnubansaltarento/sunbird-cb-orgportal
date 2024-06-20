@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { HttpErrorResponse } from '@angular/common/http'
-import { MatSnackBar } from '@angular/material'
+import { MatRadioChange, MatSnackBar } from '@angular/material'
 
 import { Subject } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
@@ -9,6 +9,8 @@ import { takeUntil } from 'rxjs/operators'
 import * as _ from 'lodash'
 /* tslint:enable */
 import { OtpService } from '../../../../users/services/otp.service'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { UsersService } from '../../../../users/services/users.service'
 
 @Component({
   selector: 'ws-verify-otp',
@@ -25,13 +27,21 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   interval: any
   showResendOTP = false
   otpEntered = ''
+  otpSelectionForm!: FormGroup
+  otpTypeSelected = false
+  otpTypeSelectedValue: any
 
   constructor(
     public dialogRef: MatDialogRef<VerifyOtpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private matSnackbar: MatSnackBar,
-    private otpService: OtpService
-  ) { }
+    private otpService: OtpService,
+    private usersService: UsersService
+  ) {
+    this.otpSelectionForm = new FormGroup({
+      otpType: new FormControl('', [Validators.required]),
+    })
+  }
 
   ngOnInit() {
     this.startTimer()
@@ -61,7 +71,7 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   }
 
   handleVerifyOTP(): void {
-    if (this.data.type === 'email') {
+    if (this.otpTypeSelectedValue === 'email') {
       this.verifyEmailOTP()
     } else {
       this.verifyMobileOTP()
@@ -97,5 +107,34 @@ export class VerifyOtpComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     clearInterval(this.interval)
     this.destroySubject$.unsubscribe()
+  }
+
+  radioChange(_event: MatRadioChange) {
+    // this.resetOTPFields()
+  }
+
+  sendOtp() {
+    this.generateAndVerifyOTP(this.otpSelectionForm.value.otpType)
+    this.otpTypeSelected = true
+    this.otpTypeSelectedValue = this.otpSelectionForm.value.otpType
+  }
+
+  generateAndVerifyOTP(contactType: string): void {
+    const type = contactType === 'email' ? 'email' : 'phone'
+    const postValue = contactType === 'email' ? this.data.email : this.data.mobile
+    this.usersService.sendOtp(postValue, type)
+      .pipe(takeUntil(this.destroySubject$))
+      .subscribe((_res: any) => {
+        this.matSnackbar.open(`An OTP has been sent to your ${type === 'phone' ? 'Mobile number'
+          : 'Email address'}, (Valid for 15 min's)`)
+        // if (!resendFlag) {
+        //   this.verifyOTP(contactType)
+        // }
+        // tslint:disable-next-line
+      }, (error: HttpErrorResponse) => {
+        if (!error.ok) {
+          this.matSnackbar.open(_.get(error, 'error.params.errmsg') || `Unable to send OTP to your ${contactType}, please try again later!`)
+        }
+      })
   }
 }
