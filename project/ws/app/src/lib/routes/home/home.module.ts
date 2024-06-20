@@ -79,6 +79,7 @@ import { RequestListComponent } from './components/request-list/request-list.com
 import { CreateRequestFormComponent } from './components/request-list/create-request-form/create-request-form.component'
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
+import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
 
 @NgModule({
   declarations: [
@@ -123,6 +124,7 @@ import { AssignListPopupComponent } from './components/request-list/assign-list-
     CreateRequestFormComponent,
     CompetencyViewComponent,
     AssignListPopupComponent,
+    SingleAssignPopupComponent
   ],
   imports: [
     CommonModule,
@@ -193,6 +195,7 @@ import { AssignListPopupComponent } from './components/request-list/assign-list-
     FileProgressComponent,
     CompetencyViewComponent,
     AssignListPopupComponent,
+    SingleAssignPopupComponent
   ],
   providers: [
     InitResolver,
