@@ -37,7 +37,7 @@ export class OtpService {
   verifyOTP(otp: number, mob: number) {
     const reqObj = {
       request: {
-        otp,
+        otp: otp.toString(),
         type: 'phone',
         key: `${mob}`,
       },

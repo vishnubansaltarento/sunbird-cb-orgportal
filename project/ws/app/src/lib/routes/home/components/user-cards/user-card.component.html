@@ -596,16 +596,19 @@
                       <mat-icon class="nonverified-icon margin-left-s"
                         *ngIf="field.action === 'REJECT'">cancel</mat-icon>
                     </span>
-                    <mat-radio-group aria-label="Select an option" name="approveGroup" formControlName="approveGroup"
-                      class="mat-caption margin-top-s">
-                      <mat-radio-button value="approvegroup" class="margin-right-s"
-                        (click)="onClickHandleWorkflow(field,'APPROVE')">Approve</mat-radio-button>
-                      <mat-radio-button value="rejectgroup"
-                        (click)="onClickHandleWorkflow(field,'REJECT')">Reject</mat-radio-button>
-                      <mat-icon class="margin-left-m editreasonicon cursor-pointer"
-                        *ngIf="field.action === 'REJECT' && comment !== ''"
-                        (click)="updateRejection(field)">chat_bubble</mat-icon>
-                    </mat-radio-group>
+                    <div class="flex flex-1">
+                      <mat-radio-group aria-label="Select an option" name="approveGroup" formControlName="approveGroup"
+                        class="mat-caption">
+                        <mat-radio-button value="approvegroup" class="margin-right-s"
+                          (click)="onClickHandleWorkflow(field,'APPROVE')">Approve</mat-radio-button>
+                        <mat-radio-button value="rejectgroup"
+                          (click)="onClickHandleWorkflow(field,'REJECT')">Reject</mat-radio-button>
+                        <mat-icon class="margin-left-m editreasonicon cursor-pointer"
+                          *ngIf="field.action === 'REJECT' && comment !== ''"
+                          (click)="updateRejection(field)">chat_bubble</mat-icon>
+                      </mat-radio-group>
+                    </div>
+
                   </div>
                 </div>
                 <div class="md:w-1/3 margin-bottom-s" *ngIf="field.label === 'Designation'">
@@ -619,16 +622,18 @@
                       <mat-icon class="nonverified-icon margin-left-s"
                         *ngIf="field.action === 'REJECT'">cancel</mat-icon>
                     </span>
-                    <mat-radio-group aria-label="Select an option" name="approveDesignation"
-                      formControlName="approveDesignation" class="mat-caption margin-top-s">
-                      <mat-radio-button value="approvedesg" class="margin-right-s"
-                        (click)="onClickHandleWorkflow(field,'APPROVE')">Approve</mat-radio-button>
-                      <mat-radio-button value="rejectdesg"
-                        (click)="onClickHandleWorkflow(field,'REJECT')">Reject</mat-radio-button>
-                      <mat-icon class="margin-left-m editreasonicon cursor-pointer"
-                        *ngIf="field.action === 'REJECT' && comment !== ''"
-                        (click)="updateRejection(field)">chat_bubble</mat-icon>
-                    </mat-radio-group>
+                    <div class="flex flex-1">
+                      <mat-radio-group aria-label="Select an option" name="approveDesignation"
+                        formControlName="approveDesignation" class="mat-caption">
+                        <mat-radio-button value="approvedesg" class="margin-right-s"
+                          (click)="onClickHandleWorkflow(field,'APPROVE')">Approve</mat-radio-button>
+                        <mat-radio-button value="rejectdesg"
+                          (click)="onClickHandleWorkflow(field,'REJECT')">Reject</mat-radio-button>
+                        <mat-icon class="margin-left-m editreasonicon cursor-pointer"
+                          *ngIf="field.action === 'REJECT' && comment !== ''"
+                          (click)="updateRejection(field)">chat_bubble</mat-icon>
+                      </mat-radio-group>
+                    </div>
                   </div>
                 </div>
               </ng-container>
