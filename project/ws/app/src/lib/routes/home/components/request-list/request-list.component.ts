@@ -10,6 +10,7 @@ import { AssignListPopupComponent } from './assign-list-popup/assign-list-popup.
 import { LoaderService } from '../../../../../../../../../src/app/services/loader.service'
 /* tslint:disable */
 import _ from 'lodash'
+import { SingleAssignPopupComponent } from './single-assign-popup/single-assign-popup.component'
 /* tslint:enable */
 export enum statusValue {
   Assigned= 'Assigned',
@@ -146,13 +147,17 @@ export class RequestListComponent implements OnInit {
     case 'reAssignContent':
       if (item.requestType === 'Broadcast') {
         this.openAssignlistPopup(item)
-      } else {
-        this.queryParams = {
-          id: item.demand_id,
-          name: 'reassign',
-        }
-          this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
+      } 
+      else {
+        this.openSingleReassignPopup(item)
       }
+      // else {
+      //   this.queryParams = {
+      //     id: item.demand_id,
+      //     name: 'reassign',
+      //   }
+      //     this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
+      // }
 
       break
     case 'copyContent':
@@ -244,8 +249,33 @@ export class RequestListComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe((_res: any) => {
       if (_res && _res.data === 'confirmed') {
-         this.getRequestList()
+        setTimeout(()=>{
+          this.getRequestList()
+        },1000)
          this.snackBar.open('Assigned submitted Successfully')
+      } else {
+        // this.snackBar.open('error')
+      }
+    })
+  }
+
+
+  openSingleReassignPopup(item:any){
+    this.dialogRef = this.dialog.open(SingleAssignPopupComponent, {
+      disableClose: false,
+      width: '90%',
+      height: '70vh',
+      data: item,
+      autoFocus: false,
+    })
+
+    this.dialogRef.afterClosed().subscribe((_res: any) => {
+      if (_res && _res.data === 'confirmed') {
+        setTimeout(()=>{
+          this.getRequestList()
+        },1000)
+        
+         this.snackBar.open('Re-assign submitted Successfully')
       } else {
         // this.snackBar.open('error')
       }
