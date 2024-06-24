@@ -147,8 +147,7 @@ export class RequestListComponent implements OnInit {
     case 'reAssignContent':
       if (item.requestType === 'Broadcast') {
         this.openAssignlistPopup(item)
-      } 
-      else {
+      } else {
         this.openSingleReassignPopup(item)
       }
       // else {
@@ -249,9 +248,9 @@ export class RequestListComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe((_res: any) => {
       if (_res && _res.data === 'confirmed') {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.getRequestList()
-        },1000)
+        },         1000)
          this.snackBar.open('Assigned submitted Successfully')
       } else {
         // this.snackBar.open('error')
@@ -259,8 +258,7 @@ export class RequestListComponent implements OnInit {
     })
   }
 
-
-  openSingleReassignPopup(item:any){
+  openSingleReassignPopup(item: any) {
     this.dialogRef = this.dialog.open(SingleAssignPopupComponent, {
       disableClose: false,
       width: '90%',
@@ -271,10 +269,10 @@ export class RequestListComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe((_res: any) => {
       if (_res && _res.data === 'confirmed') {
-        setTimeout(()=>{
+        setTimeout(() => {
           this.getRequestList()
-        },1000)
-        
+        },         1000)
+
          this.snackBar.open('Re-assign submitted Successfully')
       } else {
         // this.snackBar.open('error')

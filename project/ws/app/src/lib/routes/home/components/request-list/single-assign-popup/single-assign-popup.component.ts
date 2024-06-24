@@ -1,14 +1,14 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatTableDataSource } from '@angular/material';
-import { MatPaginator } from '@angular/material/paginator';
-import { ProfileV2Service } from '../../../services/home.servive';
-import { ConfigResolveService } from '../../../resolvers/config-resolve.service';
+import { Component, Inject, OnInit, ViewChild } from '@angular/core'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { MAT_DIALOG_DATA, MatDialogRef, MatTableDataSource } from '@angular/material'
+import { MatPaginator } from '@angular/material/paginator'
+import { ProfileV2Service } from '../../../services/home.servive'
+import { ConfigResolveService } from '../../../resolvers/config-resolve.service'
 
 @Component({
   selector: 'ws-app-single-assign-popup',
   templateUrl: './single-assign-popup.component.html',
-  styleUrls: ['./single-assign-popup.component.scss']
+  styleUrls: ['./single-assign-popup.component.scss'],
 })
 export class SingleAssignPopupComponent implements OnInit {
 
@@ -21,12 +21,12 @@ export class SingleAssignPopupComponent implements OnInit {
   fullProfile: any
   userId: any
   assignText = ''
-  submitAssign = '';
-  requestTypeData:any[]=[]
-  filterRequestData:any[]=[]
-  isDisable:boolean  = false;
+  submitAssign = ''
+  requestTypeData: any[] = []
+  filterRequestData: any[] = []
+  isDisable  = false
   // @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-  dataSource = new MatTableDataSource<any>([]);
+  dataSource = new MatTableDataSource<any>([])
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator | null = null
   @ViewChild(MatPaginator, { static: false }) set matPaginator(paginator: MatPaginator) {
     this.paginator = paginator
@@ -44,7 +44,7 @@ export class SingleAssignPopupComponent implements OnInit {
   ) {
     this.requestForm = this.fb.group({
       assignee: new FormControl('', Validators.required),
-      orgSearch: new FormControl('')
+      orgSearch: new FormControl(''),
 
     })
   }
@@ -71,13 +71,13 @@ export class SingleAssignPopupComponent implements OnInit {
       // if (assignOrgData) {
       //   this.requestForm.controls['assignee'].setValue(assignOrgData)
       // }
-      //move selected data to first
-      let position = this.requestTypeData.indexOf(assignOrgData)
+      // move selected data to first
+      const position = this.requestTypeData.indexOf(assignOrgData)
 
-      //check if the element exists in the array
-      if(position > -1){
+      // check if the element exists in the array
+      if (position > -1) {
         // Remove the element from its position
-        let selectedData= this.requestTypeData.splice(position, 1)[0]
+        const selectedData = this.requestTypeData.splice(position, 1)[0]
 
         // Add the removed element to the beginning of the array
         this.requestTypeData.unshift(selectedData)
@@ -85,9 +85,7 @@ export class SingleAssignPopupComponent implements OnInit {
     }
    }
 
-   
-
-  getOrgListData(){
+  getOrgListData() {
     const requestObj = {
       request: {
         filters: {
@@ -96,15 +94,15 @@ export class SingleAssignPopupComponent implements OnInit {
       },
     }
     this.homeService.getRequestTypeList(requestObj).subscribe(data => {
-      if(data){
-        this.requestTypeData = data;
+      if (data) {
+        this.requestTypeData = data
         this.filterRequestData = this.requestTypeData
         this.dataSource.data = this.requestTypeData
-        
+
         this.dataSource.paginator = this.paginator
         this.setFormData()
-      
-      }   
+
+      }
     })
    }
 
@@ -121,7 +119,6 @@ export class SingleAssignPopupComponent implements OnInit {
   //   return array.filter((value: any) =>
   //     value.orgName.toLowerCase().includes(searchValue.toLowerCase()))
   // }
- 
 
   onChangePage(event: any) {
     this.pageNumber = event.pageIndex
@@ -147,20 +144,20 @@ export class SingleAssignPopupComponent implements OnInit {
       competencies: this.data.competencies,
       referenceLink: this.data.referenceLink,
       requestType: this.data.requestType,
-      preferredProvider:this.data.preferredProvider,
+      preferredProvider: this.data.preferredProvider,
       assignedProvider: assigneeProvider,
       status: this.data.status,
       source: this.data.owner,
       demand_id: this.data.demand_id,
-      learningMode:this.data.learningMode
+      learningMode: this.data.learningMode,
         // assignedBy: this.userId,
       }
-      this.homeService.createDemand(request).subscribe((res:any) => {
+      this.homeService.createDemand(request).subscribe((res: any) => {
         if (res) {
           this.dialogRef.close({ data: 'confirmed' })
         }
 
-      },(error:any) => {
+      },                                               (error: any) => {
        this.dialogRef.close({ error })
 
       }
@@ -173,6 +170,5 @@ export class SingleAssignPopupComponent implements OnInit {
     this.dialogRef.close()
     // Implement your cancel logic here
   }
-
 
 }

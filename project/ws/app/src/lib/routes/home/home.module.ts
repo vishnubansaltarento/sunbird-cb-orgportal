@@ -124,7 +124,7 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     CreateRequestFormComponent,
     CompetencyViewComponent,
     AssignListPopupComponent,
-    SingleAssignPopupComponent
+    SingleAssignPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -195,7 +195,7 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     FileProgressComponent,
     CompetencyViewComponent,
     AssignListPopupComponent,
-    SingleAssignPopupComponent
+    SingleAssignPopupComponent,
   ],
   providers: [
     InitResolver,
