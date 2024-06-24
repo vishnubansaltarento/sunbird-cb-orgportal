@@ -9,7 +9,8 @@ const API_ENDPOINTS = {
   downloadReport: `/apis/protected/v8/admin/userRegistration/bulkUploadReport`,
   getBulkUploadData: '/apis/proxies/v8/user/v1/bulkupload',
   getBulkApproval: '/apis/proxies/v8/workflow/admin/bulkupdate/getstatus',
-  bulkApprovalUpload: `/apis/proxies/v8/workflow/admin/transition/bulkupdate`,
+  // bulkApprovalUpload: `/apis/proxies/v8/workflow/admin/transition/bulkupdate`,
+  bulkApprovalUpload: '/apis/proxies/v8/workflow/admin/v2/bulkupdate/transition',
 }
 
 @Injectable()

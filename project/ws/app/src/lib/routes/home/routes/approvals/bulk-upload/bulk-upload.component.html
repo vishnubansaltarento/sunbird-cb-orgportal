@@ -48,7 +48,10 @@
     </div>
   </div>
 
-  <div class="text-base font-bold">File logs</div>
+  <div class="text-base font-bold">File logs
+    <button type="button" class="outline-button float-right" [ngClass]="{'disable': isContentLive}"
+      (click)="getPendingResquests()">Download pending requests</button>
+  </div>
   <div class="flex flex-col gap-6">
     <div class="file-container"
       *ngFor="let list of lastUploadList | slice : startIndex : lastIndex | orderBy:'datecreatedon':'desc'">
@@ -101,8 +104,5 @@
   <div class="flex flex-row justify-end mt-4">
     <mat-paginator [pageSize]="pageSize" [length]="lastUploadList.length" [pageSizeOptions]="sizeOptions"
       (page)="handleChangePage($event)"></mat-paginator>
-
   </div>
-
-
 </div>

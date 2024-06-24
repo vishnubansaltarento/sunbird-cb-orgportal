@@ -75,7 +75,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
       .subscribe((res: any) => {
         this.lastUploadList = res.result.content.sort((a: any, b: any) =>
           new Date(b.datecreatedon).getTime() - new Date(a.datecreatedon).getTime())
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open('Unable to get Bulk status list')
         }
@@ -117,7 +117,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
         if (!resendFlag) {
           this.verifyOTP(contactType)
         }
-      },         (error: HttpErrorResponse) => {
+      }, (error: HttpErrorResponse) => {
         if (!error.ok) {
           this.matSnackBar.open(_.get(error, 'error.params.errmsg') || `Unable to send OTP to your ${contactType}, please try again later!`)
         }
@@ -170,7 +170,7 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
             this.fileName = ''
             this.fileSelected = ''
             this.getBulkStatusList()
-          },         (_err: HttpErrorResponse) => {
+          }, (_err: HttpErrorResponse) => {
             if (!_err.ok) {
               this.matSnackBar.open('Uploading CSV file failed due to some error, please try again later!')
             }
@@ -189,6 +189,16 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnDestroy(): void {
     this.destroySubject$.unsubscribe()
+  }
+
+  getPendingResquests(): void {
+    // const filePath = `/apis/proxies/v8/workflow/admin/bulkuploadfile/download/${listObj.filename}`
+    // window.open(filePath, '_blank')
+    this.usersService.fetchPendingRequests().subscribe((res: any) => {
+      if (res) {
+        // console.log('*********************', res)
+      }
+    })
   }
 
 }
