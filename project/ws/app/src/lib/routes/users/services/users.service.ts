@@ -34,6 +34,7 @@ const API_END_POINTS = {
   editProfileDetails: '/apis/proxies/v8/user/v1/extPatch',
   getPendingFields: '/apis/proxies/v8/workflow/v2/userWFApplicationFieldsSearch',
   getApprovalPendingFields: '/apis/proxies/v8/workflow/v2/userWFApplicationFieldsSearch',
+  getPendingRequests: '/apis/proxies/v8/workflow/admin/pending/request',
 }
 
 @Injectable()
@@ -324,4 +325,9 @@ export class UsersService {
       applicationStatus: 'REJECTED',
     })
   }
+
+  fetchPendingRequests() {
+    return this.http.get<any>(API_END_POINTS.getPendingRequests)
+  }
+
 }

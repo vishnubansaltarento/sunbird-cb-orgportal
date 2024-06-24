@@ -191,4 +191,14 @@ export class BulkUploadApprovalComponent implements OnInit, AfterViewInit, OnDes
     this.destroySubject$.unsubscribe()
   }
 
+  getPendingResquests(): void {
+    // const filePath = `/apis/proxies/v8/workflow/admin/bulkuploadfile/download/${listObj.filename}`
+    // window.open(filePath, '_blank')
+    this.usersService.fetchPendingRequests().subscribe((res: any) => {
+      if (res) {
+        // console.log('*********************', res)
+      }
+    })
+  }
+
 }

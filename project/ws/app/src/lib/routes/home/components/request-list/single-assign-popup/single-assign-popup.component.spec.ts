@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SingleAssignPopupComponent } from './single-assign-popup.component';
+import { SingleAssignPopupComponent } from './single-assign-popup.component'
 
 describe('SingleAssignPopupComponent', () => {
-  let component: SingleAssignPopupComponent;
-  let fixture: ComponentFixture<SingleAssignPopupComponent>;
+  let component: SingleAssignPopupComponent
+  let fixture: ComponentFixture<SingleAssignPopupComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SingleAssignPopupComponent ]
+      declarations: [SingleAssignPopupComponent],
     })
-    .compileComponents();
-  }));
+    .compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SingleAssignPopupComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(SingleAssignPopupComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})
