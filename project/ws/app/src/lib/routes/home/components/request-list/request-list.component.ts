@@ -228,7 +228,9 @@ export class RequestListComponent implements OnInit {
    this.homeService.markAsInvalid(request).subscribe(res => {
      this.invalidRes = res
      if (res) {
-      this.getRequestList()
+      setTimeout(() => {
+        this.getRequestList()
+      },         1000)
      }
 
      this.snackBar.open('Marked as Invalid')

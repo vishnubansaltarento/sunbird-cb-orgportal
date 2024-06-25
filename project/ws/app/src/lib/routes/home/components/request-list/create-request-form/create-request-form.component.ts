@@ -582,7 +582,12 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
           this.snackBar.open('Request submitted successfully ')
       }
       },         1000)
-    }
+    },
+    (error:any) => {
+      this.dialogRefs.close({ error })
+      this.snackBar.open('Request Failed')
+
+     }
   )
    }
 
@@ -600,11 +605,11 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
         dialogData['icon'] = 'accept_icon'
         dialogData['title'] = 'Processing your request'
         dialogData['subTitle'] = `Wait a second , your request is processing………`
-        dialogData['primaryAction'] = 'Redirecting....'
+        dialogData['primaryAction'] = 'Successfully created....'
         break
     }
 
-    this.openDialoagBox(dialogData)
+     this.openDialoagBox(dialogData)
   }
 
   openDialoagBox(dialogData: any) {
