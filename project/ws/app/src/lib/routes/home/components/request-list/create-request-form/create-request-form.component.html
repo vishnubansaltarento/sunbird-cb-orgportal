@@ -303,7 +303,7 @@
                         <mat-form-field appearance="outline" class="w-full field-height" fxFlex="40">
                             <mat-select class=" placeholder-text" placeholder="Choose the Assignee" formControlName="assignee">
                               <input #search autocomplete="off" placeholder="Search" class="assigneeSearch"
-                               (keyup)="searchValueData('assigneeText')"  formControlName="assigneeText" matInput>
+                               (keyup)="searchValueData('assigneeText')"  (keydown.space)="$event.stopPropagation()" formControlName="assigneeText" matInput>
                               <mat-option *ngFor="let option of filteredAssigneeType" [value]="option">{{option.orgName}}</mat-option>
                           
                             </mat-select>
@@ -338,7 +338,8 @@
                               </mat-select-trigger>
                               <mat-optgroup>
                                 <mat-form-field floatLabel="never">
-                                  <input #search autocomplete="off" placeholder="Search" (keyup)="searchValueData('providerText')"  formControlName="providerText" matInput>
+                                  <input #search autocomplete="off" placeholder="Search" (keyup)="searchValueData('providerText')" (keydown.space)="$event.stopPropagation()"
+                                   formControlName="providerText" matInput>
                                   <button [disableRipple]="true" *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear"
                                     (click)="clearSearch($event,'providerText')"><mat-icon>close</mat-icon></button>
                                 </mat-form-field>
