@@ -1,4 +1,6 @@
 import {
+  AfterViewChecked,
+  ChangeDetectorRef,
   Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output,
   QueryList, TemplateRef, ViewChild, ViewChildren,
 } from '@angular/core'
@@ -25,7 +27,8 @@ import { EventService } from '@sunbird-cb/utils'
 import { TelemetryEvents } from '../../../../head/_services/telemetry.event.model'
 import { DatePipe } from '@angular/common'
 
-const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9]*.[a-zA-Z]{2,}$/
+// const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9]*.[a-zA-Z]{2,}$/
+const EMAIL_PATTERN = /^[a-zA-Z0-9]+[a-zA-Z0-9._-]*[a-zA-Z0-9]+@[a-zA-Z0-9]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,4}$/
 
 @Component({
   selector: 'ws-widget-user-card',
@@ -36,7 +39,7 @@ const EMAIL_PATTERN = /^[a-zA-Z0-9](\.?[a-zA-Z0-9_]+)*@[a-zA-Z0-9]*.[a-zA-Z]{2,}
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
   ],
 })
-export class UserCardComponent implements OnInit, OnChanges {
+export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() userId: any
   @Input() tableData: any
   @Input() usersData: any
@@ -121,7 +124,8 @@ export class UserCardComponent implements OnInit, OnChanges {
               private dialog: MatDialog, private approvalSvc: ApprovalsService,
               private route: ActivatedRoute, private snackBar: MatSnackBar,
               private events: EventService,
-              private datePipe: DatePipe) {
+              private datePipe: DatePipe,
+              private cdr: ChangeDetectorRef) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -203,6 +207,10 @@ export class UserCardComponent implements OnInit, OnChanges {
         this.getApprovalData()
       }
     }
+  }
+
+  ngAfterViewChecked() {
+    this.cdr.detectChanges()
   }
 
   getApprovalData() {
