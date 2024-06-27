@@ -7,6 +7,7 @@ import { CompetencyViewComponent } from '../competency-view/competency-view.comp
 import { ConfirmationBoxComponent } from '../../../../training-plan/components/confirmation-box/confirmation.box.component'
 /* tslint:disable */
 import _ from 'lodash'
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators'
 /* tslint:enable */
 
 @Component({
@@ -178,12 +179,20 @@ export class CreateRequestFormComponent implements OnInit {
 
   searchValueData(searchValue: any) {
     if (searchValue === 'providerText') {
-      this.requestForm.controls['providerText'].valueChanges.subscribe((newValue: any) => {
+      this.requestForm.controls['providerText'].valueChanges.pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        startWith(''),
+      ).subscribe((newValue: any) => {
         this.filteredRequestType = this.filterOrgValues(newValue, this.requestTypeData)
       })
     }
     if (searchValue === 'assigneeText') {
-      this.requestForm.controls['assigneeText'].valueChanges.subscribe((newValue: any) => {
+      this.requestForm.controls['assigneeText'].valueChanges.pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        startWith(''),
+      ).subscribe((newValue: any) => {
         this.filteredAssigneeType = this.filterOrgValues(newValue, this.requestTypeData)
       })
     }
