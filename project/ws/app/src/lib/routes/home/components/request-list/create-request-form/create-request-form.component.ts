@@ -592,7 +592,7 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
       }
       },         1000)
     },
-    (error:any) => {
+                                                     (error: any) => {
       this.dialogRefs.close({ error })
       this.snackBar.open('Request Failed')
 
