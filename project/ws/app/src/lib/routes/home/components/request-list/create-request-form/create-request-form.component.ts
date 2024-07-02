@@ -155,12 +155,16 @@ export class CreateRequestFormComponent implements OnInit {
 
     this.selectRequestType(this.requestObjData.requestType)
     if (this.filteredRequestType) {
-      const abc = this.filteredRequestType.filter(option =>
+      if(this.requestObjData.preferredProvider && this.requestObjData.preferredProvider.length){
+      const prefferedData = this.filteredRequestType.filter(option =>
         this.requestObjData.preferredProvider.some((res: any) =>
           res.providerId === option.id
         )
       )
-      this.requestForm.controls['providers'].setValue(abc)
+      if(prefferedData && prefferedData.length){
+        this.requestForm.controls['providers'].setValue(prefferedData)
+      }
+    }
     }
 
     if (this.filteredAssigneeType) {
@@ -547,20 +551,7 @@ export class CreateRequestFormComponent implements OnInit {
     if (this.demandId && this.actionBtnName === 'reassign') {
       this.requestForm.enable()
     }
-    let providerList: any[] = []
-    if (this.requestForm.value.providers) {
-      providerList = this.requestForm.value.providers.map((item: any) => ({
-        providerName: item.orgName,
-        providerId: item.id,
-      }))
-    }
-    let assigneeProvider: any
-    if (this.requestForm.value.assignee) {
-      assigneeProvider = {
-        providerName: this.requestForm.value.assignee.orgName,
-        providerId: this.requestForm.value.assignee.id,
-      }
-    }
+   
 
     let competencyDataList: any[] = []
     if (this.requestForm.value.competencies_v5) {
@@ -579,12 +570,30 @@ export class CreateRequestFormComponent implements OnInit {
       competencies: competencyDataList,
       referenceLink: this.requestForm.value.referenceLink,
       requestType: this.requestForm.value.requestType,
-      preferredProvider: providerList,
-      assignedProvider: assigneeProvider,
+      // preferredProvider: providerList,
+      // assignedProvider: assigneeProvider,
       // status: this.statusValue,
       // source: this.userId,
 
     }
+
+    let providerList: any[] = []
+    if (this.requestForm.value.providers && this.isBroadCast) {
+      providerList = this.requestForm.value.providers.map((item: any) => ({
+        providerName: item.orgName,
+        providerId: item.id,
+      }))
+      request.preferredProvider = providerList
+    }
+    let assigneeProvider: any
+    if (this.requestForm.value.assignee && this.isAssignee) {
+      assigneeProvider = {
+        providerName: this.requestForm.value.assignee.orgName,
+        providerId: this.requestForm.value.assignee.id,
+      }
+      request.assignedProvider = assigneeProvider
+    }
+     
 
     if (this.requestForm.value.learningMode) {
       request.learningMode = this.requestForm.value.learningMode.toLowerCase()
