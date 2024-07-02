@@ -241,9 +241,9 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       //   allusersData.count = allusersData.count - 1
       // }
 
-      if (this.notmyuserUsersDataCount && allusersData.count > this.notmyuserUsersDataCount) {
-        this.activeUsersDataCount = allusersData.count - this.notmyuserUsersDataCount
-      }
+      // if (this.notmyuserUsersDataCount && allusersData.count > this.notmyuserUsersDataCount) {
+      //   this.activeUsersDataCount = allusersData.count - this.notmyuserUsersDataCount
+      // }
     })
   }
   async getVUsers(query: any) {
@@ -284,6 +284,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.verifiedUsersData = allusersData.content
       this.verifiedUsersDataCount = data.result.response.count
+      this.filterFacets = allusersData.facets ? allusersData.facets : []
 
       // if (this.currentUserStatus === 'VERIFIED') {
       //   const i = this.verifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
@@ -333,6 +334,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
+      this.filterFacets = allusersData.facets ? allusersData.facets : []
 
       // if (this.currentUserStatus === 'NOT-VERIFIED') {
       //   const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
@@ -383,6 +385,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.notmyuserUsersData = allusersData.content
       this.notmyuserUsersDataCount = data.result.response.count
+      this.filterFacets = allusersData.facets ? allusersData.facets : []
     })
   }
 

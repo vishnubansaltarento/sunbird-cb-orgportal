@@ -51,7 +51,6 @@ export class FilterComponent implements OnInit, AfterContentChecked {
   }
 
   ngOnInit() {
-    // this.setData()
     if (!this.usersSvc.filterToggle) { return }
     this.usersSvc.filterToggle.subscribe((data: any) => {
       if (data && data.status) {
@@ -408,7 +407,20 @@ export class FilterComponent implements OnInit, AfterContentChecked {
       this.resetFilter()
     } else {
       this.assigneeFilterObj = { group: [], designation: [], roles: [], tags: [] }
-      this.resetAssigneeFilter()
+      // this.resetAssigneeFilter()
+      if (this.groupList) {
+        this.assigneeFilterObj['group'] = []
+        this.groupSearchKey = ''
+      }
+      this.assigneeFilterObj['designation'] = []
+      this.designationSearchKey = ''
+
+      this.assigneeFilterObj['roles'] = []
+      this.rolesSearchKey = ''
+
+      this.assigneeFilterObj['tags'] = []
+      this.tagsSearchKey = ''
+
     }
 
     if (this.from === 'content') {
