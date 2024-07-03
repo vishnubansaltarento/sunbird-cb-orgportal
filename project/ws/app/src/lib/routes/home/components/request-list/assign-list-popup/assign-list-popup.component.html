@@ -43,7 +43,14 @@
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns" class="table-row-data"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                <ng-container *ngIf="data?.assignedProvider">
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{'row-bg':row === this.providerList[0]}"></tr>
+
+                </ng-container>
+                <ng-container *ngIf="!data?.assignedProvider">
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+                </ng-container>
               </table>
               <mat-paginator [pageSize]="pageSize" [length]="this.providerCount" [pageSizeOptions]="[5,10,20]"
               (page)="onChangePage($event)"></mat-paginator>

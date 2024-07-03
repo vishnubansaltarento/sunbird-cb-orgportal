@@ -113,7 +113,7 @@ export class AllUsersComponent implements OnInit, OnDestroy {
       `Verified Users: Users with all their primary fields approved.`,
       // tslint:disable-next-line: max-line-length
       `Non-Verified Users: Users whose one or more primary fields are yet to be approved. You can help by reviewing and approving their requests.`,
-      `Not My User: Remove a user from your organization with a simple click.`,
+      // `Not My User: Remove a user from your organization with a simple click.`,
     ]
   }
 
