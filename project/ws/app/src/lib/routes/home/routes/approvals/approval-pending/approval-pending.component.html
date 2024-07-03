@@ -40,11 +40,11 @@
             mat-button (click)="filter('transfers'); tabTelemetry('transfers', 1)" role="button">Transfers
             ({{transfersCount}})</a>
         </div>
-        <div class="flex flex-3 flex-end" *ngIf="currentFilter === 'profileverification'">
+        <!-- <div class="flex flex-3 flex-end" *ngIf="currentFilter === 'profileverification'">
           <a (click)="getPendingResquests()"
             class="customlink cursor-pointer mat-body-2"><mat-icon>download_outlined</mat-icon> Download
             Pending Requests</a>
-        </div>
+        </div> -->
       </div>
       <ng-container *ngIf="currentFilter === 'profileverification'">
         <div class="searchfilter">
