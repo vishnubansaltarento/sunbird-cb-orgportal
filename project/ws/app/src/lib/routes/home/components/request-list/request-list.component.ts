@@ -107,6 +107,14 @@ export class RequestListComponent implements OnInit {
 
 }
 
+getPointerEventsStyle(element:any){
+  return {
+   'pointer-events': (element.status !== this.statusKey.Inprogress && 
+     element.status !== this.statusKey.invalid && 
+     element.status !== this.statusKey.fullfill) ? 'auto' : 'none',
+  }
+ }
+
   hasAccess() {
     let flag = false
     if (this.pageConfig && this.pageConfig.data && this.pageConfig.data.actionMenu) {

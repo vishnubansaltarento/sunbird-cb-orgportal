@@ -75,7 +75,7 @@
                 <th mat-header-cell *matHeaderCellDef class="row-heading">Interests</th>
                 <td mat-cell class="title-class" *matCellDef="let element">
                     <a class="action-btn-view"   *ngIf="element?.interestCount!== 0" 
-                    href="javascript:void(0)"  >
+                    href="javascript:void(0)" [ngStyle]="getPointerEventsStyle(element)"  >
                     <span (click)="handleClick(element)">
                       {{element?.interestCount}}
                     </span></a>
