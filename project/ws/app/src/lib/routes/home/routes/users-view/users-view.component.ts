@@ -218,11 +218,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     reqBody = {
       request: {
         filters: filtreq,
-        facets: [
-          'profileDetails.professionalDetails.group',
-          'profileDetails.professionalDetails.designation',
-          'profileDetails.additionalDetails.tag',
-        ],
+        // facets: [
+        //   'profileDetails.professionalDetails.group',
+        //   'profileDetails.professionalDetails.designation',
+        //   'profileDetails.additionalDetails.tag',
+        // ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -234,7 +238,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       this.activeUsersData = allusersData.content
       // this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
       this.activeUsersDataCount = allusersData.count
-      this.filterFacets = allusersData.facets ? allusersData.facets : []
+      // this.filterFacets = allusersData.facets ? allusersData.facets : []
+
       // const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
       // if (i > -1) {
       //   this.activeUsersData.splice(i, 1)
@@ -269,11 +274,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     reqBody = {
       request: {
         filters: filtreq,
-        facets: [
-          'profileDetails.professionalDetails.group',
-          'profileDetails.professionalDetails.designation',
-          'profileDetails.additionalDetails.tag',
-        ],
+        // facets: [
+        //   'profileDetails.professionalDetails.group',
+        //   'profileDetails.professionalDetails.designation',
+        //   'profileDetails.additionalDetails.tag',
+        // ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -284,7 +293,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.verifiedUsersData = allusersData.content
       this.verifiedUsersDataCount = data.result.response.count
-      this.filterFacets = allusersData.facets ? allusersData.facets : []
+      // this.filterFacets = allusersData.facets ? allusersData.facets : []
 
       // if (this.currentUserStatus === 'VERIFIED') {
       //   const i = this.verifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
@@ -319,11 +328,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     reqBody = {
       request: {
         filters: filtreq,
-        facets: [
-          'profileDetails.professionalDetails.group',
-          'profileDetails.professionalDetails.designation',
-          'profileDetails.additionalDetails.tag',
-        ],
+        // facets: [
+        //   'profileDetails.professionalDetails.group',
+        //   'profileDetails.professionalDetails.designation',
+        //   'profileDetails.additionalDetails.tag',
+        // ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -334,7 +347,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.nonverifiedUsersData = allusersData.content
       this.nonverifiedUsersDataCount = data.result.response.count
-      this.filterFacets = allusersData.facets ? allusersData.facets : []
+      // this.filterFacets = allusersData.facets ? allusersData.facets : []
 
       // if (this.currentUserStatus === 'NOT-VERIFIED') {
       //   const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
@@ -370,11 +383,15 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     reqBody = {
       request: {
         filters: filtreq,
-        facets: [
-          'profileDetails.professionalDetails.group',
-          'profileDetails.professionalDetails.designation',
-          'profileDetails.additionalDetails.tag',
-        ],
+        // facets: [
+        //   'profileDetails.professionalDetails.group',
+        //   'profileDetails.professionalDetails.designation',
+        //   'profileDetails.additionalDetails.tag',
+        // ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -385,7 +402,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       const allusersData = data.result.response
       this.notmyuserUsersData = allusersData.content
       this.notmyuserUsersDataCount = data.result.response.count
-      this.filterFacets = allusersData.facets ? allusersData.facets : []
+      // this.filterFacets = allusersData.facets ? allusersData.facets : []
     })
   }
 

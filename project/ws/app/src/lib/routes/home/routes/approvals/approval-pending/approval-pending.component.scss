@@ -291,17 +291,27 @@ a:not([href]):not([tabindex]) {
 }
 
 .reportsDemo {
-    .reportsDemoVideo {
-      width: 200px;
-      height: 140px;
-      border-radius: 5px;
-      background-color: #FDEAD5;
-      font-weight: 600;
-      pointer-events: all;
-      cursor: pointer;
+  .reportsDemoVideo {
+    width: 200px;
+    height: 140px;
+    border-radius: 5px;
+    background-color: #FDEAD5;
+    font-weight: 600;
+    pointer-events: all;
+    cursor: pointer;
 
-      .video_icon {
-        font-size: 32px;
-      }
+    .video_icon {
+      font-size: 32px;
     }
   }
+}
+
+.customlink {
+  color: #1b4ca1 !important;
+  font-weight: 600;
+  margin: 18px 0 0 0;
+
+  mat-icon {
+    vertical-align: middle;
+  }
+}

@@ -10,6 +10,7 @@ import _ from 'lodash'
 import { TelemetryEvents } from '../../../../../head/_services/telemetry.event.model'
 import { ReportsVideoComponent } from '../../reports-video/reports-video.component'
 import { ApprovalsService } from '../../../services/approvals.service'
+import { UsersService } from '../../../../users/services/users.service'
 
 @Component({
   selector: 'ws-approval-pending',
@@ -48,6 +49,7 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
     private events: EventService,
     public dialog: MatDialog,
     private sanitizer: DomSanitizer,
+    private usersService: UsersService,
     private snackbar: MatSnackBar) {
     this.configSvc = this.route.parent && this.route.parent.snapshot.data.configService
     if (this.activeRouter.parent && this.activeRouter.parent.snapshot.data.configService.unMappedUser.channel
@@ -351,5 +353,18 @@ export class ApprovalPendingComponent implements OnInit, OnDestroy {
 
   showButton() {
     this.disableApproveALL = true
+  }
+
+  getPendingResquests(): void {
+    this.usersService.fetchPendingRequests().subscribe((res: any) => {
+      if (res) {
+        // console.log('*********************', res)
+      }
+      // tslint:disable-next-line
+    }, (error: any) => {
+      if (!error.ok) {
+        this.snackbar.open(error.error.text)
+      }
+    })
   }
 }
