@@ -1,0 +1,17 @@
+<div class="flex flex-4 flex-column">
+  <mat-card>
+    <mat-card-title class="flex-4 mobile-margin mat-h2">
+      Designations
+    </mat-card-title>
+    <mat-card-content>
+      <ng-container *ngIf="data?.length > 0">
+
+      </ng-container>
+      <ng-container *ngIf="!roleCountSpinner">
+        <div class="flex flex-1 loader-box">
+          <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
+        </div>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -80,6 +80,8 @@ import { CreateRequestFormComponent } from './components/request-list/create-req
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
+import { DesignationsComponent } from './routes/designations/designations.component'
+import { OdcsService } from './services/odcs.service'
 
 @NgModule({
   declarations: [
@@ -125,6 +127,7 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
+    DesignationsComponent
   ],
   imports: [
     CommonModule,
@@ -203,6 +206,7 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     UploadService,
     TrainingPlanDashboardService,
     UsersService,
+    OdcsService
   ],
 })
 export class HomeModule {

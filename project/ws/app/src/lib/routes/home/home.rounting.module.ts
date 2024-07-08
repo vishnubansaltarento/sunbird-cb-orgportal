@@ -27,6 +27,7 @@ import { UserCreationComponent } from './routes/users-view/user-creation/user-cr
 import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
 import { RequestListComponent } from './components/request-list/request-list.component'
 import { CreateRequestFormComponent } from './components/request-list/create-request-form/create-request-form.component'
+import { DesignationsComponent } from './routes/designations/designations.component'
 
 const routes: Routes = [
   {
@@ -332,6 +333,19 @@ const routes: Routes = [
           pageId: 'create-request-form',
           pageType: 'feature',
           pageKey: 'create-request-form',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+          pageData: PageResolve,
+        },
+      },
+      {
+        path: 'org-designations',
+        component: DesignationsComponent,
+        data: {
+          pageId: 'designations-list',
+          pageType: 'feature',
+          pageKey: 'designations-list',
         },
         resolve: {
           configService: ConfigResolveService,
