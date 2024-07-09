@@ -80,7 +80,7 @@ import { CreateRequestFormComponent } from './components/request-list/create-req
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
-
+import { MentorManageComponent } from './routes/mentor-manage/mentor-manage.component'
 @NgModule({
   declarations: [
     HomeComponent,
@@ -125,6 +125,7 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
+    MentorManageComponent
   ],
   imports: [
     CommonModule,
