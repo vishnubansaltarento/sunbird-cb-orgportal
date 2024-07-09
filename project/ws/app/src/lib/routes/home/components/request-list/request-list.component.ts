@@ -13,11 +13,11 @@ import _ from 'lodash'
 import { SingleAssignPopupComponent } from './single-assign-popup/single-assign-popup.component'
 /* tslint:enable */
 export enum statusValue {
-  Assigned= 'Assigned',
+  Assigned = 'Assigned',
   Unassigned = 'Unassigned',
   Inprogress = 'InProgress',
   invalid = 'Invalid',
-  fullfill= 'Fulfill',
+  fullfill = 'Fulfill',
 }
 @Component({
   selector: 'ws-app-request-list',
@@ -59,10 +59,10 @@ export class RequestListComponent implements OnInit {
   detailsEvent: any
   dataSource: any
   displayedColumns: string[] = ['RequestId', 'title', 'requestor', 'requestType',
-   'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
+    'requestStatus', 'assignee', 'requestedOn', 'interests', 'action']
   statusKey = statusValue
   fullProfile: any
- rootOrgId: any
+  rootOrgId: any
   constructor(private sanitizer: DomSanitizer,
               private homeService: ProfileV2Service,
               private datePipe: DatePipe,
@@ -75,8 +75,12 @@ export class RequestListComponent implements OnInit {
   requestList: any[] = [
     `You can request new content by filling out the request form. You will have the option to choose your content provider and
      if you are unsure then you can choose the option as broadcast your request.`,
-      `Please review the interest received from various providers and assign
+    `Please review the interest received from various providers and assign
       to the provider of your choice among the list.`,
+    `You can mark any unassigned request to invalid by choosing the
+      "Mark as Invalid" option. Similarly, you can "Re-Assign" any request that is
+      currently in "Assigned" status by selecting the "Re-Assign" option.`,
+    `You can copy an existing request and make necessary modifications to create a new content request`,
   ]
 
   ngOnInit() {
@@ -102,18 +106,18 @@ export class RequestListComponent implements OnInit {
         element.status !== this.statusKey.invalid &&
         element.status !== this.statusKey.fullfill) {
         this.onClickMenu(element, 'assignContent')
-    }
+      }
     }
 
-}
-
-getPointerEventsStyle(element:any){
-  return {
-   'pointer-events': (element.status !== this.statusKey.Inprogress && 
-     element.status !== this.statusKey.invalid && 
-     element.status !== this.statusKey.fullfill) ? 'auto' : 'none',
   }
- }
+
+  getPointerEventsStyle(element: any) {
+    return {
+      'pointer-events': (element.status !== this.statusKey.Inprogress &&
+        element.status !== this.statusKey.invalid &&
+        element.status !== this.statusKey.fullfill) ? 'auto' : 'none',
+    }
+  }
 
   hasAccess() {
     let flag = false
@@ -137,51 +141,51 @@ getPointerEventsStyle(element:any){
   }
 
   onClickMenu(item: any, action: string) {
-  switch (action) {
-    case 'viewContent':
+    switch (action) {
+      case 'viewContent':
 
-      this.queryParams = {
-      id: item.demand_id,
-      name: 'view',
-    }
-      this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
-      break
-    case 'invalidContent':
-      this.showConformationModal(item, action)
-      break
-    case 'assignContent':
-       this.openAssignlistPopup(item)
-      break
-    case 'reAssignContent':
-      if (item.requestType === 'Broadcast') {
+        this.queryParams = {
+          id: item.demand_id,
+          name: 'view',
+        }
+        this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
+        break
+      case 'invalidContent':
+        this.showConformationModal(item, action)
+        break
+      case 'assignContent':
         this.openAssignlistPopup(item)
-      } else {
-        this.openSingleReassignPopup(item)
-      }
-      // else {
-      //   this.queryParams = {
-      //     id: item.demand_id,
-      //     name: 'reassign',
-      //   }
-      //     this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
-      // }
+        break
+      case 'reAssignContent':
+        if (item.requestType === 'Broadcast') {
+          this.openAssignlistPopup(item)
+        } else {
+          this.openSingleReassignPopup(item)
+        }
+        // else {
+        //   this.queryParams = {
+        //     id: item.demand_id,
+        //     name: 'reassign',
+        //   }
+        //     this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
+        // }
 
-      break
-    case 'copyContent':
+        break
+      case 'copyContent':
         this.queryParams = {
           id: item.demand_id,
           name: 'copy',
         }
-          this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
-      break
-  }
+        this.router.navigate(['/app/home/create-request-form'], { queryParams: this.queryParams })
+        break
+    }
 
   }
 
   onChangePage(event: any) {
-  this.pageNo = event.pageIndex
-  this.pageSize = event.pageSize
-  this.getRequestList()
+    this.pageNo = event.pageIndex
+    this.pageSize = event.pageSize
+    this.getRequestList()
   }
 
   getStatusClass(status: string): string {
@@ -194,8 +198,8 @@ getPointerEventsStyle(element:any){
         return 'status-invalid'
       case 'Fulfill':
         return 'status-fullfill'
-        case 'InProgress':
-          return 'status-inprogress'
+      case 'InProgress':
+        return 'status-inprogress'
       default:
         return ''
     }
@@ -229,21 +233,21 @@ getPointerEventsStyle(element:any){
   }
 
   invalidContent(row: any) {
-   const request = {
-    demand_id: row.demand_id,
-    newStatus: 'Invalid',
-   }
-   this.homeService.markAsInvalid(request).subscribe(res => {
-     this.invalidRes = res
-     if (res) {
-      setTimeout(() => {
-        this.getRequestList()
-      },         1000)
-     }
-
-     this.snackBar.open('Marked as Invalid')
+    const request = {
+      demand_id: row.demand_id,
+      newStatus: 'Invalid',
     }
-  )
+    this.homeService.markAsInvalid(request).subscribe(res => {
+      this.invalidRes = res
+      if (res) {
+        setTimeout(() => {
+          this.getRequestList()
+        },         1000)
+      }
+
+      this.snackBar.open('Marked as Invalid')
+    }
+    )
 
   }
 
@@ -261,7 +265,7 @@ getPointerEventsStyle(element:any){
         setTimeout(() => {
           this.getRequestList()
         },         1000)
-         this.snackBar.open('Assigned submitted Successfully')
+        this.snackBar.open('Assigned submitted Successfully')
       } else {
         // this.snackBar.open('error')
       }
@@ -283,7 +287,7 @@ getPointerEventsStyle(element:any){
           this.getRequestList()
         },         1000)
 
-         this.snackBar.open('Re-assign submitted Successfully')
+        this.snackBar.open('Re-assign submitted Successfully')
       } else {
         // this.snackBar.open('error')
       }
@@ -297,34 +301,34 @@ getPointerEventsStyle(element:any){
   getRequestList() {
     this.loaderService.changeLoaderState(true)
     const request = {
-        filterCriteriaMap: {
-          rootOrgId: this.rootOrgId ? this.rootOrgId : '',
-        },
-        requestedFields: [],
-        facets: [],
-        pageNumber: this.pageNo,
-        pageSize: this.pageSize,
-        orderBy: 'createdOn',
-        orderDirection: 'ASC',
+      filterCriteriaMap: {
+        rootOrgId: this.rootOrgId ? this.rootOrgId : '',
+      },
+      requestedFields: [],
+      facets: [],
+      pageNumber: this.pageNo,
+      pageSize: this.pageSize,
+      orderBy: 'createdOn',
+      orderDirection: 'ASC',
     }
     this.homeService.getRequestList(request).subscribe(res => {
       if (res) {
-      this.requestListData = res.data
-      if (this.requestListData) {
-        this.loaderService.changeLoaderState(false)
-      this.requestCount = res.totalCount
-        this.requestListData.map((data: any) => {
-          if (data.createdOn) {
-            data.createdOn = this.datePipe.transform(data.createdOn, 'MMM d, y')
-          }
-          if (data.assignedProvider) {
-            data.assignedProvider = data.assignedProvider.providerName
-          }
-        })
-        this.dataSource = new MatTableDataSource<any>(this.requestListData)
+        this.requestListData = res.data
+        if (this.requestListData) {
+          this.loaderService.changeLoaderState(false)
+          this.requestCount = res.totalCount
+          this.requestListData.map((data: any) => {
+            if (data.createdOn) {
+              data.createdOn = this.datePipe.transform(data.createdOn, 'MMM d, y')
+            }
+            if (data.assignedProvider) {
+              data.assignedProvider = data.assignedProvider.providerName
+            }
+          })
+          this.dataSource = new MatTableDataSource<any>(this.requestListData)
 
+        }
       }
-    }
 
     })
 
