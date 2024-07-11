@@ -1,0 +1,33 @@
+:host ::ng-deep .designationTable {
+   .mat-column-CBP-Menu {
+    max-width: 100px;
+   }
+}
+
+.organisation-lable {
+  font-family: 'lato';
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.organisation {
+  width: 300px;
+}
+
+.btn-upload {
+  background: #1b4ca1 !important;
+  color: white !important;
+  font-family: 'Lato';
+  font-weight: 700;
+  font-size: 14px;
+  height: 40px;
+}
+
+.btn-create-designation {
+  width: auto;
+  border: 1px solid #0075B7;
+  border-radius: 4px;
+  color: #0075B7 !important;
+  height: 40px;
+}

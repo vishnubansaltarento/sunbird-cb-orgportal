@@ -11,6 +11,7 @@ import {
   MatChipsModule, MatProgressSpinnerModule, MatProgressBarModule, MatRadioModule,
   MatTabsModule, MatCheckboxModule, MatDatepickerModule, MatAutocompleteModule, MatSlideToggleModule,
 } from '@angular/material'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatCardModule } from '@angular/material/card'
@@ -80,6 +81,10 @@ import { CreateRequestFormComponent } from './components/request-list/create-req
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
+import { DesignationsComponent } from './routes/designations/designations.component'
+import { OdcsService } from './services/odcs.service'
+import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
+import { HttpClientModule } from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -125,6 +130,7 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
+    DesignationsComponent,
   ],
   imports: [
     CommonModule,
@@ -180,6 +186,8 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     FilterSearchPipeModule,
     MatAutocompleteModule,
     MatSlideToggleModule,
+    TaxonomyEditorModule,
+    HttpClientModule
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -198,11 +206,17 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     SingleAssignPopupComponent,
   ],
   providers: [
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
     InitResolver,
     MdoInfoService,
     UploadService,
     TrainingPlanDashboardService,
     UsersService,
+    OdcsService,
   ],
 })
 export class HomeModule {
