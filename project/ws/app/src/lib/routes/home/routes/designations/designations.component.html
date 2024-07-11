@@ -3,11 +3,32 @@
     <mat-card-title class="flex-4 mobile-margin mat-h2">
       Designations
     </mat-card-title>
-    <mat-card-content>
-      <ng-container *ngIf="data?.length > 0">
-
+    <mat-card-content class="designationTable pt-4">
+      <div class="w-full flex justify-between items-center">
+        <div class="flex">
+          <div>
+            <div class="organisation-lable">Organisation</div>
+            <mat-form-field appearance="outline" class="organisation">
+              <mat-select [(ngModel)]="selectedOrganisation" [disabled]="!organisationsList.length < 2">
+                <ng-container *ngFor="let Organisation of organisationsList">
+                  <mat-option [value]="Organisation.identifier">{{ Organisation.name }}</mat-option>
+                </ng-container>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <button mat-raised-button class="btn-upload" (click)="upload()">Upload
+          </button>
+          <button mat-raised-button class="btn-create-designation" (click)="openDesignationCreatPopup()">Add
+            Designation</button>
+        </div>
+      </div>
+      <ng-container *ngIf="!showLoader">
+        <ws-widget-org-user-table [tableData]="tableData" [data]="designationsList" [actionMenuItem]="actionMenuItem"
+          [isSearchBar]=false (actionsClick)="menuSelected($event)"></ws-widget-org-user-table>
       </ng-container>
-      <ng-container *ngIf="!roleCountSpinner">
+      <ng-container *ngIf="showLoader">
         <div class="flex flex-1 loader-box">
           <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
         </div>

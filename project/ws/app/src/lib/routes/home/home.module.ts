@@ -11,6 +11,7 @@ import {
   MatChipsModule, MatProgressSpinnerModule, MatProgressBarModule, MatRadioModule,
   MatTabsModule, MatCheckboxModule, MatDatepickerModule, MatAutocompleteModule, MatSlideToggleModule,
 } from '@angular/material'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatCardModule } from '@angular/material/card'
@@ -82,6 +83,8 @@ import { AssignListPopupComponent } from './components/request-list/assign-list-
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
 import { DesignationsComponent } from './routes/designations/designations.component'
 import { OdcsService } from './services/odcs.service'
+import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
+import { HttpClientModule } from '@angular/common/http'
 
 @NgModule({
   declarations: [
@@ -127,7 +130,7 @@ import { OdcsService } from './services/odcs.service'
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
-    DesignationsComponent
+    DesignationsComponent,
   ],
   imports: [
     CommonModule,
@@ -183,6 +186,8 @@ import { OdcsService } from './services/odcs.service'
     FilterSearchPipeModule,
     MatAutocompleteModule,
     MatSlideToggleModule,
+    TaxonomyEditorModule,
+    HttpClientModule
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -201,12 +206,17 @@ import { OdcsService } from './services/odcs.service'
     SingleAssignPopupComponent,
   ],
   providers: [
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
     InitResolver,
     MdoInfoService,
     UploadService,
     TrainingPlanDashboardService,
     UsersService,
-    OdcsService
+    OdcsService,
   ],
 })
 export class HomeModule {
