@@ -69,12 +69,12 @@ export class DesignationsComponent implements OnInit {
 
   getFrameworkInfo() {
     this.showLoader = true
-    this.odcsService.getFrameworkInfo().subscribe(res => {
-      this.showLoader = false
-      this.frameworkDetails = _.get(res, 'result.framework')
-      this.getOrganisations()
-      console.log('frame work: ', this.frameworkDetails)
-    })
+    // this.odcsService.getFrameworkInfo().subscribe(res => {
+    //   this.showLoader = false
+    //   this.frameworkDetails = _.get(res, 'result.framework')
+    //   this.getOrganisations()
+    //   console.log('frame work: ', this.frameworkDetails)
+    // })
   }
 
   getOrganisations() {
