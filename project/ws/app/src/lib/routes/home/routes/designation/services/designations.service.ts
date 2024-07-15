@@ -1,22 +1,50 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { mergeMap, tap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
 
 const API_END_POINTS = {
   ORGANISATION_FW: '/apis/proxies/v8/framework/v1/read/organisation_fw',
+  getDesignation: '/apis/proxies/v8/user/v1/positions',
+  importDesignation: 'api/framework/v1/term/create?'
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class OdcsService {
-
+export class DesignationsService {
   list = new Map<string, any>()
+
+  orgDesignationList: any = []
 
   constructor(
     private http: HttpClient
   ) { }
+
+  getDesignations(_req: any): Observable<any> {
+    return this.http.get<any>(API_END_POINTS.getDesignation).pipe(
+      mergeMap((result: any) => {
+        if (result && result.responseData) {
+          return this.formateMasterDesignationList(result.responseData)
+        }
+        return result
+      })
+    )
+  }
+
+  formateMasterDesignationList(designationsList: any): Observable<any> {
+    const formatedDesignationsLsit: any = []
+    if (designationsList) {
+      designationsList.forEach((masterDesignation: any) => {
+        masterDesignation['isOrgDesignation'] = this.orgDesignationList
+          .find((element: any) => element.name === masterDesignation.name) ? true : false
+        masterDesignation['selected'] = masterDesignation['isOrgDesignation']
+        formatedDesignationsLsit.push(masterDesignation)
+      })
+    }
+
+    return of(formatedDesignationsLsit)
+  }
 
   getFrameworkInfo(): Observable<any> {
     return this.http.get(`${API_END_POINTS.ORGANISATION_FW}`, { withCredentials: true }).pipe(
@@ -77,4 +105,8 @@ export class OdcsService {
   //   }
   //   return categoryConfig
   // }
+
+  importDesigantion(framework: string, category: string, reqBody: any): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.importDesignation}framework=${framework}&category=${category}`, reqBody)
+  }
 }

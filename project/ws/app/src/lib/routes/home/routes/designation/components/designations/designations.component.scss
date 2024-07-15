@@ -31,3 +31,29 @@
   color: #0075B7 !important;
   height: 40px;
 }
+
+.search {
+
+  .search-icon {
+    position: absolute;
+    top: 9px;
+    font-size: 20px;
+    left: 10px;
+  }
+
+  .rsearch {
+    display: flex;
+    position: relative;
+    flex: 1 1 auto;
+  }
+
+  .sinput {
+    width: 315px;
+    border-radius: 4px;
+    border: 1px solid #d5d0d0;
+    padding: 9px 9px 9px 35px;
+    margin-top: 0;
+    font: normal 14px Lato;
+    font-weight: 400;
+  }
+}

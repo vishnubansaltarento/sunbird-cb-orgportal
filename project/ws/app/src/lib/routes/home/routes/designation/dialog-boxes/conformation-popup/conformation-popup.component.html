@@ -1,0 +1,9 @@
+<div class="w-full">
+  <div class="w-full conformation-popup flex justify-center items-center">
+    <span class="msgDescription">{{dialogData?.message}}</span>
+  </div>
+  <div class="w-full flex justify-end items-center gap-4">
+    <button mat-raised-button [mat-dialog-close]="true">Close</button>
+    <button mat-raised-button (click)="closePopup(true)" class="remove">Remove</button>
+  </div>
+</div>

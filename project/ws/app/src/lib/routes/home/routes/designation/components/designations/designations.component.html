@@ -1,10 +1,10 @@
 <div class="flex flex-4 flex-column">
   <mat-card>
     <mat-card-title class="flex-4 mobile-margin mat-h2">
-      Designations
+      My Designation Master
     </mat-card-title>
     <mat-card-content class="designationTable pt-4">
-      <div class="w-full flex justify-between items-center">
+      <!-- <div class="w-full flex justify-between items-center">
         <div class="flex">
           <div>
             <div class="organisation-lable">Organisation</div>
@@ -23,10 +23,29 @@
           <button mat-raised-button class="btn-create-designation" (click)="openDesignationCreatPopup()">Add
             Designation</button>
         </div>
+      </div> -->
+      <div class="w-full flex justify-between items-center mb-6">
+        <div class="flex items-center">
+          <div class="search">
+            <div class=rsearch>
+              <mat-icon class="color-60 search-icon">search</mat-icon>
+              <input [formControl]="searchControl" class="sinput color-60" type="Standard" placeholder="Search">
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <button class="font-normal ws-mat-primary-border attendBtn mat-raised-button"
+            [routerLink]="'import-designation'" type="button">
+            Import from Igot master
+          </button>
+          <!-- <button mat-button class="btn-upload" (click)="upload()">Import from Igot master
+          </button> -->
+        </div>
       </div>
       <ng-container *ngIf="!showLoader">
-        <ws-widget-org-user-table [tableData]="tableData" [data]="designationsList" [actionMenuItem]="actionMenuItem"
-          [isSearchBar]=false (actionsClick)="menuSelected($event)"></ws-widget-org-user-table>
+        <ws-widget-org-user-table [tableData]="tableData" [data]="filteredDesignationsList"
+          [actionMenuItem]="actionMenuItem" [isSearchBar]=false
+          (actionsClick)="menuSelected($event)"></ws-widget-org-user-table>
       </ng-container>
       <ng-container *ngIf="showLoader">
         <div class="flex flex-1 loader-box">

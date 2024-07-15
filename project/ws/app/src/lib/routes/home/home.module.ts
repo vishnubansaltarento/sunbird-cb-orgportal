@@ -81,10 +81,9 @@ import { CreateRequestFormComponent } from './components/request-list/create-req
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
-import { DesignationsComponent } from './routes/designations/designations.component'
-import { OdcsService } from './services/odcs.service'
 import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
 import { HttpClientModule } from '@angular/common/http'
+import { DesignationModule } from './routes/designation/designation.module'
 
 @NgModule({
   declarations: [
@@ -130,7 +129,6 @@ import { HttpClientModule } from '@angular/common/http'
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
-    DesignationsComponent,
   ],
   imports: [
     CommonModule,
@@ -187,7 +185,8 @@ import { HttpClientModule } from '@angular/common/http'
     MatAutocompleteModule,
     MatSlideToggleModule,
     TaxonomyEditorModule,
-    HttpClientModule
+    HttpClientModule,
+    DesignationModule
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -216,7 +215,6 @@ import { HttpClientModule } from '@angular/common/http'
     UploadService,
     TrainingPlanDashboardService,
     UsersService,
-    OdcsService,
   ],
 })
 export class HomeModule {
