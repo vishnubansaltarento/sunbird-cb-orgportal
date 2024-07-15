@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PipeDurationTransformModule, PipeFilterModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipeRelativeTimeModule } from '@sunbird-cb/utils'
 import { MatGridListModule } from '@angular/material/grid-list'
@@ -84,6 +84,8 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
 import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
 import { HttpClientModule } from '@angular/common/http'
 import { DesignationModule } from './routes/designation/designation.module'
+import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
+import { environment } from '../../../../../../../src/environments/environment'
 
 @NgModule({
   declarations: [
@@ -129,6 +131,7 @@ import { DesignationModule } from './routes/designation/designation.module'
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
+    OdcsMappingComponent,
   ],
   imports: [
     CommonModule,
@@ -205,6 +208,7 @@ import { DesignationModule } from './routes/designation/designation.module'
     SingleAssignPopupComponent,
   ],
   providers: [
+    { provide: 'environment', useValue: environment },
     {
       provide: MatDialogRef,
       useValue: {}
@@ -216,6 +220,7 @@ import { DesignationModule } from './routes/designation/designation.module'
     TrainingPlanDashboardService,
     UsersService,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomeModule {
 

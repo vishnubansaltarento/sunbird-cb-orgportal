@@ -157,6 +157,7 @@ const getBaseHref = (platformLocation: PlatformLocation): string => {
     ConfirmationBoxComponent,
   ],
   providers: [
+    { provide: 'environment', useValue: environment },
     {
       deps: [InitService, LoggerService],
       multi: true,
