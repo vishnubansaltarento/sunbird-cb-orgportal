@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PipeDurationTransformModule, PipeFilterModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipeRelativeTimeModule } from '@sunbird-cb/utils'
 import { MatGridListModule } from '@angular/material/grid-list'
@@ -85,6 +85,8 @@ import { DesignationsComponent } from './routes/designations/designations.compon
 import { OdcsService } from './services/odcs.service'
 import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
 import { HttpClientModule } from '@angular/common/http'
+import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
+import { environment } from '../../../../../../../src/environments/environment'
 
 @NgModule({
   declarations: [
@@ -131,6 +133,7 @@ import { HttpClientModule } from '@angular/common/http'
     AssignListPopupComponent,
     SingleAssignPopupComponent,
     DesignationsComponent,
+    OdcsMappingComponent,
   ],
   imports: [
     CommonModule,
@@ -187,7 +190,7 @@ import { HttpClientModule } from '@angular/common/http'
     MatAutocompleteModule,
     MatSlideToggleModule,
     TaxonomyEditorModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -206,6 +209,7 @@ import { HttpClientModule } from '@angular/common/http'
     SingleAssignPopupComponent,
   ],
   providers: [
+    { provide: 'environment', useValue: environment },
     {
       provide: MatDialogRef,
       useValue: {}
@@ -218,6 +222,7 @@ import { HttpClientModule } from '@angular/common/http'
     UsersService,
     OdcsService,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomeModule {
 

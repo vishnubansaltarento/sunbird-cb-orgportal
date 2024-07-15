@@ -1,10 +1,20 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
+import { v4 as uuidv4 } from 'uuid'
+// tslint:disable
+import _ from 'lodash'
+import { environment } from '../../../../../../../../src/environments/environment'
+/* tslint:enable */
 
 const API_END_POINTS = {
-  ORGANISATION_FW: '/apis/proxies/v8/framework/v1/read/organisation_fw',
+  COPY_FRAMEWORK: `/api/framework/v1/copy/${environment.ODCSMasterFramework}`,
+  CREATE_TERM: (frameworkId: string, categoryId: string) =>
+    `apis/proxies/v8/framework/v1/term/create?framework=${frameworkId}&category=${categoryId}`,
+  PUBLISH_FRAMEWORK: (frameworkName: string) =>
+    `apis/proxies/v8/framework/v1/publish/${frameworkName}`,
+  UPDATE_ORG: '/apis/proxies/v8/org/v1/update'
 }
 
 @Injectable({
@@ -18,63 +28,27 @@ export class OdcsService {
     private http: HttpClient
   ) { }
 
-  getFrameworkInfo(): Observable<any> {
-    return this.http.get(`${API_END_POINTS.ORGANISATION_FW}`, { withCredentials: true }).pipe(
-      tap((response: any) => {
-        this.formateData(response)
-      }),
-    )
+  getUuid() {
+    return uuidv4()
   }
 
-  formateData(response: any) {
-    (response.result.framework.categories).forEach((a: any) => {
-      this.list.set(a.code, {
-        code: a.code,
-        identifier: a.identifier,
-        index: a.index,
-        name: a.name,
-        selected: a.selected,
-        status: a.status,
-        description: a.description,
-        translations: a.translations,
-        category: a.category,
-        associations: a.associations,
-        // config: this.getConfig(a.code),
-        children: (a.terms || []).map((c: any) => {
-          const associations = c.associations || []
-          if (associations.length > 0) {
-            Object.assign(c, { children: associations })
-          }
-          return c
-        })
-      })
-    })
-
-    const allCategories: any = []
-    this.list.forEach((a: any) => {
-      allCategories.push({
-        code: a.code,
-        identifier: a.identifier,
-        index: a.index,
-        name: a.name,
-        status: a.status,
-        description: a.description,
-        translations: a.translations,
-      })
-    })
-    // this.categoriesHash.next(allCategories)
-
+  copyFramework(request: any): Observable<any> {
+    return this.http.post<any>(`${API_END_POINTS.COPY_FRAMEWORK}`, request).pipe(map(res => _.get(res, 'result.response')))
   }
 
-  // getConfig(code: string) {
-  //   let categoryConfig: any
-  //   if (this.rootConfig && this.rootConfig[0]) {
-  //     this.rootConfig.forEach((config: any, index: number) => {
-  //       if (this.frameworkId == config.frameworkId) {
-  //         categoryConfig = config.config.find((obj: any) => obj.category == code)
-  //       }
-  //     })
-  //   }
-  //   return categoryConfig
-  // }
+  createTerm(frameworkId: string, categoryId: string, requestBody: any) {
+    return this.http.post(`${API_END_POINTS.CREATE_TERM(
+      frameworkId,
+      categoryId,
+    )}`, requestBody)
+  }
+
+  publishFramework(frameworkName: string) {
+    return this.http.post(`${API_END_POINTS.PUBLISH_FRAMEWORK(frameworkName)}`, {})
+  }
+
+  updateOrg(request: any) {
+    return this.http.patch(`${API_END_POINTS.UPDATE_ORG}`, request)
+  }
+
 }

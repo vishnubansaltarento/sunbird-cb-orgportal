@@ -28,6 +28,7 @@ import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk
 import { RequestListComponent } from './components/request-list/request-list.component'
 import { CreateRequestFormComponent } from './components/request-list/create-request-form/create-request-form.component'
 import { DesignationsComponent } from './routes/designations/designations.component'
+import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
 
 const routes: Routes = [
   {
@@ -352,7 +353,20 @@ const routes: Routes = [
           pageData: PageResolve,
         },
       },
-
+      {
+        path: 'odcs-mapping',
+        component: OdcsMappingComponent,
+        data: {
+          pageId: 'home/odcs-mapping',
+          module: 'odcs-mapping',
+          pageType: 'feature',
+          pageKey: 'odcs',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+          pageData: PageResolve,
+        },
+      },
     ],
   },
   {
