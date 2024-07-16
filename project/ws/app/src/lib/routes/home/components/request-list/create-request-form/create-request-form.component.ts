@@ -7,6 +7,7 @@ import { CompetencyViewComponent } from '../competency-view/competency-view.comp
 import { ConfirmationBoxComponent } from '../../../../training-plan/components/confirmation-box/confirmation.box.component'
 /* tslint:disable */
 import _ from 'lodash'
+import { debounceTime, distinctUntilChanged, startWith } from 'rxjs/operators'
 /* tslint:enable */
 
 @Component({
@@ -75,9 +76,9 @@ export class CreateRequestFormComponent implements OnInit {
   ) {
     this.requestForm = this.formBuilder.group({
       TitleName: new FormControl('', [Validators.required, Validators.pattern(this.noSpecialChar), Validators.minLength(10)]),
-      Objective:  new FormControl('', [Validators.required, Validators.pattern(this.noSpecialChar)]),
-      userType:  new FormControl('', [Validators.pattern(this.noSpecialChar)]),
-      learningMode:  new FormControl(''),
+      Objective: new FormControl('', [Validators.required, Validators.pattern(this.noSpecialChar)]),
+      userType: new FormControl('', [Validators.pattern(this.noSpecialChar)]),
+      learningMode: new FormControl(''),
       compArea: new FormControl(''),
       referenceLink: new FormControl(''),
       requestType: new FormControl('', Validators.required),
@@ -90,7 +91,7 @@ export class CreateRequestFormComponent implements OnInit {
       assigneeText: new FormControl(''),
     })
 
-   }
+  }
 
   ngOnInit() {
     this.getRequestTypeList()
@@ -109,16 +110,18 @@ export class CreateRequestFormComponent implements OnInit {
       }
     })
 
+    this.valuechangeFuctions()
+
   }
 
   getRequestDataById() {
     this.homeService.getRequestDataById(this.demandId).subscribe((data: any) => {
-     if (data) {
-      this.requestObjData = data
-       this.setRequestData()
-     }
+      if (data) {
+        this.requestObjData = data
+        this.setRequestData()
+      }
     }
-  )
+    )
   }
 
   setRequestData() {
@@ -128,7 +131,7 @@ export class CreateRequestFormComponent implements OnInit {
       userType: this.requestObjData.typeOfUser ? this.requestObjData.typeOfUser : '',
       learningMode: this.requestObjData.learningMode ? this.requestObjData.learningMode : '',
       competencies_v5: [],
-      referenceLink: this.requestObjData.referenceLink ?  this.requestObjData.referenceLink : '',
+      referenceLink: this.requestObjData.referenceLink ? this.requestObjData.referenceLink : '',
       providers: [],
       assignee: {},
       requestType: this.requestObjData.requestType,
@@ -138,52 +141,65 @@ export class CreateRequestFormComponent implements OnInit {
       querySubThemeControl: '',
       assigneeText: '',
     })
-   const value = this.requestForm.controls.competencies_v5.value || []
-   this.requestObjData.competencies.map((comp: any) => {
-    const obj = {
-      competencyArea: comp.area,
-      competencyTheme: comp.sub_theme,
-      competencySubTheme: comp.theme,
-     }
-     value.push(obj)
-   })
+    const value = this.requestForm.controls.competencies_v5.value || []
+    this.requestObjData.competencies.map((comp: any) => {
+      const obj = {
+        competencyArea: comp.area,
+        competencyTheme: comp.sub_theme,
+        competencySubTheme: comp.theme,
+      }
+      value.push(obj)
+    })
 
-     this.requestForm.controls.competencies_v5.setValue(value)
+    this.requestForm.controls.competencies_v5.setValue(value)
 
     this.selectRequestType(this.requestObjData.requestType)
-   if (this.filteredRequestType) {
-    const abc = this.filteredRequestType.filter(option =>
-      this.requestObjData.preferredProvider.some((res: any) =>
-         res.providerName === option.orgName
-    )
-  )
-  this.requestForm.controls['providers'].setValue(abc)
-   }
-
-   if (this.filteredAssigneeType) {
-    if (this.requestObjData.assignedProvider) {
-      const assignData = this.filteredAssigneeType.find(option =>
-        this.requestObjData.assignedProvider.providerName === option.orgName
-       )
-       if (assignData) {
-         this.requestForm.controls['assignee'].setValue(assignData)
-       }
+    if (this.filteredRequestType) {
+      if (this.requestObjData.preferredProvider && this.requestObjData.preferredProvider.length) {
+      const prefferedData = this.filteredRequestType.filter(option =>
+        this.requestObjData.preferredProvider.some((res: any) =>
+          res.providerId === option.id
+        )
+      )
+      if (prefferedData && prefferedData.length) {
+        this.requestForm.controls['providers'].setValue(prefferedData)
+      }
     }
-   }
+    }
+
+    if (this.filteredAssigneeType) {
+      if (this.requestObjData.assignedProvider) {
+        const assignData = this.filteredAssigneeType.find(option =>
+          this.requestObjData.assignedProvider.providerId === option.id
+        )
+        if (assignData) {
+          this.requestForm.controls['assignee'].setValue(assignData)
+        }
+      }
+    }
   }
 
   navigateBack() {
     this.router.navigateByUrl('/app/home/request-list')
   }
 
-  searchValueData(searchValue: any) {
-    if (searchValue === 'providerText') {
-      this.requestForm.controls['providerText'].valueChanges.subscribe((newValue: any) => {
-        this.filteredRequestType = this.filterOrgValues(newValue, this.requestTypeData)
+  valuechangeFuctions() {
+    if (this.requestForm.controls['providerText']) {
+      this.requestForm.controls['providerText'].valueChanges.pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        startWith(''),
+      ).subscribe((newValue: any) => {
+        this.filteredRequestType = this.getHiddenOptions(newValue, this.requestTypeData)
       })
     }
-    if (searchValue === 'assigneeText') {
-      this.requestForm.controls['assigneeText'].valueChanges.subscribe((newValue: any) => {
+
+    if (this.requestForm.controls['assigneeText']) {
+      this.requestForm.controls['assigneeText'].valueChanges.pipe(
+        debounceTime(100),
+        distinctUntilChanged(),
+        startWith(''),
+      ).subscribe((newValue: any) => {
         this.filteredAssigneeType = this.filterOrgValues(newValue, this.requestTypeData)
       })
     }
@@ -200,6 +216,19 @@ export class CreateRequestFormComponent implements OnInit {
       value.orgName.toLowerCase().includes(searchValue.toLowerCase()))
   }
 
+  getHiddenOptions(searchValue: string, array: any) {
+    const hiddenOptions: any = []
+    array.forEach((element: any) => {
+      if (element.orgName.toLowerCase().includes(searchValue.toLowerCase())) {
+        element['hideOption'] = 'show'
+      } else {
+        element['hideOption'] = 'hide'
+      }
+      hiddenOptions.push(element)
+    })
+    return hiddenOptions
+  }
+
   getFilterEntity() {
     const filterObj = {
       search: {
@@ -213,7 +242,7 @@ export class CreateRequestFormComponent implements OnInit {
       if (res) {
         this.competencyList = res
         this.allCompetencies = res
-          this.filteredallCompetencies = this.allCompetencies
+        this.filteredallCompetencies = this.allCompetencies
       }
 
     })
@@ -238,10 +267,10 @@ export class CreateRequestFormComponent implements OnInit {
           this.isHideData = true
           this.isCompetencyHide = true
         } else if (this.actionBtnName === 'reassign') {
-            this.requestForm.disable()
-             this.isCompetencyHide = true
-            this.requestForm.controls['assigneeText'].enable()
-            this.requestForm.controls['assignee'].enable()
+          this.requestForm.disable()
+          this.isCompetencyHide = true
+          this.requestForm.controls['assigneeText'].enable()
+          this.requestForm.controls['assignee'].enable()
         }
       }
 
@@ -249,26 +278,26 @@ export class CreateRequestFormComponent implements OnInit {
   }
 
   selectRequestType(item: any) {
-   if (item === 'Single') {
-     this.isAssignee = true
-     this.isBroadCast = false
-     this.statusValue = 'Assigned'
-     this.requestForm.controls['providers'].setValue('')
-     this.requestForm.controls['providers'].clearValidators()
-     this.requestForm.controls['providers'].updateValueAndValidity()
-     this.requestForm.controls['assignee'].setValidators([Validators.required])
-     this.requestForm.controls['assignee'].updateValueAndValidity()
+    if (item === 'Single') {
+      this.isAssignee = true
+      this.isBroadCast = false
+      this.statusValue = 'Assigned'
+      this.requestForm.controls['providers'].setValue('')
+      this.requestForm.controls['providers'].clearValidators()
+      this.requestForm.controls['providers'].updateValueAndValidity()
+      this.requestForm.controls['assignee'].setValidators([Validators.required])
+      this.requestForm.controls['assignee'].updateValueAndValidity()
 
-   } else if (item === 'Broadcast') {
-    this.statusValue = 'Unassigned'
-     this.isBroadCast = true
-     this.isAssignee = false
-     this.requestForm.controls['assignee'].setValue('')
-     this.requestForm.controls['assignee'].clearValidators()
-     this.requestForm.controls['assignee'].updateValueAndValidity()
-     this.requestForm.controls['providers'].setValidators([Validators.required])
-     this.requestForm.controls['providers'].updateValueAndValidity()
-   }
+    } else if (item === 'Broadcast') {
+      this.statusValue = 'Unassigned'
+      this.isBroadCast = true
+      this.isAssignee = false
+      this.requestForm.controls['assignee'].setValue('')
+      this.requestForm.controls['assignee'].clearValidators()
+      this.requestForm.controls['assignee'].updateValueAndValidity()
+      this.requestForm.controls['providers'].setValidators([Validators.required])
+      this.requestForm.controls['providers'].updateValueAndValidity()
+    }
 
   }
 
@@ -328,147 +357,147 @@ export class CreateRequestFormComponent implements OnInit {
     this.seletedCompetencySubTheme = ''
   }
 
- // on selection change of competency area and assign value to allCompetencyTheme
- compAreaSelected(option: any) {
-  this.resetCompSubfields()
-  this.allCompetencies.forEach((val: any) => {
-    if (option.name === val.name) {
-      this.seletedCompetencyArea = val
-      this.allCompetencyTheme = val.children
-      this.filteredallCompetencyTheme = this.allCompetencyTheme
+  // on selection change of competency area and assign value to allCompetencyTheme
+  compAreaSelected(option: any) {
+    this.resetCompSubfields()
+    this.allCompetencies.forEach((val: any) => {
+      if (option.name === val.name) {
+        this.seletedCompetencyArea = val
+        this.allCompetencyTheme = val.children
+        this.filteredallCompetencyTheme = this.allCompetencyTheme
 
-    }
-  })
-}
-
-compThemeSelected(option: any) {
-  this.enableCompetencyAdd = false
-  this.allCompetencyTheme.forEach((val: any) => {
-    if (option.name === val.name) {
-      this.seletedCompetencyTheme = val
-      this.allCompetencySubtheme = val.children
-      this.filteredallCompetencySubtheme = this.allCompetencySubtheme
-    }
-  })
-}
-
-compSubThemeSelected(option: any) {
-  this.enableCompetencyAdd = true
-  this.allCompetencySubtheme.forEach((val: any) => {
-    if (option.name === val.name) {
-      this.seletedCompetencySubTheme = val
-    }
-  })
-}
-
-resetCompfields() {
-  this.enableCompetencyAdd = false
-  this.requestForm.controls['compArea'].setValue('')
-  this.allCompetencyTheme = []
-  this.allCompetencySubtheme = []
-  this.filteredallCompetencyTheme = []
-  this.filteredallCompetencySubtheme = []
-  this.requestForm.controls['queryThemeControl'].setValue('')
-  this.requestForm.controls['querySubThemeControl'].setValue('')
-}
-
-canPush(arr: any[], obj: any) {
-  for (const item of arr) {
-    // if (test.id === obj.id) {
-    if (item.competencyAreaId === obj.competencyAreaId && item.competencyThemeId === obj.competencyThemeId
-      && item.competencySubThemeId === obj.competencySubThemeId) {
-      return false
-    }
-  }
-  return true
-
-}
-
-refreshData() {
-  const searchObj = {
-    search: {
-      type: 'Competency Area',
-    },
-    filter: {
-      isDetail: true,
-    },
-  }
-  this.homeService.getFilterEntity(searchObj).subscribe((response: any) => {
-    if (response) {
-      this.allCompetencies = response
-      this.filteredallCompetencies = this.allCompetencies
-    }
-  })
-}
-
-addCompetency() {
-  if (this.seletedCompetencyArea && this.seletedCompetencyTheme && this.seletedCompetencySubTheme) {
-    const obj = {
-      competencyArea: this.seletedCompetencyArea.name,
-      competencyAreaId: this.seletedCompetencyArea.id,
-      competencyAreaDescription: this.seletedCompetencyArea.description,
-      competencyTheme: this.seletedCompetencyTheme.name,
-      competencyThemeId: this.seletedCompetencyTheme.id,
-      competecnyThemeDescription: this.seletedCompetencyTheme.description,
-      competencyThemeType: this.seletedCompetencyTheme.additionalProperties.themeType,
-      competencySubTheme: this.seletedCompetencySubTheme.name,
-      competencySubThemeId: this.seletedCompetencySubTheme.id,
-      competecnySubThemeDescription: this.seletedCompetencySubTheme.description,
-    }
-
-    const value = this.requestForm.controls.competencies_v5.value || []
-    if (this.canPush(value, obj)) {
-      value.push(obj)
-      this.requestForm.controls.competencies_v5.setValue(value)
-      this.resetCompfields()
-      this.refreshData()
-    } else {
-      this.snackBar.open('This competency is already added')
-      this.resetCompfields()
-    }
-  }
-
-}
-
-removeCompetency(id: any): void {
-  if (id && !id.competencyArea) {
-    const index = _.findIndex(this.requestForm.controls.competencies_v5.value, { id })
-    this.requestForm.controls.competencies_v5.value.splice(index, 1)
-    this.requestForm.controls.competencies_v5.setValue(this.requestForm.controls.competencies_v5.value)
-    this.refreshData()
-  } else {
-    this.requestForm.controls.competencies_v5.value.forEach((item: any, index: any) => {
-      if (item.competencyAreaId === id.competencyAreaId && item.competencyThemeId === id.competencyThemeId
-        && item.competencySubThemeId === id.competencySubThemeId) {
-        this.requestForm.controls.competencies_v5.value.splice(index, 1)
-        this.requestForm.controls.competencies_v5.setValue(this.requestForm.controls.competencies_v5.value)
-        this.refreshData()
       }
     })
   }
 
-}
+  compThemeSelected(option: any) {
+    this.enableCompetencyAdd = false
+    this.allCompetencyTheme.forEach((val: any) => {
+      if (option.name === val.name) {
+        this.seletedCompetencyTheme = val
+        this.allCompetencySubtheme = val.children
+        this.filteredallCompetencySubtheme = this.allCompetencySubtheme
+      }
+    })
+  }
 
-view(item?: any) {
-  // const seletedItem = this.allCompetencies.filter((v: any) => v.id === (item && item.id))[0]
-  // item['children'] = (seletedItem && seletedItem.children) ? seletedItem.children : []
-  const dialogRef = this.dialog.open(CompetencyViewComponent, {
-    // minHeight: 'auto',
-    width: '30%',
-    panelClass: 'remove-pad',
-    data: item,
-    autoFocus: false,
-  })
-  dialogRef.afterClosed().subscribe((response: any) => {
+  compSubThemeSelected(option: any) {
+    this.enableCompetencyAdd = true
+    this.allCompetencySubtheme.forEach((val: any) => {
+      if (option.name === val.name) {
+        this.seletedCompetencySubTheme = val
+      }
+    })
+  }
 
-    if (response && response.action === 'ADD') {
-      // this.addCompetency(response)
-      // this.refreshData(this.currentActivePage)
-    } else if (response && response.action === 'DELETE') {
-      this.removeCompetency(response.id)
+  resetCompfields() {
+    this.enableCompetencyAdd = false
+    this.requestForm.controls['compArea'].setValue('')
+    this.allCompetencyTheme = []
+    this.allCompetencySubtheme = []
+    this.filteredallCompetencyTheme = []
+    this.filteredallCompetencySubtheme = []
+    this.requestForm.controls['queryThemeControl'].setValue('')
+    this.requestForm.controls['querySubThemeControl'].setValue('')
+  }
+
+  canPush(arr: any[], obj: any) {
+    for (const item of arr) {
+      // if (test.id === obj.id) {
+      if (item.competencyAreaId === obj.competencyAreaId && item.competencyThemeId === obj.competencyThemeId
+        && item.competencySubThemeId === obj.competencySubThemeId) {
+        return false
+      }
     }
-  })
-}
+    return true
+
+  }
+
+  refreshData() {
+    const searchObj = {
+      search: {
+        type: 'Competency Area',
+      },
+      filter: {
+        isDetail: true,
+      },
+    }
+    this.homeService.getFilterEntity(searchObj).subscribe((response: any) => {
+      if (response) {
+        this.allCompetencies = response
+        this.filteredallCompetencies = this.allCompetencies
+      }
+    })
+  }
+
+  addCompetency() {
+    if (this.seletedCompetencyArea && this.seletedCompetencyTheme && this.seletedCompetencySubTheme) {
+      const obj = {
+        competencyArea: this.seletedCompetencyArea.name,
+        competencyAreaId: this.seletedCompetencyArea.id,
+        competencyAreaDescription: this.seletedCompetencyArea.description,
+        competencyTheme: this.seletedCompetencyTheme.name,
+        competencyThemeId: this.seletedCompetencyTheme.id,
+        competecnyThemeDescription: this.seletedCompetencyTheme.description,
+        competencyThemeType: this.seletedCompetencyTheme.additionalProperties.themeType,
+        competencySubTheme: this.seletedCompetencySubTheme.name,
+        competencySubThemeId: this.seletedCompetencySubTheme.id,
+        competecnySubThemeDescription: this.seletedCompetencySubTheme.description,
+      }
+
+      const value = this.requestForm.controls.competencies_v5.value || []
+      if (this.canPush(value, obj)) {
+        value.push(obj)
+        this.requestForm.controls.competencies_v5.setValue(value)
+        this.resetCompfields()
+        this.refreshData()
+      } else {
+        this.snackBar.open('This competency is already added')
+        this.resetCompfields()
+      }
+    }
+
+  }
+
+  removeCompetency(id: any): void {
+    if (id && !id.competencyArea) {
+      const index = _.findIndex(this.requestForm.controls.competencies_v5.value, { id })
+      this.requestForm.controls.competencies_v5.value.splice(index, 1)
+      this.requestForm.controls.competencies_v5.setValue(this.requestForm.controls.competencies_v5.value)
+      this.refreshData()
+    } else {
+      this.requestForm.controls.competencies_v5.value.forEach((item: any, index: any) => {
+        if (item.competencyAreaId === id.competencyAreaId && item.competencyThemeId === id.competencyThemeId
+          && item.competencySubThemeId === id.competencySubThemeId) {
+          this.requestForm.controls.competencies_v5.value.splice(index, 1)
+          this.requestForm.controls.competencies_v5.setValue(this.requestForm.controls.competencies_v5.value)
+          this.refreshData()
+        }
+      })
+    }
+
+  }
+
+  view(item?: any) {
+    // const seletedItem = this.allCompetencies.filter((v: any) => v.id === (item && item.id))[0]
+    // item['children'] = (seletedItem && seletedItem.children) ? seletedItem.children : []
+    const dialogRef = this.dialog.open(CompetencyViewComponent, {
+      // minHeight: 'auto',
+      width: '30%',
+      panelClass: 'remove-pad',
+      data: item,
+      autoFocus: false,
+    })
+    dialogRef.afterClosed().subscribe((response: any) => {
+
+      if (response && response.action === 'ADD') {
+        // this.addCompetency(response)
+        // this.refreshData(this.currentActivePage)
+      } else if (response && response.action === 'DELETE') {
+        this.removeCompetency(response.id)
+      }
+    })
+  }
 
   onProviderRemoved(provider: any) {
     const compThemeControl = this.requestForm.get('providers') as FormControl | null
@@ -503,7 +532,7 @@ view(item?: any) {
       data: {
         type: 'conformation',
         icon: 'radio_on',
-        title:  this.actionBtnName === 'reassign' ? 'Are you sure you want to Re-assign?' : 'Are you sure you want to Create a demand?',
+        title: this.actionBtnName === 'reassign' ? 'Are you sure you want to Re-assign?' : 'Are you sure you want to Create a demand?',
         // subTitle: 'You wont be able to revert this',
         primaryAction: 'Confirm',
         secondaryAction: 'Cancel',
@@ -511,30 +540,16 @@ view(item?: any) {
       autoFocus: false,
     })
 
-this.dialogRefs.afterClosed().subscribe((_res: any) => {
-  if (_res === 'confirmed') {
-    this.submit()
+    this.dialogRefs.afterClosed().subscribe((_res: any) => {
+      if (_res === 'confirmed') {
+        this.submit()
+      }
+    })
   }
-})
-}
 
   submit() {
-    if (this.demandId &&  this.actionBtnName === 'reassign') {
+    if (this.demandId && this.actionBtnName === 'reassign') {
       this.requestForm.enable()
-    }
-    let providerList: any[] = []
-    if (this.requestForm.value.providers) {
-      providerList = this.requestForm.value.providers.map((item: any) => ({
-        providerName: item.orgName,
-        providerId: item.id,
-      }))
-    }
-    let assigneeProvider: any
-    if (this.requestForm.value.assignee) {
-      assigneeProvider = {
-        providerName: this.requestForm.value.assignee.orgName,
-        providerId: this.requestForm.value.assignee.id,
-      }
     }
 
     let competencyDataList: any[] = []
@@ -554,19 +569,36 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
       competencies: competencyDataList,
       referenceLink: this.requestForm.value.referenceLink,
       requestType: this.requestForm.value.requestType,
-      preferredProvider: providerList,
-      assignedProvider: assigneeProvider,
-      status: this.statusValue,
-      source: this.userId,
+      // preferredProvider: providerList,
+      // assignedProvider: assigneeProvider,
+      // status: this.statusValue,
+      // source: this.userId,
 
+    }
+
+    let providerList: any[] = []
+    if (this.requestForm.value.providers && this.isBroadCast) {
+      providerList = this.requestForm.value.providers.map((item: any) => ({
+        providerName: item.orgName,
+        providerId: item.id,
+      }))
+      request.preferredProvider = providerList
+    }
+    let assigneeProvider: any
+    if (this.requestForm.value.assignee && this.isAssignee) {
+      assigneeProvider = {
+        providerName: this.requestForm.value.assignee.orgName,
+        providerId: this.requestForm.value.assignee.id,
+      }
+      request.assignedProvider = assigneeProvider
     }
 
     if (this.requestForm.value.learningMode) {
       request.learningMode = this.requestForm.value.learningMode.toLowerCase()
     }
 
-    if (this.demandId &&  this.actionBtnName === 'reassign') {
-      request.demand_id =  this.demandId
+    if (this.demandId && this.actionBtnName === 'reassign') {
+      request.demand_id = this.demandId
 
     }
     this.showDialogBox('progress')
@@ -580,13 +612,18 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
         if (this.resData) {
           this.router.navigateByUrl('/app/home/request-list')
           this.snackBar.open('Request submitted successfully ')
-      }
+        }
       },         1000)
-    }
-  )
-   }
+    },
+                                                     (error: any) => {
+        this.dialogRefs.close({ error })
+        this.snackBar.open('Request Failed')
 
-   showDialogBox(event: any) {
+      }
+    )
+  }
+
+  showDialogBox(event: any) {
     const dialogData: any = {}
     switch (event) {
       case 'progress':
@@ -600,7 +637,7 @@ this.dialogRefs.afterClosed().subscribe((_res: any) => {
         dialogData['icon'] = 'accept_icon'
         dialogData['title'] = 'Processing your request'
         dialogData['subTitle'] = `Wait a second , your request is processing………`
-        dialogData['primaryAction'] = 'Redirecting....'
+        dialogData['primaryAction'] = 'Successfully created....'
         break
     }
 
