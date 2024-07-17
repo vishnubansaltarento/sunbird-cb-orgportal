@@ -84,6 +84,11 @@
       height: 70px;
     }
 
+    .disableCard {
+      background-color: #6c757d;
+      pointer-events: none;
+    }
+
     .custom-user-desc {
       display: flex;
       flex-direction: column;

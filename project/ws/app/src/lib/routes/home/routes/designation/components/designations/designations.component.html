@@ -4,54 +4,54 @@
       My Designation Master
     </mat-card-title>
     <mat-card-content class="designationTable pt-4">
-      <!-- <div class="w-full flex justify-between items-center">
-        <div class="flex">
-          <div>
-            <div class="organisation-lable">Organisation</div>
-            <mat-form-field appearance="outline" class="organisation">
-              <mat-select [(ngModel)]="selectedOrganisation" [disabled]="!organisationsList.length < 2">
-                <ng-container *ngFor="let Organisation of organisationsList">
-                  <mat-option [value]="Organisation.identifier">{{ Organisation.name }}</mat-option>
-                </ng-container>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <button mat-raised-button class="btn-upload" (click)="upload()">Upload
-          </button>
-          <button mat-raised-button class="btn-create-designation" (click)="openDesignationCreatPopup()">Add
-            Designation</button>
-        </div>
-      </div> -->
-      <div class="w-full flex justify-between items-center mb-6">
-        <div class="flex items-center">
-          <div class="search">
-            <div class=rsearch>
-              <mat-icon class="color-60 search-icon">search</mat-icon>
-              <input [formControl]="searchControl" class="sinput color-60" type="Standard" placeholder="Search">
+      <ng-container *ngIf="!showCreateLoader; else fw_create_loader">
+        <div class="w-full flex justify-between items-center mb-6">
+          <div class="flex items-center">
+            <div class="search">
+              <div class=rsearch>
+                <mat-icon class="color-60 search-icon">search</mat-icon>
+                <input [formControl]="searchControl" class="sinput color-60" type="Standard" placeholder="Search">
+              </div>
             </div>
           </div>
+          <div class="flex items-center">
+            <button class="font-normal ws-mat-primary-border attendBtn mat-raised-button"
+              [routerLink]="'import-designation'" type="button">
+              Import from Igot master
+            </button>
+          </div>
         </div>
-        <div class="flex items-center">
-          <button class="font-normal ws-mat-primary-border attendBtn mat-raised-button"
-            [routerLink]="'import-designation'" type="button">
-            Import from Igot master
-          </button>
-          <!-- <button mat-button class="btn-upload" (click)="upload()">Import from Igot master
-          </button> -->
-        </div>
-      </div>
-      <ng-container *ngIf="!showLoader">
-        <ws-widget-org-user-table [tableData]="tableData" [data]="filteredDesignationsList"
-          [actionMenuItem]="actionMenuItem" [isSearchBar]=false
-          (actionsClick)="menuSelected($event)"></ws-widget-org-user-table>
+        <ng-container *ngIf="!showLoader">
+          <ng-container *ngIf="designationsList.length === 0; else designationsTable">
+            <div class="w-full flex flex-col justify-center items-center emptyDesignations">
+              <div></div>
+              <div>
+                <p>No designations have been added to your master's list yet</p>
+              </div>
+              <div class="mt-4">
+                <button mat-raised-button [routerLink]="'import-designation'">
+                  <mat-icon class="download-icon">download</mat-icon>Start Importing</button>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #designationsTable>
+            <ws-widget-org-user-table [tableData]="tableData" [data]="filteredDesignationsList"
+              [actionMenuItem]="actionMenuItem" [isSearchBar]=false
+              (actionsClick)="menuSelected($event)"></ws-widget-org-user-table>
+          </ng-template>
+        </ng-container>
+        <ng-container *ngIf="showLoader">
+          <div class="flex flex-1 loader-box">
+            <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
+          </div>
+        </ng-container>
       </ng-container>
-      <ng-container *ngIf="showLoader">
-        <div class="flex flex-1 loader-box">
-          <mat-spinner strokeWidth="3" diameter="50"></mat-spinner>
+      <ng-template #fw_create_loader>
+        <div class="flex flex-col flex-1 w-100 items-center pt-5 text-center">
+          <mat-spinner class="display-inline-block mb-5" [diameter]="50" [strokeWidth]="3"></mat-spinner>
+          <p>{{loaderMsg}}</p>
         </div>
-      </ng-container>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>

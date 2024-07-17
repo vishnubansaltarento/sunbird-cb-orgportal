@@ -7,19 +7,24 @@ import { v4 as uuidv4 } from 'uuid'
 // tslint:disable
 import _ from 'lodash'
 import { environment } from '../../../../../../../../../../src/environments/environment'
+import { ConfigurationsService } from '@sunbird-cb/utils'
 /* tslint:enable */
 
 const API_END_POINTS = {
   COPY_FRAMEWORK: `/api/framework/v1/copy/${environment.ODCSMasterFramework}`,
   CREATE_TERM: (frameworkId: string, categoryId: string) =>
     `apis/proxies/v8/framework/v1/term/create?framework=${frameworkId}&category=${categoryId}`,
+  UPDATE_TERM: (frameworkId: string, categoryId: string, categoryTermCode: string) =>
+    `apis/proxies/v8/framework/v1/term/update/${categoryTermCode}?framework=${frameworkId}&category=${categoryId}`,
   PUBLISH_FRAMEWORK: (frameworkName: string) =>
     `apis/proxies/v8/framework/v1/publish/${frameworkName}`,
   UPDATE_ORG: '/apis/proxies/v8/org/v1/update',
 
-  ORGANISATION_FW: '/apis/proxies/v8/framework/v1/read/organisation_fw',
-  getDesignation: '/apis/proxies/v8/user/v1/positions',
-  importDesignation: 'api/framework/v1/term/create?'
+  ORGANISATION_FW: (frameworkName: string) =>
+    `/apis/proxies/v8/framework/v1/read/${frameworkName}`,
+  GET_IGOT_MASTER_DESIGNATIONS: 'apis/proxies/v8/designation/search',
+  IMPORT_DESIGNATION: 'api/framework/v1/term/create?',
+  ORG_READ: '/apis/proxies/v8/org/v1/read',
 }
 
 @Injectable({
@@ -29,42 +34,72 @@ export class DesignationsService {
   list = new Map<string, any>()
 
   orgDesignationList: any = []
+  selectedDesignationList: any = []
+  frameWorkInfo: any
+
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private configSvc: ConfigurationsService,
   ) { }
 
-  getDesignations(_req: any): Observable<any> {
-    return this.http.get<any>(API_END_POINTS.getDesignation).pipe(
-      mergeMap((result: any) => {
-        if (result && result.responseData) {
-          return this.formateMasterDesignationList(result.responseData)
+  getIgotMasterDesignations(req: any): Observable<any> {
+    return this.http.post<any>(API_END_POINTS.GET_IGOT_MASTER_DESIGNATIONS, req).pipe(
+      mergeMap((res: any) => {
+        if (res) {
+          return this.formateMasterDesignationList(_.get(res, 'result.result', {}))
         }
-        return result
+        return res
       })
     )
   }
 
-  formateMasterDesignationList(designationsList: any): Observable<any> {
-    const formatedDesignationsLsit: any = []
-    if (designationsList) {
-      designationsList.forEach((masterDesignation: any) => {
-        masterDesignation['isOrgDesignation'] = this.orgDesignationList
-          .find((element: any) => element.name === masterDesignation.name) ? true : false
-        masterDesignation['selected'] = masterDesignation['isOrgDesignation']
-        formatedDesignationsLsit.push(masterDesignation)
+  updateSelectedDesignationList(selectedList: any) {
+    this.selectedDesignationList = selectedList
+  }
+
+  formateMasterDesignationList(response: any): Observable<any> {
+    const result: any = {
+      formatedDesignationsLsit: [],
+      facets: response.facets,
+      totalCount: response.totalCount
+    }
+    if (response.data) {
+      response.data.forEach((masterDesignation: any) => {
+        masterDesignation['isOrgDesignation'] = (this.orgDesignationList
+          .findIndex((element: any) => element.name === masterDesignation.designation) > -1) ? true : false
+        if (this.selectedDesignationList.findIndex((element: any) => element.id === masterDesignation.id) > -1) {
+          masterDesignation['selected'] = true
+          // result.formatedDesignationsLsit.unshift(masterDesignation)
+          result.formatedDesignationsLsit.push(masterDesignation)
+        } else {
+          masterDesignation['selected'] = masterDesignation['isOrgDesignation']
+          result.formatedDesignationsLsit.push(masterDesignation)
+        }
+        // if (this.selectedDesignationList.findIndex((element: any) => element.id === masterDesignation.id) < 0) {
+        //   masterDesignation['selected'] = masterDesignation['isOrgDesignation']
+        //   result.formatedDesignationsLsit.push(masterDesignation)
+        // }
       })
     }
 
-    return of(formatedDesignationsLsit)
+    return of(result)
   }
 
-  getFrameworkInfo(): Observable<any> {
-    return this.http.get(`${API_END_POINTS.ORGANISATION_FW}`, { withCredentials: true }).pipe(
+  getFrameworkInfo(frameWorkName: string): Observable<any> {
+    return this.http.get(`${API_END_POINTS.ORGANISATION_FW(frameWorkName)}`, { withCredentials: true }).pipe(
       tap((response: any) => {
         this.formateData(response)
       }),
     )
+  }
+
+  setFrameWorkInfo(frameWorkInfo: any) {
+    this.frameWorkInfo = frameWorkInfo
+  }
+
+  setCurrentOrgDesignationsList(orgDesignationList: any[]) {
+    this.orgDesignationList = orgDesignationList
   }
 
   formateData(response: any) {
@@ -107,7 +142,7 @@ export class DesignationsService {
 
   }
 
-  getUuid() {
+  get getUuid() {
     return uuidv4()
   }
 
@@ -120,6 +155,29 @@ export class DesignationsService {
       frameworkId,
       categoryId,
     )}`, requestBody)
+  }
+
+  getOrgReadData(organisationId: string) {
+    const request = {
+      "request": {
+        "organisationId": organisationId
+      }
+    }
+    this.http
+      .post<any>(API_END_POINTS.ORG_READ, request)
+      .pipe(map((res: any) => {
+        this.configSvc.orgReadData = _.get(res, 'result.response')
+        return _.get(res, 'result.response')
+      }))
+      .toPromise()
+  }
+
+  updateTerms(frameworkId: string, categoryId: string, categoryTermCode: string, reguestBody: any) {
+    return this.http.patch(`${API_END_POINTS.UPDATE_TERM(
+      frameworkId,
+      categoryId,
+      categoryTermCode
+    )}`, reguestBody)
   }
 
   publishFramework(frameworkName: string) {
@@ -143,6 +201,6 @@ export class DesignationsService {
   // }
 
   importDesigantion(framework: string, category: string, reqBody: any): Observable<any> {
-    return this.http.post<any>(`${API_END_POINTS.importDesignation}framework=${framework}&category=${category}`, reqBody)
+    return this.http.post<any>(`${API_END_POINTS.IMPORT_DESIGNATION}framework=${framework}&category=${category}`, reqBody)
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { ActivatedRoute } from '@angular/router'
-import { OdcsService } from '../../services/odcs.service'
+// import { OdcsService } from '../../services/odcs.service'
 
 @Component({
   selector: 'ws-app-odcs-mapping',
@@ -19,7 +19,7 @@ export class OdcsMappingComponent implements OnInit {
 
   constructor(
     private activateRoute: ActivatedRoute,
-    private odcsSvc: OdcsService
+    // private odcsSvc: OdcsService
   ) { }
 
   ngOnInit() {

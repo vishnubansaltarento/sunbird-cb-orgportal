@@ -1,64 +1,137 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { DesignationsService } from '../../services/designations.service'
 import { MatDialog, PageEvent } from '@angular/material'
 import { FormControl } from '@angular/forms'
 import { delay } from 'rxjs/operators'
 import { SelectedDesignationPopupComponent } from '../../dialog-boxes/selected-designation-popup/selected-designation-popup.component'
-import { forkJoin } from 'rxjs'
+import { forkJoin, of, Subscription } from 'rxjs'
+import { catchError, map } from 'rxjs/operators'
 import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
+import { LoaderService } from '../../../../../../../../../../../src/app/services/loader.service'
+import { ActivatedRoute, Router } from '@angular/router'
+import { environment } from '../../../../../../../../../../../src/environments/environment'
+import { ConformationPopupComponent } from '../../dialog-boxes/conformation-popup/conformation-popup.component'
 
 @Component({
   selector: 'ws-app-import-designation',
   templateUrl: './import-designation.component.html',
   styleUrls: ['./import-designation.component.scss']
 })
-export class ImportDesignationComponent implements OnInit {
+export class ImportDesignationComponent implements OnInit, OnDestroy {
 
+  environmentVal: any
+  designationConfig: any
+  frameworkConfig: any
+  configSvc: any
+  loaderMsg: string = ''
+  showCreateLoader = false
   searchControl = new FormControl();
   igotDesignationsList: any = []
-  filteredIgotDesignationsList: any = []
   selectedDesignationsList: any = []
   orgDesignationsList: any = []
   pageSize = 20
   startIndex = 0
   lastIndex = 20
+  deisgnationsCount = 0
+  private apiSubscription: Subscription | undefined
+  designationsImportSuccessResponses: any = []
+  importedDesignationNames: any = []
+  designationsImportFailed: any = []
+  frameworkInfo: any = {}
 
   constructor(
     private designationsService: DesignationsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private loaderService: LoaderService,
+    private activateRoute: ActivatedRoute,
+    private route: Router
   ) { }
 
   ngOnInit() {
+
+    // this.getRoutesData()
     this.loadDesignations()
     this.valudChangeSubscribers()
+
+    this.getFrameWorkDetails()
   }
 
-  loadDesignations() {
-    this.designationsService.getDesignations({}).subscribe(
-      (data: any) => {
-        this.igotDesignationsList = data
-        this.getFilteredDesignationList()
+  getRoutesData() {
+    this.environmentVal = environment
+    this.activateRoute.data.subscribe(data => {
+      this.designationConfig = data.pageData.data
+      this.frameworkConfig = this.designationConfig.frameworkConfig
+    })
+
+    this.configSvc = this.activateRoute.snapshot.data['configService']
+    console.log('this.configSvc', this.configSvc.orgReadData)
+    if (this.configSvc.orgReadData && this.configSvc.orgReadData.frameworkid) {
+      this.environmentVal.frameworkName = this.configSvc.orgReadData.frameworkid
+    } else {
+      this.createFreamwork()
+    }
+  }
+
+  createFreamwork() {
+    this.showCreateLoader = true
+    this.loaderMsg = this.designationConfig.frameworkCreationMSg
+    this.environmentVal.frameworkName = '1231231231_organisation_fw'
+  }
+
+  getFrameWorkDetails() {
+    this.frameworkInfo = this.designationsService.frameWorkInfo
+    if (this.frameworkInfo === undefined) {
+      this.navigateToMyDesignations()
+    }
+  }
+
+  loadDesignations(searchKey: string = '') {
+    this.loaderService.changeLoaderState(true)
+    let pageNumber = this.startIndex === 0 ? 0 : this.startIndex / this.pageSize
+    const requestParams: any = {
+      "filterCriteriaMap": {
+        "status": "Active"
+      },
+      "requestedFields": [],
+      "pageNumber": pageNumber,
+      "pageSize": this.pageSize
+    }
+    this.startIndex
+    if (searchKey) {
+      requestParams['searchString'] = searchKey
+    }
+
+    if (this.apiSubscription) {
+      this.apiSubscription.unsubscribe()
+      this.apiSubscription = undefined
+    }
+
+    this.apiSubscription = this.designationsService.getIgotMasterDesignations(requestParams).subscribe(
+      (result: any) => {
+        this.igotDesignationsList = result.formatedDesignationsLsit
+        this.deisgnationsCount = result.totalCount
+        this.loaderService.changeLoaderState(false)
       },
       (_err: any) => {
+        this.loaderService.changeLoaderState(false)
       })
+  }
+
+  get getFilteredSelectedList() {
+    if (this.searchControl.value) {
+      return this.selectedDesignationsList
+        .filter((designation: any) =>
+          designation.name.toLowerCase().includes(this.searchControl.value.toLowerCase()))
+    }
+    return this.selectedDesignationsList
   }
 
   valudChangeSubscribers() {
     if (this.searchControl) {
       this.searchControl.valueChanges.pipe(delay(500)).subscribe((value: string) => {
-        this.getFilteredDesignationList(value)
+        this.loadDesignations(value)
       })
-    }
-  }
-
-  getFilteredDesignationList(key?: string) {
-    if (key) {
-      this.filteredIgotDesignationsList = this.igotDesignationsList
-        .filter((designation: any) =>
-          designation.name.toLowerCase().includes(key.toLowerCase()))
-    } else {
-      this.filteredIgotDesignationsList = this.igotDesignationsList
     }
   }
 
@@ -68,15 +141,13 @@ export class ImportDesignationComponent implements OnInit {
     if (checked) {
       designation['selected'] = true
       this.selectedDesignationsList.push(designation)
-      this.igotDesignationsList.splice(index, 1)
-      this.igotDesignationsList.unshift(designation)
-      this.getFilteredDesignationList(this.searchControl.value)
+      this.designationsService.updateSelectedDesignationList(this.selectedDesignationsList)
+      // this.igotDesignationsList.splice(index, 1)
+      // this.igotDesignationsList.unshift(designation)
     } else {
       this.removeDesignation([designation])
     }
   }
-
-
 
   get selctedDesignationsCount() {
     return this.selectedDesignationsList.length
@@ -86,17 +157,17 @@ export class ImportDesignationComponent implements OnInit {
     designationToRemoveList.forEach((designationToRemove: any) => {
       this.selectedDesignationsList = this.selectedDesignationsList
         .filter((selectedDesignation: any) => selectedDesignation.id !== designationToRemove.id)
+      this.designationsService.updateSelectedDesignationList(this.selectedDesignationsList)
 
       const igotListIndex = this.igotDesignationsList
         .findIndex((designation: any) => designation.id === designationToRemove.id)
       if (igotListIndex >= 0) {
         const designation = this.igotDesignationsList[igotListIndex]
         designation['selected'] = false
-        this.igotDesignationsList.splice(igotListIndex, 1)
-        this.igotDesignationsList.splice(this.selctedDesignationsCount, 0, designation)
+        // this.displayList.splice(igotListIndex, 1)
+        // this.displayList.splice(this.selctedDesignationsCount, 0, designation)
       }
     })
-    this.getFilteredDesignationList(this.searchControl.value)
 
   }
 
@@ -106,6 +177,7 @@ export class ImportDesignationComponent implements OnInit {
       disableClose: true,
       data: dialogData,
       autoFocus: false,
+      maxHeight: '90vh',
       width: '90%',
     })
     dialogRef.afterClosed().subscribe((res: any[]) => {
@@ -119,30 +191,68 @@ export class ImportDesignationComponent implements OnInit {
   onChangePage(pe: PageEvent) {
     this.startIndex = pe.pageIndex * pe.pageSize
     this.lastIndex = (pe.pageIndex + 1) * pe.pageSize
+    this.pageSize = pe.pageSize
+    this.loadDesignations(this.searchControl.value)
   }
 
   importDesignations() {
+    // this.designationsImportFailed = [
+    //   {
+    //     designation: {
+    //       designation: 'name 1'
+    //     }
+    //   },
+    //   {
+    //     designation: {
+    //       designation: 'name 2'
+    //     }
+    //   }
+    // ]
+
+    // this.importedDesignationNames = ['succes one', 'success two', 'succes one', 'success two', 'succes one', 'success two',
+    // 'succes one', 'success two', 'succes one', 'success two', 'succes one', 'success two', 'succes one', 'success two',]
+    // this.openConforamtionPopup()
+
     if (this.selctedDesignationsCount) {
-      const framework = 'organisation_fw'
-      const category = 'organisation_fw'
-      const importRequest: any = []
-      this.selectedDesignationsList((selectedDesignation: any) => {
-        const formBody = {
-          "request": {
-            "term": {
-              "name": selectedDesignation.name,
-              "code": selectedDesignation.name,
-              "refId": selectedDesignation.id,
-              "refType": "Testing Schema Update For Creating Term"
+      const framework = _.get(this.frameworkInfo, 'code')
+      const category = 'designation'
+      const observables = this.selectedDesignationsList.map((selectedDesignation: any) => {
+        const requestBody = {
+          request: {
+            term: {
+              code: this.designationsService.getUuid,
+              name: selectedDesignation.designation,
+              description: selectedDesignation.description,
+              category: 'designation',
+              status: 'live',
+              refId: selectedDesignation.id,
+              refType: "designation",
+              additionalProperties: {}
             }
           }
         }
-        importRequest.push(this.designationsService.importDesigantion(framework, category, formBody))
+        this.designationsImportSuccessResponses =
+          _.get(this.frameworkInfo, 'categories[0].terms[0].associations').map((c: any) => {
+            return c.identifier ? { identifier: c.identifier } : null
+          })
+        // return this.designationsService.importDesigantion(framework, category, requestBody).pipe(
+        return this.designationsService.createTerm(framework, category, requestBody).pipe(
+          map(response => {
+            this.designationsImportSuccessResponses.push({ identifier: _.get(response, 'result.node_id[0]') })
+            this.importedDesignationNames.push(selectedDesignation.designation)
+            return response
+          }),
+          catchError(error => {
+            this.designationsImportFailed.push({ designation: selectedDesignation, error: error })
+            return of(null)
+          })
+        )
       })
 
-      forkJoin(importRequest).subscribe({
+      forkJoin(observables).subscribe({
         next: response => {
           console.log(response)
+          this.updateTerms()
         },
         error: (error: HttpErrorResponse) => {
           const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
@@ -152,4 +262,100 @@ export class ImportDesignationComponent implements OnInit {
     }
   }
 
+  updateTerms() {
+    const framework = _.get(this.frameworkInfo, 'code')
+    const category = _.get(this.frameworkInfo, 'categories[0].terms[0].category')
+    const categoryTermCode = _.get(this.frameworkInfo, 'categories[0].terms[0].code')
+    const requestBody = {
+      request: {
+        term: {
+          associations: this.designationsImportSuccessResponses
+        }
+      }
+    }
+    this.designationsService.updateTerms(framework, category, categoryTermCode, requestBody).subscribe({
+      next: response => {
+        this.publishFrameWork()
+        console.log('update response', response)
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+        console.log(errorMessage)
+      }
+    })
+  }
+
+  publishFrameWork() {
+    const frameworkName = _.get(this.frameworkInfo, 'code')
+    this.designationsService.publishFramework(frameworkName).subscribe({
+      next: response => {
+        console.log('publish', response)
+        this.openConforamtionPopup()
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+        console.log(errorMessage)
+      }
+    })
+  }
+
+  openConforamtionPopup() {
+    const descriptions = []
+    if (this.designationsImportFailed.length > 0) {
+      const designationNames = this.designationsImportFailed.map((e: any) => e.designation.designation).join(', ')
+      const description = {
+        header: 'Import failed designations',
+        message: `Some thing went wrong while importing ${designationNames} designations`
+      }
+      descriptions.push(description)
+    }
+    if (this.importedDesignationNames.length > 0) {
+      const designationNames = this.importedDesignationNames.join(', ')
+      const description = {
+        header: 'Designations imported successfully',
+        message: `${designationNames} are imported successfully`
+      }
+      descriptions.push(description)
+    }
+
+    descriptions.push({
+      message: 'The changes will reflect shortly.'
+    })
+    const dialogData = {
+      descriptions: descriptions,
+      footerClass: 'items-center justify-end',
+      buttons: [
+        {
+          btnText: 'Cancel',
+          btnClass: '',
+          response: false
+        },
+      ],
+    }
+
+    const dialogRef = this.dialog.open(ConformationPopupComponent, {
+      data: dialogData,
+      autoFocus: false,
+      minWidth: '500px',
+      maxWidth: '80vw',
+      maxHeight: '90vh',
+      height: '300px',
+      disableClose: true
+    })
+    dialogRef.afterClosed().subscribe(() => {
+      // this.navigateToMyDesignations()
+    })
+  }
+
+  navigateToMyDesignations() {
+    this.route.navigateByUrl('app/home/org-designations')
+  }
+
+  ngOnDestroy(): void {
+    this.designationsService.updateSelectedDesignationList([])
+    this.loaderService.changeLoaderState(false)
+    if (this.apiSubscription) {
+      this.apiSubscription.unsubscribe()
+    }
+  }
 }

@@ -1,14 +1,94 @@
-.conformation-popup {
-  height: 300px;
-  max-height: 80vh;
+// .conformation-popup {
+//   height: 300px;
+//   max-height: 80vh;
 
-  .msgDescription {
-    font-size: 14px;
-  }
+//   .msgDescription {
+//     font-size: 14px;
+//   }
 
+// }
+
+// .remove {
+//   background-color: red !important;
+//   color: #ffffff !important;
+// }
+
+.dialog-container {
+    display: flex;
+    justify-content: center;
+    height: calc(100% - 60px);
+    flex-direction: column;
+
+    .circule {
+        width: 40px;
+        height: 40px;
+        border: 0px;
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .success {
+        background-color: #1d8923;
+    }
+
+    .fail {
+        background-color: #d13924;
+    }
+
+    .success-icon {
+        position: absolute;
+        color: white;
+        top: 9px;
+        left: 7px;
+        font-weight: 900;
+    }
+
+    .fail-icon {
+        position: absolute;
+        color: white;
+        top: 9px;
+        left: 7.4px;
+    }
+
+    .header {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .description {
+        font-size: 14px;
+    }
 }
+.footer {
+    height: 60px;
 
-.remove {
-  background-color: red !important;
-  color: #ffffff !important;
+    .btn-full-success {
+        min-width: 80px;
+        border: none;
+        background-color: #045dad;
+        color: white;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    .btn-full-red {
+        min-width: 80px;
+        border: none;
+        background-color: red;
+        color: white;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    .btn-outline {
+        min-width: 80px;
+        background-color: white;
+        color: #045dad;
+        border: 2px solid #045dad;
+        border-radius: 5px;
+        font-size: 15px;
+        cursor: pointer;
+    }
 }

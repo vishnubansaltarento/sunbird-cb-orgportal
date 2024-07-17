@@ -8,17 +8,45 @@ import { MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, Mat
 import { UIORGTableModule } from '@sunbird-cb/collection'
 import { SelectedDesignationPopupComponent } from './dialog-boxes/selected-designation-popup/selected-designation-popup.component'
 import { ConformationPopupComponent } from './dialog-boxes/conformation-popup/conformation-popup.component'
+import { PageResolve } from '@sunbird-cb/utils'
+import { ConfigResolveService } from '../../resolvers/config-resolve.service'
 
 const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: DesignationsComponent
+    component: DesignationsComponent,
+    data: {
+      pageId: 'home/odcs-mapping',
+      module: 'odcs-mapping',
+      pageType: 'feature',
+      pageKey: 'odcs',
+    },
+    resolve: {
+      configService: ConfigResolveService,
+      pageData: PageResolve,
+    },
   },
   {
     path: 'import-designation',
     pathMatch: 'full',
-    component: ImportDesignationComponent
+    // data: {
+    //   pageId: 'home/org-designations/import-designation',
+    //   module: 'manage-designations',
+    //   pageType: 'feature',
+    //   pageKey: 'import-designations',
+    // },
+    data: {
+      pageId: 'home/odcs-mapping',
+      module: 'odcs-mapping',
+      pageType: 'feature',
+      pageKey: 'odcs',
+    },
+    component: ImportDesignationComponent,
+    resolve: {
+      configService: ConfigResolveService,
+      pageData: PageResolve,
+    },
   },
 ]
 

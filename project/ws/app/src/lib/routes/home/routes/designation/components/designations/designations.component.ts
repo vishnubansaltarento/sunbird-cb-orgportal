@@ -7,6 +7,8 @@ import { delay } from 'rxjs/operators'
 import { HttpErrorResponse } from '@angular/common/http'
 import { MatDialog } from '@angular/material'
 import { ConformationPopupComponent } from '../../dialog-boxes/conformation-popup/conformation-popup.component'
+import { ActivatedRoute } from '@angular/router'
+import { environment } from '../../../../../../../../../../../src/environments/environment'
 
 
 @Component({
@@ -16,6 +18,12 @@ import { ConformationPopupComponent } from '../../dialog-boxes/conformation-popu
 })
 export class DesignationsComponent implements OnInit {
 
+  environmentVal: any
+  designationConfig: any
+  frameworkConfig: any
+  configSvc: any
+  loaderMsg: string = ''
+  showCreateLoader = false
   searchControl = new FormControl();
   frameworkDetails: any = {}
   organisationsList: any = []
@@ -23,17 +31,19 @@ export class DesignationsComponent implements OnInit {
   designationsList: any = []
   filteredDesignationsList: any = []
   tableData!: ITableData
-  showLoader: boolean = true
+  showLoader: boolean = false
   actionMenuItem: {
     name: string,
     icon: string,
     key: string,
     isMdoLeader: boolean
   }[] = []
+  orgId = ''
 
   constructor(
     private designationsService: DesignationsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private activateRoute: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -45,9 +55,37 @@ export class DesignationsComponent implements OnInit {
     this.initializeDefaultValues()
     this.getFrameworkInfo()
     this.valudChangeSubscribers()
+    // this.getRoutesData()
+  }
+
+  getRoutesData() {
+    this.environmentVal = environment
+    this.activateRoute.data.subscribe(data => {
+      this.designationConfig = data.pageData.data
+      this.frameworkConfig = this.designationConfig.frameworkConfig
+    })
+
+    this.configSvc = this.activateRoute.snapshot.data['configService']
+    console.log('this.configSvc', this.configSvc.orgReadData)
+    if (this.configSvc.orgReadData && this.configSvc.orgReadData.frameworkid) {
+      this.environmentVal.frameworkName = this.configSvc.orgReadData.frameworkid
+    } else {
+      this.createFreamwork()
+    }
+  }
+
+  createFreamwork() {
+    this.showCreateLoader = true
+    this.loaderMsg = this.designationConfig.frameworkCreationMSg
+    this.environmentVal.frameworkName = '1231231231_organisation_fw'
+  }
+
+  getFrameWorkDetails() {
+    this.designationsService.getOrgReadData(this.orgId)
   }
 
   initializeDefaultValues() {
+    this.orgId = _.get(this.configSvc, 'userProfile.rootOrgId')
     this.actionMenuItem = [
       // {
       //   name: 'Edit',
@@ -72,7 +110,8 @@ export class DesignationsComponent implements OnInit {
     this.tableData = {
       columns: [
         { displayName: 'Designation', key: 'name' },
-        { displayName: 'Description', key: 'description' },
+        { displayName: 'Imported by', key: 'Importedby' },
+        { displayName: 'Imported on', key: 'Importedon' },
       ],
       needCheckBox: false,
       needHash: false,
@@ -85,9 +124,11 @@ export class DesignationsComponent implements OnInit {
 
   getFrameworkInfo() {
     this.showLoader = true
-    this.designationsService.getFrameworkInfo().subscribe(res => {
+    this.designationsService.getFrameworkInfo('organisation_fw').subscribe(res => {
       this.showLoader = false
       this.frameworkDetails = _.get(res, 'result.framework')
+      this.designationsService.setFrameWorkInfo(this.frameworkDetails)
+
       this.getOrganisations()
       console.log('frame work: ', this.frameworkDetails)
     })
@@ -114,6 +155,7 @@ export class DesignationsComponent implements OnInit {
 
   getDesignations() {
     this.designationsList = this.getTermsOfCategorie('organisation_fw_designation')
+    this.designationsService.setCurrentOrgDesignationsList(this.designationsList)
     this.filterDesignations()
   }
 
@@ -178,13 +220,33 @@ export class DesignationsComponent implements OnInit {
   openConformationPopup(event: any) {
     console.log('envent data', event)
     const dialogData = {
-      message: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`
+      descriptions: [
+        {
+          header: '',
+          message: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+        }
+      ],
+      footerClass: 'items-center justify-end',
+      buttons: [
+        {
+          btnText: 'Remove',
+          btnClass: 'btn-full-red',
+          response: true
+        },
+        {
+          btnText: 'Cancel',
+          btnClass: '',
+          response: false
+        },
+      ],
     }
     const dialogRef = this.dialog.open(ConformationPopupComponent, {
       data: dialogData,
       autoFocus: false,
       width: '500px',
       maxWidth: '80vw',
+      maxHeight: '90vh',
+      height: '300px',
       disableClose: true
     })
     dialogRef.afterClosed().subscribe((res: any) => {

@@ -1,68 +1,82 @@
 <div class="flex flex-4 flex-column">
   <mat-card>
     <mat-card-title class="flex-4 mobile-margin mat-h2">
-      Import from Igot Designations
+      Import from Igot Master
     </mat-card-title>
     <mat-card-content class="master-designations pt-4">
-      <div class="w-full flex justify-between items-center mb-6">
-        <div class="flex items-center">
-          <div class="search">
-            <div class=rsearch>
-              <mat-icon class="color-60 search-icon">search</mat-icon>
-              <input [formControl]="searchControl" class="sinput color-60" type="Standard" placeholder="Search">
-            </div>
-          </div>
-        </div>
-      </div>
-      <ng-container *ngIf="selctedDesignationsCount > 0">
-        <div class="flex flex-row mb-4">
-          <div class="flex flex-2 flex-middle w-full flex-wrap gap-4">
-            <div class="selected-designation-label">Selected designations - </div>
-            <ng-container *ngFor="let item of selectedDesignationsList | slice : 0 : 10">
-              <div class="chips flex flex-row" *ngIf="item?.selected">
-                <div class="chips-content">
-                  <span class="color-60">{{item?.name | titlecase}}</span>
-                </div>
-                <div class="cross-icon" (click)="removeDesignation([item])">
-                  <img class="cursor-pointer" src="assets/icons/close.svg" />
-                </div>
+      <ng-container *ngIf="!showCreateLoader; else fw_create_loader">
+        <div class="w-full flex justify-between items-center mb-6">
+          <div class="flex items-center">
+            <div class="search">
+              <div class=rsearch>
+                <mat-icon class="color-60 search-icon">search</mat-icon>
+                <input [formControl]="searchControl" class="sinput color-60" type="Standard" placeholder="Search">
               </div>
-            </ng-container>
-            <ng-container *ngIf="selctedDesignationsCount > 10">
-              <a mat-button class="select-more-link margin-left-m"
-                (click)="openPreviewPoup()">+{{selctedDesignationsCount - 10}} more</a>
-            </ng-container>
+            </div>
           </div>
-          <!-- <div class="flex flex-1 flex-row right-section flex-middle">
-            <a mat-button class="select-more-link" (click)="clearAll()">Clear all</a>
-          </div> -->
         </div>
-      </ng-container>
-      <div class="w-full flex flex-4 flex-row designations-card-container flex-wrap gap-5">
-        <ng-container
-          *ngFor="let designation of filteredIgotDesignationsList | slice : startIndex : lastIndex; let i = index">
-          <div class="flex flex-4 custom-user-card items-center justify-center"
-            [ngClass]="designation?.selected ? 'active-card':''">
-            <div class="custom-user-desc">
-              <p>{{designation?.name | titlecase}}</p>
+        <ng-container *ngIf="selctedDesignationsCount > 0">
+          <div class="flex flex-row mb-4">
+            <div class="flex flex-2 flex-middle w-full flex-wrap gap-4">
+              <div class="selected-designation-label">Selected designations - </div>
+              <ng-container *ngFor="let item of selectedDesignationsList | slice : 0 : 10">
+                <div class="chips flex flex-row" *ngIf="item?.selected">
+                  <div class="chips-content">
+                    <span class="color-60">{{item?.designation | titlecase}}</span>
+                  </div>
+                  <div class="cross-icon" (click)="removeDesignation([item])">
+                    <img class="cursor-pointer" src="assets/icons/close.svg" />
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="selctedDesignationsCount > 10">
+                <a mat-button class="select-more-link margin-left-m"
+                  (click)="openPreviewPoup()">+{{selctedDesignationsCount - 10}} more</a>
+              </ng-container>
             </div>
-
-            <div class="check-action">
-              <mat-checkbox [checked]="designation?.selected"
-                (change)="selectDesignation($event.checked, designation.id)"></mat-checkbox>
-            </div>
+            <!-- <div class="flex flex-1 flex-row right-section flex-middle">
+              <a mat-button class="select-more-link" (click)="clearAll()">Clear all</a>
+            </div> -->
           </div>
         </ng-container>
-      </div>
-      <div class="flex flex-row justify-center">
-        <mat-paginator [length]="filteredIgotDesignationsList.length" [pageSize]="pageSize"
-          [pageSizeOptions]="[20,30,40]" (page)="onChangePage($event)"></mat-paginator>
-      </div>
-      <div class="flex justify-end items-center">
-        <button mat-raised-button (click)="importDesignations()"
-          class="importBtn flex items-center justify-center">Import selected
-          designations</button>
-      </div>
+        <div class="w-full flex flex-4 flex-row designations-card-container flex-wrap gap-5">
+          <ng-container *ngFor="let designation of igotDesignationsList let i = index">
+            <div class="flex flex-4 custom-user-card items-center justify-center"
+              [ngClass]="{'active-card': designation?.selected, 'disableCard': designation?.isOrgDesignation}">
+              <div class="custom-user-desc">
+                <p>{{designation?.designation | titlecase}}</p>
+              </div>
+
+              <div class="check-action">
+                <mat-checkbox [checked]="designation?.selected" [disabled]="designation?.isOrgDesignation"
+                  (change)="selectDesignation($event.checked, designation.id)"></mat-checkbox>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="igotDesignationsList.length === 0">
+            <div class=" w-full flex justify-center items-center">
+              <div class="my-8 mx-4">
+                <p>No designations found</p>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="flex flex-row justify-center">
+          <mat-paginator [length]="deisgnationsCount" [pageSize]="pageSize" [pageSizeOptions]="[20,30,40]"
+            (page)="onChangePage($event)"></mat-paginator>
+        </div>
+        <div class="flex justify-end items-center">
+          <button mat-raised-button (click)="importDesignations()"
+            class="importBtn flex items-center justify-center">Import selected
+            designations</button>
+        </div>
+      </ng-container>
+      <ng-template #fw_create_loader>
+        <div class="flex flex-col flex-1 w-100 items-center pt-5 text-center">
+          <mat-spinner class="display-inline-block mb-5" [diameter]="50" [strokeWidth]="3"></mat-spinner>
+          <p>{{loaderMsg}}</p>
+        </div>
+      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>

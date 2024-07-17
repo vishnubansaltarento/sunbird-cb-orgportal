@@ -8,13 +8,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
 })
 export class ConformationPopupComponent implements OnInit {
 
-  dialogData: any
+  dialogDetails: any
 
   constructor(
     private dialogRef: MatDialogRef<ConformationPopupComponent>,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {
-    this.dialogData = this.data
+    this.dialogDetails = this.data
   }
 
   ngOnInit() {
