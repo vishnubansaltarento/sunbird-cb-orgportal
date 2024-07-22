@@ -81,12 +81,11 @@ import { CreateRequestFormComponent } from './components/request-list/create-req
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
-import { DesignationsComponent } from './routes/designations/designations.component'
-import { OdcsService } from './services/odcs.service'
-import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
 import { HttpClientModule } from '@angular/common/http'
+import { DesignationModule } from './routes/designation/designation.module'
 import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
 import { environment } from '../../../../../../../src/environments/environment'
+import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
 
 @NgModule({
   declarations: [
@@ -132,7 +131,6 @@ import { environment } from '../../../../../../../src/environments/environment'
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
-    DesignationsComponent,
     OdcsMappingComponent,
   ],
   imports: [
@@ -189,8 +187,9 @@ import { environment } from '../../../../../../../src/environments/environment'
     FilterSearchPipeModule,
     MatAutocompleteModule,
     MatSlideToggleModule,
-    TaxonomyEditorModule,
     HttpClientModule,
+    DesignationModule,
+    TaxonomyEditorModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -212,7 +211,7 @@ import { environment } from '../../../../../../../src/environments/environment'
     { provide: 'environment', useValue: environment },
     {
       provide: MatDialogRef,
-      useValue: {}
+      useValue: {},
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
     InitResolver,
@@ -220,7 +219,6 @@ import { environment } from '../../../../../../../src/environments/environment'
     UploadService,
     TrainingPlanDashboardService,
     UsersService,
-    OdcsService,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
