@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { mergeMap, tap } from 'rxjs/operators'
+import { mergeMap, tap, map } from 'rxjs/operators'
 import { Observable, of } from 'rxjs'
-import { map } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 // tslint:disable
 import _ from 'lodash'
@@ -12,8 +11,8 @@ import { ConfigurationsService } from '@sunbird-cb/utils'
 
 const API_END_POINTS = {
   COPY_FRAMEWORK: `/api/framework/v1/copy/${environment.ODCSMasterFramework}`,
-  CREATE_TERM: (frameworkId: string, categoryId: string) =>
-    `apis/proxies/v8/framework/v1/term/create?framework=${frameworkId}&category=${categoryId}`,
+  // CREATE_TERM: (frameworkId: string, categoryId: string) =>
+  //   `apis/proxies/v8/framework/v1/term/create?framework=${frameworkId}&category=${categoryId}`,
   UPDATE_TERM: (frameworkId: string, categoryId: string, categoryTermCode: string) =>
     `apis/proxies/v8/framework/v1/term/update/${categoryTermCode}?framework=${frameworkId}&category=${categoryId}`,
   PUBLISH_FRAMEWORK: (frameworkName: string) =>
@@ -25,10 +24,13 @@ const API_END_POINTS = {
   GET_IGOT_MASTER_DESIGNATIONS: 'apis/proxies/v8/designation/search',
   IMPORT_DESIGNATION: 'api/framework/v1/term/create?',
   ORG_READ: '/apis/proxies/v8/org/v1/read',
+  CREATE_TERM: `/apis/proxies/v8/designation/create/term`,
+  CREATE_FRAME_WORK: (frameworkName: string, orgId: string, termName: string) =>
+    `/apis/proxies/v8/org/framework/read?frameworkName=${frameworkName}&orgId=${orgId}&termName=${termName}`,
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DesignationsService {
   list = new Map<string, any>()
@@ -37,11 +39,14 @@ export class DesignationsService {
   selectedDesignationList: any = []
   frameWorkInfo: any
 
-
   constructor(
     private http: HttpClient,
     private configSvc: ConfigurationsService,
   ) { }
+
+  createFrameWork(frameworkName: string, orgId: string, termName: string) {
+    return this.http.get<any>(API_END_POINTS.CREATE_FRAME_WORK(frameworkName, orgId, termName))
+  }
 
   getIgotMasterDesignations(req: any): Observable<any> {
     return this.http.post<any>(API_END_POINTS.GET_IGOT_MASTER_DESIGNATIONS, req).pipe(
@@ -62,7 +67,7 @@ export class DesignationsService {
     const result: any = {
       formatedDesignationsLsit: [],
       facets: response.facets,
-      totalCount: response.totalCount
+      totalCount: response.totalCount,
     }
     if (response.data) {
       response.data.forEach((masterDesignation: any) => {
@@ -103,7 +108,7 @@ export class DesignationsService {
   }
 
   formateData(response: any) {
-    (response.result.framework.categories).forEach((a: any) => {
+    _.get(response, 'result.framework.categories', []).forEach((a: any) => {
       this.list.set(a.code, {
         code: a.code,
         identifier: a.identifier,
@@ -122,7 +127,7 @@ export class DesignationsService {
             Object.assign(c, { children: associations })
           }
           return c
-        })
+        }),
       })
     })
 
@@ -150,26 +155,23 @@ export class DesignationsService {
     return this.http.post<any>(`${API_END_POINTS.COPY_FRAMEWORK}`, request).pipe(map(res => _.get(res, 'result.response')))
   }
 
-  createTerm(frameworkId: string, categoryId: string, requestBody: any) {
-    return this.http.post(`${API_END_POINTS.CREATE_TERM(
-      frameworkId,
-      categoryId,
-    )}`, requestBody)
+  createTerm(requestBody: any) {
+    return this.http.post(`${API_END_POINTS.CREATE_TERM}`, requestBody)
   }
 
-  getOrgReadData(organisationId: string) {
+  getOrgReadData(organisationId: string): Observable<any> {
     const request = {
-      "request": {
-        "organisationId": organisationId
-      }
+      request: {
+        organisationId,
+      },
     }
-    this.http
+    return this.http
       .post<any>(API_END_POINTS.ORG_READ, request)
       .pipe(map((res: any) => {
         this.configSvc.orgReadData = _.get(res, 'result.response')
         return _.get(res, 'result.response')
       }))
-      .toPromise()
+    // .toPromise()
   }
 
   updateTerms(frameworkId: string, categoryId: string, categoryTermCode: string, reguestBody: any) {
@@ -177,7 +179,7 @@ export class DesignationsService {
       frameworkId,
       categoryId,
       categoryTermCode
-    )}`, reguestBody)
+    )}`,                   reguestBody)
   }
 
   publishFramework(frameworkName: string) {

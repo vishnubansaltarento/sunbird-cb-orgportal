@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { SelectedDesignationPopupComponent } from './selected-designation-popup.component';
+import { SelectedDesignationPopupComponent } from './selected-designation-popup.component'
 
 describe('SelectedDesignationPopupComponent', () => {
-  let component: SelectedDesignationPopupComponent;
-  let fixture: ComponentFixture<SelectedDesignationPopupComponent>;
+  let component: SelectedDesignationPopupComponent
+  let fixture: ComponentFixture<SelectedDesignationPopupComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SelectedDesignationPopupComponent ]
+      declarations: [SelectedDesignationPopupComponent],
     })
-    .compileComponents();
-  }));
+    .compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SelectedDesignationPopupComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(SelectedDesignationPopupComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

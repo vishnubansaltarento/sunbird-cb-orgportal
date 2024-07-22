@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { OdcsMappingComponent } from './odcs-mapping.component';
+import { OdcsMappingComponent } from './odcs-mapping.component'
 
 describe('OdcsMappingComponent', () => {
-  let component: OdcsMappingComponent;
-  let fixture: ComponentFixture<OdcsMappingComponent>;
+  let component: OdcsMappingComponent
+  let fixture: ComponentFixture<OdcsMappingComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ OdcsMappingComponent ]
+      declarations: [OdcsMappingComponent],
     })
-    .compileComponents();
-  }));
+    .compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OdcsMappingComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(OdcsMappingComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

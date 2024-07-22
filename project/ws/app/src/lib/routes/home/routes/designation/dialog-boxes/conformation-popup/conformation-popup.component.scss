@@ -14,10 +14,10 @@
 // }
 
 .dialog-container {
-    display: flex;
-    justify-content: center;
-    height: calc(100% - 60px);
-    flex-direction: column;
+    // display: flex;
+    // justify-content: center;
+    // height: calc(100% - 60px);
+    // flex-direction: column;
 
     .circule {
         width: 40px;
@@ -91,4 +91,8 @@
         font-size: 15px;
         cursor: pointer;
     }
+}
+
+.textBold {
+    font-weight: 700;
 }

@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core'
 import { environment } from '../../../../../../../../../src/environments/environment'
 import { ActivatedRoute } from '@angular/router'
+import * as _ from 'lodash'
+import { DesignationsService } from '../designation/services/designations.service'
 // import { OdcsService } from '../../services/odcs.service'
 
 @Component({
   selector: 'ws-app-odcs-mapping',
   templateUrl: './odcs-mapping.component.html',
-  styleUrls: ['./odcs-mapping.component.scss']
+  styleUrls: ['./odcs-mapping.component.scss'],
 })
 export class OdcsMappingComponent implements OnInit {
   environmentVal: any
@@ -16,9 +18,11 @@ export class OdcsMappingComponent implements OnInit {
   configSvc: any
   showLoader = false
   loaderMsg = ''
+  orgId = ''
 
   constructor(
     private activateRoute: ActivatedRoute,
+    private designationsService: DesignationsService,
     // private odcsSvc: OdcsService
   ) { }
 
@@ -31,15 +35,42 @@ export class OdcsMappingComponent implements OnInit {
 
     // to check whether organisation is already having fraworkid or we have initiate the process
     this.configSvc = this.activateRoute.snapshot.data['configService']
-    console.log('this.configSvc', this.configSvc.orgReadData)
+    this.orgId = _.get(this.configSvc, 'userProfile.rootOrgId')
+    // console.log('this.configSvc', this.configSvc.orgReadData)
     if (this.configSvc.orgReadData && this.configSvc.orgReadData.frameworkid) {
       this.environmentVal.frameworkName = this.configSvc.orgReadData.frameworkid
     } else {
-      this.showLoader = true
+      this.showLoader = false
       this.loaderMsg = this.odcConfig.frameworkCreationMSg
-      // this.initFramworkCreation()
-      this.environmentVal.frameworkName = '1231231231_organisation_fw'
+      this.createFreamwork()
     }
+  }
+
+  createFreamwork() {
+    this.loaderMsg = this.odcConfig.frameworkCreationMSg
+    const departmentName = _.get(this.configSvc, 'userProfile.departmentName').replace(/\s/g, '')
+    const masterFrameWorkName = this.environmentVal.ODCSMasterFramework
+    this.designationsService.createFrameWork(masterFrameWorkName, this.orgId, departmentName).subscribe((res: any) => {
+      if (res) {
+        this.getOrgReadData()
+      }
+      // console.log('frameworkCreated: ', res)
+    })
+  }
+
+  getOrgReadData() {
+    this.showLoader = true
+    this.designationsService.getOrgReadData(this.orgId).subscribe((res: any) => {
+      if (_.get(res, 'frameworkid')) {
+        this.environmentVal.frameworkName = (_.get(res, 'frameworkid'))
+        this.environmentVal.frameworkType = 'MDO_DESIGNATION'
+        this.environmentVal.kcmFrameworkName = environment.KCMframeworkName
+      } else {
+        setTimeout(() => {
+          this.getOrgReadData()
+        },         10000)
+      }
+    })
   }
 
   // async initFramworkCreation() {
@@ -54,7 +85,6 @@ export class OdcsMappingComponent implements OnInit {
   //     console.error('Error in executing Framwork Creation process:', error)
   //   }
   // }
-
 
   // copyFrameworkCreate() {
   //   return new Promise((resolve, reject) => {

@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
 @Component({
   selector: 'ws-app-selected-designation-popup',
   templateUrl: './selected-designation-popup.component.html',
-  styleUrls: ['./selected-designation-popup.component.scss']
+  styleUrls: ['./selected-designation-popup.component.scss'],
 })
 export class SelectedDesignationPopupComponent implements OnInit {
 

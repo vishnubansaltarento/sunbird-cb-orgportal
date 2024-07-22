@@ -55,7 +55,7 @@ const routes: Routes = [
     DesignationsComponent,
     ImportDesignationComponent,
     SelectedDesignationPopupComponent,
-    ConformationPopupComponent
+    ConformationPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -72,14 +72,14 @@ const routes: Routes = [
     MatTableModule,
     UIORGTableModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
   ],
   entryComponents: [
     SelectedDesignationPopupComponent,
-    ConformationPopupComponent
+    ConformationPopupComponent,
   ],
   exports: [
     RouterModule,
-  ]
+  ],
 })
 export class DesignationModule { }

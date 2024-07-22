@@ -444,9 +444,9 @@ export class InitService {
 
   async fetchOrgReadData(completeProdata: any) {
     const request = {
-      "request": {
-        "organisationId": completeProdata.organisations[0].organisationId
-      }
+      request: {
+        organisationId: completeProdata.organisations[0].organisationId,
+      },
     }
     let orgReadData: any | null = null
     orgReadData = await this.http
@@ -465,9 +465,9 @@ export class InitService {
   async fetchOrgReadDataCopy(id: string) {
     if (id) {
       const request = {
-        "request": {
-          "organisationId": id
-        }
+        request: {
+          organisationId: id,
+        },
       }
       let orgReadData: any | null = null
       orgReadData = await this.http

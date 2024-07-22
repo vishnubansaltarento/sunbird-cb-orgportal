@@ -4,7 +4,7 @@
 </div>
 
 <div class="w-full flex flex-4 flex-row flex-wrap gap-5">
-  <ng-container *ngFor="let designation of selectedDesignationsList | slice : startIndex : lastIndex; let i = index">
+  <ng-container *ngFor="let designation of selectedDesignationsList; let i = index">
     <div class="flex flex-4 custom-user-card items-center justify-center">
       <div class="card-cross-icon">
         <button mat-mini-fab class="card-cross-btn flex flex-middle flex-center" type="button"

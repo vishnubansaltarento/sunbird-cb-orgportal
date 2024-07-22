@@ -10,28 +10,27 @@ import { ConformationPopupComponent } from '../../dialog-boxes/conformation-popu
 import { ActivatedRoute } from '@angular/router'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
 
-
 @Component({
   selector: 'ws-app-designations',
   templateUrl: './designations.component.html',
-  styleUrls: ['./designations.component.scss']
+  styleUrls: ['./designations.component.scss'],
 })
 export class DesignationsComponent implements OnInit {
 
-  environmentVal: any
+  environment: any
   designationConfig: any
   frameworkConfig: any
   configSvc: any
-  loaderMsg: string = ''
+  loaderMsg = ''
   showCreateLoader = false
-  searchControl = new FormControl();
+  searchControl = new FormControl()
   frameworkDetails: any = {}
   organisationsList: any = []
-  selectedOrganisation: string = ''
+  selectedOrganisation = ''
   designationsList: any = []
   filteredDesignationsList: any = []
   tableData!: ITableData
-  showLoader: boolean = false
+  showLoader = false
   actionMenuItem: {
     name: string,
     icon: string,
@@ -53,38 +52,12 @@ export class DesignationsComponent implements OnInit {
   //#region (intial actions)
   initialization() {
     this.initializeDefaultValues()
-    this.getFrameworkInfo()
     this.valudChangeSubscribers()
-    // this.getRoutesData()
-  }
-
-  getRoutesData() {
-    this.environmentVal = environment
-    this.activateRoute.data.subscribe(data => {
-      this.designationConfig = data.pageData.data
-      this.frameworkConfig = this.designationConfig.frameworkConfig
-    })
-
-    this.configSvc = this.activateRoute.snapshot.data['configService']
-    console.log('this.configSvc', this.configSvc.orgReadData)
-    if (this.configSvc.orgReadData && this.configSvc.orgReadData.frameworkid) {
-      this.environmentVal.frameworkName = this.configSvc.orgReadData.frameworkid
-    } else {
-      this.createFreamwork()
-    }
-  }
-
-  createFreamwork() {
-    this.showCreateLoader = true
-    this.loaderMsg = this.designationConfig.frameworkCreationMSg
-    this.environmentVal.frameworkName = '1231231231_organisation_fw'
-  }
-
-  getFrameWorkDetails() {
-    this.designationsService.getOrgReadData(this.orgId)
+    this.getRoutesData()
   }
 
   initializeDefaultValues() {
+    this.configSvc = this.activateRoute.snapshot.data['configService']
     this.orgId = _.get(this.configSvc, 'userProfile.rootOrgId')
     this.actionMenuItem = [
       // {
@@ -103,8 +76,8 @@ export class DesignationsComponent implements OnInit {
         name: 'Remove',
         icon: 'delete',
         key: 'remove',
-        isMdoLeader: true
-      }
+        isMdoLeader: true,
+      },
     ]
 
     this.tableData = {
@@ -122,15 +95,61 @@ export class DesignationsComponent implements OnInit {
     }
   }
 
-  getFrameworkInfo() {
+  getRoutesData() {
+    this.environment = environment
+    this.activateRoute.data.subscribe(data => {
+      this.designationConfig = data.pageData.data
+      this.frameworkConfig = this.designationConfig.frameworkConfig
+    })
+
+    // console.log('this.configSvc', this.configSvc.orgReadData)
+    if (this.configSvc.orgReadData && this.configSvc.orgReadData.frameworkid) {
+      // this.environmentVal.frameworkName = this.configSvc.orgReadData.frameworkid
+      this.getFrameworkInfo(this.configSvc.orgReadData.frameworkid)
+    } else {
+      this.createFreamwork()
+    }
+  }
+
+  createFreamwork() {
+    this.showCreateLoader = true
+    this.loaderMsg = this.designationConfig.frameworkCreationMSg
+    const departmentName = _.get(this.configSvc, 'userProfile.departmentName').replace(/\s/g, '')
+    const masterFrameWorkName = this.environment.ODCSMasterFramework
+    this.designationsService.createFrameWork(masterFrameWorkName, this.orgId, departmentName).subscribe((res: any) => {
+      if (res) {
+        this.getOrgReadData()
+      }
+      // console.log('frameworkCreated: ', res)
+    })
+  }
+
+  getOrgReadData() {
     this.showLoader = true
-    this.designationsService.getFrameworkInfo('organisation_fw').subscribe(res => {
+    this.showCreateLoader = false
+    this.designationsService.getOrgReadData(this.orgId).subscribe((res: any) => {
+      if (_.get(res, 'frameworkid')) {
+        this.environment.frameworkName = _.get(res, 'frameworkid')
+        this.getFrameworkInfo(res.frameworkid)
+      } else {
+        setTimeout(() => {
+          this.getOrgReadData()
+        },         10000)
+      }
+      // console.log('orgFramework Details', res)
+    })
+  }
+
+  getFrameworkInfo(frameworkid: string) {
+    this.showLoader = true
+    this.environment.frameworkName = frameworkid
+    this.designationsService.getFrameworkInfo(frameworkid).subscribe(res => {
       this.showLoader = false
       this.frameworkDetails = _.get(res, 'result.framework')
       this.designationsService.setFrameWorkInfo(this.frameworkDetails)
 
       this.getOrganisations()
-      console.log('frame work: ', this.frameworkDetails)
+      // console.log('frame work: ', this.frameworkDetails)
     })
   }
 
@@ -141,27 +160,29 @@ export class DesignationsComponent implements OnInit {
           this.filterDesignations(response)
         },
         error: (error: HttpErrorResponse) => {
-          console.log(error)
-        }
+          if (error) {
+            // console.log(error)
+          }
+        },
       })
     }
   }
 
   getOrganisations() {
-    this.organisationsList = this.getTermsOfCategorie('organisation_fw_org')
+    this.organisationsList = this.getTermsByCode('org')
     this.selectedOrganisation = _.get(this.organisationsList, '[0].identifier', '')
     this.getDesignations()
   }
 
   getDesignations() {
-    this.designationsList = this.getTermsOfCategorie('organisation_fw_designation')
+    this.designationsList = this.getTermsByCode('designation')
     this.designationsService.setCurrentOrgDesignationsList(this.designationsList)
     this.filterDesignations()
   }
 
   // to get list from categories like designations, organisations
-  getTermsOfCategorie(catagoriIdentifier: string) {
-    const selectedCatagori = this.categoriesOfFramework.filter((catagori: any) => catagori.identifier === catagoriIdentifier)
+  getTermsByCode(code: string) {
+    const selectedCatagori = this.categoriesOfFramework.filter((catagori: any) => catagori.code === code)
     return _.get(selectedCatagori, '[0].terms', [])
   }
 
@@ -218,25 +239,25 @@ export class DesignationsComponent implements OnInit {
   }
 
   openConformationPopup(event: any) {
-    console.log('envent data', event)
+    // console.log('envent data', event)
     const dialogData = {
       descriptions: [
         {
           header: '',
           message: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
-        }
+        },
       ],
       footerClass: 'items-center justify-end',
       buttons: [
         {
           btnText: 'Remove',
           btnClass: 'btn-full-red',
-          response: true
+          response: true,
         },
         {
           btnText: 'Cancel',
           btnClass: '',
-          response: false
+          response: false,
         },
       ],
     }
@@ -247,21 +268,19 @@ export class DesignationsComponent implements OnInit {
       maxWidth: '80vw',
       maxHeight: '90vh',
       height: '300px',
-      disableClose: true
+      disableClose: true,
     })
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
-        this.removeDesignation(event.row)
+        // this.removeDesignation(event.row)
       }
     })
   }
 
-  removeDesignation(designation: any) {
-    console.log(designation)
-  }
+  // removeDesignation(designation: any) {
+  //   console.log(designation)
+  // }
 
   //#endregion
-
-
 
 }

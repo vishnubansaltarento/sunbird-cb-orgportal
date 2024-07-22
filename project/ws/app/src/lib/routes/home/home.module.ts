@@ -85,6 +85,7 @@ import { HttpClientModule } from '@angular/common/http'
 import { DesignationModule } from './routes/designation/designation.module'
 import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
 import { environment } from '../../../../../../../src/environments/environment'
+import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
 
 @NgModule({
   declarations: [
@@ -187,7 +188,8 @@ import { environment } from '../../../../../../../src/environments/environment'
     MatAutocompleteModule,
     MatSlideToggleModule,
     HttpClientModule,
-    DesignationModule
+    DesignationModule,
+    TaxonomyEditorModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -209,7 +211,7 @@ import { environment } from '../../../../../../../src/environments/environment'
     { provide: 'environment', useValue: environment },
     {
       provide: MatDialogRef,
-      useValue: {}
+      useValue: {},
     },
     { provide: MAT_DIALOG_DATA, useValue: {} },
     InitResolver,

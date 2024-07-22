@@ -30,9 +30,14 @@
     <ng-container *ngIf="description.header">
       <span class="header">{{description.header}}</span>
     </ng-container>
-    <ng-container *ngIf="description.message">
+    <ng-container *ngIf="description.messages">
       <div class="description mt-1 mb-6">
-        <span>{{description.message}}</span>
+        <span>
+          <ng-container *ngFor="let msgDetails of description.messages">
+            <span [ngClass]="msgDetails.msgClass">{{msgDetails.msg}}</span>
+          </ng-container>
+        </span>
+        <!-- <span>{{description.message}}</span> -->
       </div>
     </ng-container>
   </ng-container>
