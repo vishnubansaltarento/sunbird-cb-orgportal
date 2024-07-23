@@ -68,11 +68,13 @@ export class OdcsMappingComponent implements OnInit {
       if (_.get(res, 'frameworkid')) {
         this.environmentVal.frameworkName = (_.get(res, 'frameworkid'))
         this.environmentVal.frameworkType = 'MDO_DESIGNATION'
+        this.odcConfig.defaultOdcsConfig[0].frameworkId = (_.get(res, 'frameworkid'))
+        this.taxonomyConfig = [...this.odcConfig.defaultOdcsConfig, ...this.odcConfig.frameworkConfig]
         this.environmentVal.kcmFrameworkName = environment.KCMframeworkName
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        }, 10000)
+        },         10000)
       }
     })
   }
