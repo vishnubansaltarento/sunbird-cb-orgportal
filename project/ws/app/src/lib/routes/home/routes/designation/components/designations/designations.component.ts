@@ -5,7 +5,7 @@ import { DesignationsService } from '../../services/designations.service'
 import { FormControl } from '@angular/forms'
 import { delay } from 'rxjs/operators'
 import { HttpErrorResponse } from '@angular/common/http'
-import { MatDialog } from '@angular/material'
+import { MatDialog, MatSnackBar } from '@angular/material'
 import { ConformationPopupComponent } from '../../dialog-boxes/conformation-popup/conformation-popup.component'
 import { ActivatedRoute } from '@angular/router'
 import { environment } from '../../../../../../../../../../../src/environments/environment'
@@ -43,6 +43,7 @@ export class DesignationsComponent implements OnInit {
     private designationsService: DesignationsService,
     private dialog: MatDialog,
     private activateRoute: ActivatedRoute,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -125,10 +126,10 @@ export class DesignationsComponent implements OnInit {
   }
 
   getOrgReadData() {
-    this.showLoader = true
-    this.showCreateLoader = false
     this.designationsService.getOrgReadData(this.orgId).subscribe((res: any) => {
       if (_.get(res, 'frameworkid')) {
+        this.showLoader = true
+        this.showCreateLoader = false
         this.environment.frameworkName = _.get(res, 'frameworkid')
         this.getFrameworkInfo(res.frameworkid)
       } else {
@@ -160,9 +161,8 @@ export class DesignationsComponent implements OnInit {
           this.filterDesignations(response)
         },
         error: (error: HttpErrorResponse) => {
-          if (error) {
-            // console.log(error)
-          }
+          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+          this.openSnackbar(errorMessage)
         },
       })
     }
@@ -280,6 +280,12 @@ export class DesignationsComponent implements OnInit {
   // removeDesignation(designation: any) {
   //   console.log(designation)
   // }
+
+  private openSnackbar(primaryMsg: any, duration: number = 5000) {
+    this.snackBar.open(primaryMsg, 'X', {
+      duration,
+    })
+  }
 
   //#endregion
 

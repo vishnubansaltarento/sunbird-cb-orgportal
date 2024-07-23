@@ -72,7 +72,7 @@ export class DesignationsService {
     if (response.data) {
       response.data.forEach((masterDesignation: any) => {
         masterDesignation['isOrgDesignation'] = (this.orgDesignationList
-          .findIndex((element: any) => element.name === masterDesignation.designation) > -1) ? true : false
+          .findIndex((element: any) => element.refId === masterDesignation.id) > -1) ? true : false
         if (this.selectedDesignationList.findIndex((element: any) => element.id === masterDesignation.id) > -1) {
           masterDesignation['selected'] = true
           // result.formatedDesignationsLsit.unshift(masterDesignation)
