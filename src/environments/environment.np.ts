@@ -12,4 +12,7 @@ export const environment = {
   mdoPath: (window as { [key: string]: any })['env']['mdoPath'] || '',
   resendOTPTIme: (window as { [key: string]: any })['env']['resendOTPTIme'] || 120,
   teamsUrl: (window as { [key: string]: any })['env']['teamsUrl'] || '',
+  connectionType: (window as { [key: string]: any })['env']['connectionType'] || '',
+  KCMframeworkName: (window as { [key: string]: any })['env']['KCMframeworkName'] || '',
+  ODCSMasterFramework: (window as { [key: string]: any })['env']['ODCSMasterFramework'] || '',
 }

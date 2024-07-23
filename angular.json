@@ -17,6 +17,7 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "preserveSymlinks": true,
             "assets": [
               "src/favicon.png",
               "src/mdo-assets/icons/",
@@ -88,7 +89,8 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
               "node_modules/@project-sunbird/telemetry-sdk/index.js",
-              "node_modules/shepherd.js/dist/js/shepherd.min.js"
+              "node_modules/shepherd.js/dist/js/shepherd.min.js",
+              "node_modules/leader-line/leader-line.min.js"
             ]
           },
           "configurations": {
