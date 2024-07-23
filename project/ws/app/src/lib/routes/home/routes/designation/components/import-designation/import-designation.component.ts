@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
 import { DesignationsService } from '../../services/designations.service'
-import { MatDialog, PageEvent } from '@angular/material'
+import { MatDialog, MatSnackBar, PageEvent } from '@angular/material'
 import { FormControl } from '@angular/forms'
-import { delay, map } from 'rxjs/operators'
+import { catchError, delay, map } from 'rxjs/operators'
 import { SelectedDesignationPopupComponent } from '../../dialog-boxes/selected-designation-popup/selected-designation-popup.component'
-import { forkJoin, Subscription } from 'rxjs'
-// import { HttpErrorResponse } from '@angular/common/http'
+import { forkJoin, of, Subscription } from 'rxjs'
+import { HttpErrorResponse } from '@angular/common/http'
 import * as _ from 'lodash'
 import { LoaderService } from '../../../../../../../../../../../src/app/services/loader.service'
 import { Router } from '@angular/router'
@@ -44,7 +44,8 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private loaderService: LoaderService,
     // private activateRoute: ActivatedRoute,
-    private route: Router
+    private route: Router,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -212,6 +213,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
     //   'succes one', 'success two', 'succes one', 'success two', 'succes one', 'success two', 'succes one', 'success two',]
     // this.openConforamtionPopup()
 
+    this.loaderService.changeLoaderState(true)
     if (this.selctedDesignationsCount) {
       const observables = this.selectedDesignationsList.map((selectedDesignation: any) => {
         const requestBody = {
@@ -230,14 +232,14 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
           })
         return this.designationsService.createTerm(requestBody).pipe(
           map(response => {
-            this.designationsImportSuccessResponses.push({ identifier: _.get(response, 'result.node_id[0]') })
+            this.designationsImportSuccessResponses.push({ identifier: _.get(response, 'result.identifier[0]') })
             this.importedDesignationNames.push(selectedDesignation.designation)
             return response
           }),
-          // catchError(error => {
-          //   this.designationsImportFailed.push({ designation: selectedDesignation, error })
-          //   return of(null)
-          // })
+          catchError(error => {
+            this.designationsImportFailed.push({ error, designation: selectedDesignation })
+            return of(null)
+          })
         )
       })
 
@@ -247,10 +249,10 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
             this.updateTerms()
           }
         },
-        // error: (error: HttpErrorResponse) => {
-        //   const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
-        //   console.log(errorMessage)
-        // },
+        error: (error: HttpErrorResponse) => {
+          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+          this.openSnackbar(errorMessage)
+        },
       })
     }
   }
@@ -272,10 +274,10 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
           this.publishFrameWork()
         }
       },
-      // error: (error: HttpErrorResponse) => {
-      //   const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
-      //   console.log(errorMessage)
-      // },
+      error: (error: HttpErrorResponse) => {
+        const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+        this.openSnackbar(errorMessage)
+      },
     })
   }
 
@@ -283,15 +285,15 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
     const frameworkName = _.get(this.frameworkInfo, 'code')
     this.designationsService.publishFramework(frameworkName).subscribe({
       next: response => {
-        // console.log('publish', response)
+        this.loaderService.changeLoaderState(false)
         if (response) {
           this.openConforamtionPopup()
         }
       },
-      // error: (error: HttpErrorResponse) => {
-      //   const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
-      //   console.log(errorMessage)
-      // },
+      error: (error: HttpErrorResponse) => {
+        const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+        this.openSnackbar(errorMessage)
+      },
     })
   }
 
@@ -362,7 +364,6 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
       width: '600px',
       maxWidth: '80vw',
       maxHeight: '90vh',
-      minHeight: '300px',
       disableClose: true,
     })
     dialogRef.afterClosed().subscribe(() => {
@@ -372,6 +373,12 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
 
   navigateToMyDesignations() {
     this.route.navigateByUrl('app/home/org-designations')
+  }
+
+  private openSnackbar(primaryMsg: any, duration: number = 5000) {
+    this.snackBar.open(primaryMsg, 'X', {
+      duration,
+    })
   }
 
   ngOnDestroy(): void {
