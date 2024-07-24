@@ -20,7 +20,7 @@ const routes: Routes = [
       pageId: 'home/odcs-mapping',
       module: 'odcs-mapping',
       pageType: 'feature',
-      pageKey: 'odcs',
+      pageKey: 'my_designations',
     },
     resolve: {
       configService: ConfigResolveService,
