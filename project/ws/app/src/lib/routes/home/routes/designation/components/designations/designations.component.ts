@@ -133,7 +133,7 @@ export class DesignationsComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        },         10000)
+        }, 10000)
       }
       // console.log('orgFramework Details', res)
     })
@@ -242,7 +242,12 @@ export class DesignationsComponent implements OnInit {
       descriptions: [
         {
           header: '',
-          message: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+          messages: [
+            {
+              msgClass: '',
+              msg: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+            },
+          ],
         },
       ],
       footerClass: 'items-center justify-end',
