@@ -4,6 +4,32 @@
    }
 }
 
+.importBtn {
+  background: #1b4ca1 !important;
+  color: #ffffff !important;
+  font-family: "Lato";
+  height: 40px;
+  font-size: 14px;
+  font-weight: 700;
+  width: 220px;
+}
+
+.designationsDemo {
+    .designationsDemoVideo {
+      width: 290px;
+      height: 163px;
+      border-radius: 5px;
+      background-color: #FDEAD5;
+      font-weight: 600;
+      pointer-events: all;
+      cursor: pointer;
+
+      .video_icon {
+        font-size: 32px;
+      }
+    }
+  }
+
 .organisation-lable {
   font-family: 'lato';
   font-weight: 700;
@@ -58,8 +84,19 @@
   }
 }
 
+.empty-desigantions-img {
+  height: 90px;
+  width: 170px;
+}
+
 .emptyDesignations{
-  height: calc(100vh - 300px);
+  height: calc(100vh - 600px);
+}
+
+.empty-desigantions-text {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Lato;
 }
 
 .download-icon {
@@ -67,5 +104,5 @@
 }
 
 .designations-loader {
-  height: 100px;
+  height: calc(100vh - 600px);
 }
