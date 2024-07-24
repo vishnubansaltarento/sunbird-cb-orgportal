@@ -101,10 +101,13 @@
                 </mat-form-field>
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileGroupStatus === 'VERIFIED'">
-                  check_circle</mat-icon>
+                  check_circle</mat-icon> <span *ngIf="user?.profileDetails?.profileGroupStatus === 'VERIFIED'"
+                  class="mat-caption status-text ws-mat-black40-text"> Verified</span>
+
                 <mat-icon class="nonverified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileGroupStatus === 'NOT-VERIFIED'">
-                  cancel</mat-icon>
+                  cancel</mat-icon> <span *ngIf="user?.profileDetails?.profileGroupStatus === 'NOT-VERIFIED'"
+                  class="mat-caption status-text ws-mat-black40-text"> Non-verified</span>
               </div>
               <div class="md:w-1/3">
                 <label class="margin-remove-bottom form-label">Designation</label>
@@ -125,9 +128,13 @@
                 <mat-icon class="verified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileDesignationStatus === 'VERIFIED'">
                   check_circle</mat-icon>
+                <span *ngIf="user?.profileDetails?.profileDesignationStatus === 'VERIFIED'"
+                  class="mat-caption status-text ws-mat-black40-text"> Verified</span>
                 <mat-icon class="nonverified-icon margin-left-xs"
                   *ngIf="user?.profileDetails?.profileDesignationStatus === 'NOT-VERIFIED'">
                   cancel</mat-icon>
+                <span *ngIf="user?.profileDetails?.profileDesignationStatus === 'NOT-VERIFIED'"
+                  class="mat-caption status-text ws-mat-black40-text"> Non-verified</span>
               </div>
             </div>
           </div>

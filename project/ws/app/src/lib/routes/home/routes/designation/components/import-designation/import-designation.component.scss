@@ -1,0 +1,119 @@
+
+.search {
+
+  .search-icon {
+    position: absolute;
+    top: 9px;
+    font-size: 20px;
+    left: 10px;
+  }
+
+  .rsearch {
+    display: flex;
+    position: relative;
+    flex: 1 1 auto;
+  }
+
+  .sinput {
+    width: 315px;
+    border-radius: 4px;
+    border: 1px solid #d5d0d0;
+    padding: 9px 9px 9px 35px;
+    margin-top: 0;
+    font: normal 14px Lato;
+    font-weight: 400;
+  }
+}
+
+.selected-designation-label {
+    margin: 10px 0px;
+    font-size: 14px;
+    color: rgb(0, 0, 0, 0.87);
+    font-weight: 400;
+    letter-spacing: 0.25px;
+}
+
+.chips {
+  border-radius: 63px;
+  width: 178px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  align-items: center;
+
+  span {
+    font-size: 14px;
+    letter-spacing: 0.25px;
+  }
+
+  .cross-icon {
+    vertical-align: middle;
+    margin-left: 0;
+    margin-right: 16px;
+    margin-top: 6px;
+  }
+}
+
+.chips-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 16px;
+  width: 131px;
+}
+
+.select-more-link {
+  color: #1b4ca1 !important;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+  font-family: 'Lato';
+}
+
+.master-designations {
+
+  .designations-card-container {
+    .active-card {
+      border: 1px solid #1B4CA1 !important;
+    }
+
+    .custom-user-card {
+      width: 292px;
+      border: 1px solid rgba(0, 0, 0, 0.16);
+      border-radius: 4px;
+      height: 70px;
+    }
+
+    .disableCard {
+      background-color: #6c757d;
+      pointer-events: none;
+    }
+
+    .custom-user-desc {
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px;
+      width: 230px;
+      white-space: nowrap;
+      p {
+          padding: 0;
+          margin: 0;
+          width: 190px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+    }
+
+    .check-action {
+      margin-right: 16px;
+    }
+  }
+}
+
+.importBtn {
+  background: #1b4ca1 !important;
+  color: white !important;
+  font-family: "Lato";
+  font-weight: 700;
+  font-size: 14px;
+}

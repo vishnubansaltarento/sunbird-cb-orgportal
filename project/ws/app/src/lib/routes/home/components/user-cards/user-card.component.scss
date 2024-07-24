@@ -389,4 +389,8 @@ label {
 
 .mentor-status-label.mentor {
   background-color: #1B4CA1;
+  .status-text {
+    position: relative;
+    top: -2px;
+  }
 }
