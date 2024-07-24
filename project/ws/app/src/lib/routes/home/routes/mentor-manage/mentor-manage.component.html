@@ -57,16 +57,18 @@
 
           <a routerLink="/app/home/mentor-manage/verified" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'verified','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
-            mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">Verified
+            mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">All Verified <span
+              *ngIf="verifiedUsersDataCount === 1">User</span> <span *ngIf="verifiedUsersDataCount > 1">Users</span>
             ({{verifiedUsersDataCount}})</a>
           <a routerLink="/app/home/mentor-manage/mentor" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'mentor','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
-            mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">Mentor
-            ({{verifiedUsersDataCount}})</a>
-          <a routerLink="/app/home/mentor-manage/non-mentor" routerLinkActive="router-link-active" class="filter-option"
+            mat-button (click)="filter('mentor'); tabTelemetry('mentor', 0)" role="button">Assigned <span
+              *ngIf="mentorUsersDataCount === 1">Mentor</span> <span *ngIf="mentorUsersDataCount > 1">Mentors</span>
+            ({{mentorUsersDataCount}})</a>
+          <!-- <a routerLink="/app/home/mentor-manage/non-mentor" routerLinkActive="router-link-active" class="filter-option"
             [ngClass]="{'ws-mat-accent-border-active' : currentFilter === 'non-mentor','ws-mat-accent-border font-medium':currentFilter !== 'verified'}"
-            mat-button (click)="filter('verified'); tabTelemetry('verified', 0)" role="button">Non-Mentor
-            ({{verifiedUsersDataCount}})</a>
+            mat-button (click)="filter('verified'); tabTelemetry('non-mentor', 0)" role="button">Non-Mentor
+            ({{verifiedUsersDataCount}})</a> -->
 
 
         </div>
@@ -90,33 +92,35 @@
       <ng-container *ngIf="currentFilter === 'verified'">
         <div class="searchfilter" *ngIf="verifiedUsersData">
           <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
-            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
+            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets" [forMentor]="true"></ws-app-searchuser>
         </div>
 
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"
-          [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (paginationData)="onPaginateChange($event)" (updateList)="getVUsers('')"></ws-widget-user-card>
+          [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex" [forMentor]="true"
+          (paginationData)="onPaginateChange($event)" (updateList)="getAllVerifiedUsers('')"
+          [activeTab]="currentFilter"></ws-widget-user-card>
       </ng-container>
       <ng-container *ngIf="currentFilter === 'mentor'">
+        <div class="searchfilter" *ngIf="mentorUsersData">
+          <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
+            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets" [forMentor]="true"></ws-app-searchuser>
+        </div>
+
+        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="mentorUsersData"
+          [totalRecords]="mentorUsersDataCount" [tabChangeIndex]="pageIndex" [forMentor]="true"
+          (paginationData)="onPaginateChange($event)" (updateList)="getMentorUsers('')"
+          [activeTab]="currentFilter"></ws-widget-user-card>
+      </ng-container>
+      <!-- <ng-container *ngIf="currentFilter === 'non-mentor'">
         <div class="searchfilter" *ngIf="verifiedUsersData">
           <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
             [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
         </div>
 
         <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"
-          [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
+          [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex" [forMentor]="true"
           (paginationData)="onPaginateChange($event)" (updateList)="getVUsers('')"></ws-widget-user-card>
-      </ng-container>
-      <ng-container *ngIf="currentFilter === 'non-mentor'">
-        <div class="searchfilter" *ngIf="verifiedUsersData">
-          <ws-app-searchuser (handleApiData)="onEnterkySearch($event)" [showApproveALL]="showApproveALL"
-            [currentFilter]="currentFilter" [filterFacetsData]="filterFacets"></ws-app-searchuser>
-        </div>
-
-        <ws-widget-user-card [userId]="currentUser" [currentFilter]="currentFilter" [usersData]="verifiedUsersData"
-          [totalRecords]="verifiedUsersDataCount" [tabChangeIndex]="pageIndex"
-          (paginationData)="onPaginateChange($event)" (updateList)="getVUsers('')"></ws-widget-user-card>
-      </ng-container>
+      </ng-container> -->
 
 
     </mat-card-content>

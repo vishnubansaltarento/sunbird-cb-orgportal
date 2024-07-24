@@ -7,7 +7,7 @@
                 placeholder="Search" type="Standard" [ngClass]="{'disable': isContentLive}">
         </div>
     </div>
-    <div class="filter-section flex" *ngIf="!isApprovals">
+    <div class="filter-section flex" *ngIf="!isApprovals && !forMentor">
         <button mat-button type="button" (click)="sort()" class="apply-filter margin-right-s"
             [matMenuTriggerFor]="cardMenu">
             <mat-icon class="margin-right-xs">sort</mat-icon> Sort
@@ -26,7 +26,7 @@
             </ng-template>
         </mat-menu>
     </div>
-    <div class="filter-section flex" *ngIf="!isApprovals">
+    <div class="filter-section flex" *ngIf="!isApprovals && !forMentor">
         <button mat-button type="button" (click)="openFilter()" class="apply-filter margin-right-s">
             Apply Filter <mat-icon class="margin-right-xs">filter_list</mat-icon>
         </button>

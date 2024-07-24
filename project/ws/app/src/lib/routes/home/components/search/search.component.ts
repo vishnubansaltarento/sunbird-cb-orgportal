@@ -19,6 +19,7 @@ export class SearchComponent implements OnInit {
   @Input() disableApproveALL: any
   @Input() currentFilter: any
   @Input() filterFacetsData: any
+  @Input() forMentor: any = false
   @Output() handleApiData = new EventEmitter()
   @Output() handleapproveAll = new EventEmitter()
   searchText = ''
