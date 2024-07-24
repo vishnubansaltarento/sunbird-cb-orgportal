@@ -182,7 +182,7 @@ export class DesignationsService {
       frameworkId,
       categoryId,
       categoryTermCode
-    )}`, reguestBody)
+    )}`,                   reguestBody)
   }
 
   publishFramework(frameworkName: string) {

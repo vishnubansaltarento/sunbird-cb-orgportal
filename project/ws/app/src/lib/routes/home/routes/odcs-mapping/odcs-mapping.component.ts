@@ -72,7 +72,7 @@ export class OdcsMappingComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        }, 10000)
+        },         10000)
       }
     })
   }

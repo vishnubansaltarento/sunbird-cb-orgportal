@@ -194,7 +194,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
             importedByName: _.get(this.configSvc, 'userProfileV2.firstName'),
             importedById: _.get(this.configSvc, 'userProfileV2.userId'),
             importedOn: currentDate,
-          }
+          },
         }
         this.designationsImportSuccessResponses =
           _.get(this.frameworkInfo, 'categories[0].terms[0].associations', []).map((c: any) => {
@@ -263,7 +263,7 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
       },
       error: (error: HttpErrorResponse) => {
         const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
-        this.dialogRef, close()
+        this.dialogRef.close()
         this.openSnackbar(errorMessage)
       },
     })
