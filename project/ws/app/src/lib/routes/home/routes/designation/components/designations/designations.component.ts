@@ -19,7 +19,6 @@ export class DesignationsComponent implements OnInit {
 
   environment: any
   designationConfig: any
-  frameworkConfig: any
   configSvc: any
   loaderMsg = ''
   showCreateLoader = false
@@ -84,8 +83,8 @@ export class DesignationsComponent implements OnInit {
     this.tableData = {
       columns: [
         { displayName: 'Designation', key: 'name' },
-        { displayName: 'Imported by', key: 'Importedby' },
-        { displayName: 'Imported on', key: 'Importedon' },
+        { displayName: 'Imported by', key: 'importedByName' },
+        { displayName: 'Imported on', key: 'importedOn' },
       ],
       needCheckBox: false,
       needHash: false,
@@ -100,7 +99,6 @@ export class DesignationsComponent implements OnInit {
     this.environment = environment
     this.activateRoute.data.subscribe(data => {
       this.designationConfig = data.pageData.data
-      this.frameworkConfig = this.designationConfig.frameworkConfig
     })
 
     // console.log('this.configSvc', this.configSvc.orgReadData)
@@ -135,7 +133,7 @@ export class DesignationsComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        },         10000)
+        }, 10000)
       }
       // console.log('orgFramework Details', res)
     })
@@ -244,7 +242,12 @@ export class DesignationsComponent implements OnInit {
       descriptions: [
         {
           header: '',
-          message: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+          messages: [
+            {
+              msgClass: '',
+              msg: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+            },
+          ],
         },
       ],
       footerClass: 'items-center justify-end',
@@ -288,5 +291,7 @@ export class DesignationsComponent implements OnInit {
   }
 
   //#endregion
+
+  // openVideoPopup() { }
 
 }

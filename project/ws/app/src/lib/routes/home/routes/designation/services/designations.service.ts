@@ -126,6 +126,9 @@ export class DesignationsService {
           if (associations.length > 0) {
             Object.assign(c, { children: associations })
           }
+          c['importedByName'] = _.get(c, 'additionalProperties.importedByName'),
+            c['importedOn'] = _.get(c, 'additionalProperties.importedOn'),
+            c['importedById'] = _.get(c, 'additionalProperties.importedById')
           return c
         }),
       })
