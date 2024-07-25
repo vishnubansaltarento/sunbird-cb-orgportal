@@ -19,7 +19,6 @@ export class OdcsMappingComponent implements OnInit {
   showLoader = false
   loaderMsg = ''
   orgId = ''
-
   constructor(
     private activateRoute: ActivatedRoute,
     private designationsService: DesignationsService,
@@ -50,6 +49,12 @@ export class OdcsMappingComponent implements OnInit {
     }
   }
 
+  callResizeEvent(_event: any) {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'))
+    }, 100)
+  }
+
   createFreamwork() {
     this.loaderMsg = this.odcConfig.frameworkCreationMSg
     const departmentName = _.get(this.configSvc, 'userProfile.departmentName').replace(/\s/g, '')
@@ -74,7 +79,7 @@ export class OdcsMappingComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        },         10000)
+        }, 10000)
       }
     })
   }
