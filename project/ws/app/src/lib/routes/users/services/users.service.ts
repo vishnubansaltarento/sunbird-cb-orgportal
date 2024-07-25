@@ -35,6 +35,7 @@ const API_END_POINTS = {
   getPendingFields: '/apis/proxies/v8/workflow/v2/userWFApplicationFieldsSearch',
   getApprovalPendingFields: '/apis/proxies/v8/workflow/v2/userWFApplicationFieldsSearch',
   getPendingRequests: '/apis/proxies/v8/workflow/admin/pending/request',
+  GET_ALL_USERS_V3: '/apis/proxies/v8/user/v3/search',
 }
 
 @Injectable()
@@ -43,12 +44,17 @@ export class UsersService {
   filterToggle = new Subject()
   clearFilter = new Subject()
   getFilterDataObject = new Subject()
-
+  mentorList$ = new Subject()
   constructor(private http: HttpClient) { }
 
   getAllUsers(filter: object): Observable<any> {
     // console.log()
     return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS}`, filter).pipe(map(res => _.get(res, 'result.response')))
+  }
+
+  getAllUsersV3(filter: object): Observable<any> {
+    // console.log()
+    return this.http.post<any>(`${API_END_POINTS.GET_ALL_USERS_V3}`, filter).pipe(map(res => _.get(res, 'result.response')))
   }
 
   getMyDepartment(): Observable<any> {

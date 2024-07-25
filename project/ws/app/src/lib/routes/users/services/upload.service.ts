@@ -5,13 +5,13 @@ import { HttpClient } from '@angular/common/http'
 import * as fileSaver from 'file-saver'
 
 const API_ENDPOINTS = {
-  bulkUpload: `/apis/proxies/v8/user/v1/bulkupload`,
-  // bulkUpload: `/apis/proxies/v8/user/v2/bulkupload`, //csv support
+  // bulkUpload: `/apis/proxies/v8/user/v1/bulkupload`,
+  bulkUpload: `/apis/proxies/v8/user/v2/bulkupload`, // csv support
   downloadReport: `/apis/protected/v8/admin/userRegistration/bulkUploadReport`,
   getBulkUploadData: '/apis/proxies/v8/user/v1/bulkupload',
   getBulkApproval: '/apis/proxies/v8/workflow/admin/bulkupdate/getstatus',
-  bulkApprovalUpload: `/apis/proxies/v8/workflow/admin/transition/bulkupdate`,
-  // bulkApprovalUpload: '/apis/proxies/v8/workflow/admin/v2/bulkupdate/transition', //csv support
+  // bulkApprovalUpload: `/apis/proxies/v8/workflow/admin/transition/bulkupdate`,
+  bulkApprovalUpload: '/apis/proxies/v8/workflow/admin/v2/bulkupdate/transition', // csv support
 }
 
 @Injectable()
@@ -61,7 +61,7 @@ export class FileService {
   }
 
   validateFile(name: String) {
-    const allowedFormats = ['xlsx']
+    const allowedFormats = ['xlsx', 'csv']
     const ext = name.substring(name.lastIndexOf('.') + 1).toLowerCase()
     if (allowedFormats.indexOf(ext) > -1) {
       return true

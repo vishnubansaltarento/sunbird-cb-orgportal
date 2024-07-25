@@ -48,7 +48,8 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() currentFilter: any
   @Input() isApprovals: any
   @Input() handleApiData: any
-
+  @Input() activeTab: any
+  @Input() forMentor = false
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
   @Output() disableButton = new EventEmitter()
@@ -119,7 +120,9 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   approvalData: any
   showeditText = false
   today = new Date()
-
+  memberAlertMessage = ''
+  currentUserRole = ''
+  checked = false
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
               private dialog: MatDialog, private approvalSvc: ApprovalsService,
               private route: ActivatedRoute, private snackBar: MatSnackBar,
@@ -1037,5 +1040,91 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
     appData.needApprovalList.forEach((f: any) => {
       f.action = ''
     })
+  }
+
+  toggleMentor(template: any, event: any, user: any) {
+    if (event.checked) {
+      if (this.activeTab === 'mentor') {
+        this.memberAlertMessage = 'Assign this user as a mentor?'
+      } else {
+        this.memberAlertMessage = 'Assign this user as a mentor? The user will be moved to the Assigned Mentors Tab'
+      }
+
+    } else {
+      if (this.activeTab === 'verified') {
+        this.memberAlertMessage = 'Remove this user from mentor role?'
+      } else {
+        this.memberAlertMessage = 'Remove this user from mentor role? The user will move to the Verified tab.'
+      }
+
+    }
+    const dialog = this.dialog.open(template, {
+      width: '600px',
+    })
+    dialog.afterClosed().subscribe((v: any) => {
+      if (v) {
+        this.saveMentorProfile(user, event)
+      } else {
+        event.source.checked = true
+      }
+    })
+  }
+
+  saveMentorProfile(user: any, event: any) {
+    const usrRoles = user.roles ? user.roles : []
+    if (usrRoles.length > 0) {
+      user.roles.map((role: any) => {
+        if (role.role) {
+          this.userRoles.add(role.role)
+        }
+      })
+    }
+    if (event.checked) {
+      this.userRoles.add('MENTOR')
+    } else {
+      this.userRoles.delete('MENTOR')
+    }
+    const dreq = {
+      request: {
+        organisationId: user.rootOrgId,
+        userId: user.userId,
+        roles: Array.from(this.userRoles),
+      },
+    }
+    this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
+      if (res) {
+        if (this.activeTab === 'mentor') {
+          this.usersSvc.mentorList$.next('mentor')
+        } else {
+          this.usersSvc.mentorList$.next('verified')
+        }
+        if (event.checked) {
+          this.snackBar.open('User Assigned as Mentor Successfully')
+        } else {
+          this.snackBar.open('User Removed from Mentor Role Successfully')
+        }
+
+      } else {
+        if (event.checked) {
+          this.snackBar.open('Error While Assign User as a Mentor')
+        } else {
+          this.snackBar.open('Error While Removing User as a Mentor')
+        }
+      }
+    })
+  }
+
+  getUserRoles(user: any) {
+    // console.log('user--', user)
+    const userRoles: any = []
+
+    user.roles.map((role: any) => {
+      userRoles.push(role.role)
+    })
+
+    if (userRoles.indexOf('MENTOR') > -1) {
+      return true
+    }
+    return false
   }
 }

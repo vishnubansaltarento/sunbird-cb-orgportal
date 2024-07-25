@@ -16,18 +16,18 @@ import { TelemetryEvents } from '../../../../head/_services/telemetry.event.mode
 import { ReportsVideoComponent } from '../reports-video/reports-video.component'
 
 @Component({
-  selector: 'ws-app-users-view',
-  templateUrl: './users-view.component.html',
-  styleUrls: ['./users-view.component.scss'],
+  selector: 'ws-app-mentor-manage',
+  templateUrl: './mentor-manage.component.html',
+  styleUrls: ['./mentor-manage.component.scss'],
   /* tslint:disable */
   host: { class: 'flex flex-col' },
   /* tslint:enable */
 })
-export class UsersViewComponent implements OnInit, OnDestroy {
+export class MentorManageComponent implements OnInit, OnDestroy {
   /* tslint:disable */
   Math: any
   /* tslint:enable */
-  currentFilter = 'allusers'
+  currentFilter = 'verified'
   // filterPath = '/app/home/users'
   discussionList!: any
   discussProfileData!: any
@@ -42,15 +42,13 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   data: any = []
   usersData!: any
   configSvc: any
-  activeUsersData!: any[]
+  mentorUsersData!: any[]
   verifiedUsersData!: any[]
   nonverifiedUsersData!: any[]
   notmyuserUsersData!: any[]
 
-  activeUsersDataCount?: number | 0
-  verifiedUsersDataCount?: number | 0
-  nonverifiedUsersDataCount?: number | 0
-  notmyuserUsersDataCount?: number | 0
+  mentorUsersDataCount?: any | 0
+  verifiedUsersDataCount?: any | 0
   content: NsContent.IContent = {} as NsContent.IContent
   isMdoAdmin = false
 
@@ -95,17 +93,20 @@ export class UsersViewComponent implements OnInit, OnDestroy {
     // }
   }
   ngOnInit() {
-    this.currentFilter = this.route.snapshot.params['tab'] || 'allusers'
+    this.currentFilter = this.route.snapshot.params['tab'] || 'verified'
     this.rootOrgId = _.get(this.route.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
     this.searchQuery = ''
     if (this.configSvc.unMappedUser && this.configSvc.unMappedUser.roles) {
       this.isMdoAdmin = this.configSvc.unMappedUser.roles.includes('MDO_ADMIN')
     }
 
-    this.getNMUsers('')
-    this.getAllUsers('')
-    this.getVUsers('')
-    this.getNVUsers('')
+    // this.getNMUsers('')
+    this.usersService.mentorList$.subscribe(() => {
+      this.getAllVerifiedUsers('')
+      this.getMentorUsers('')
+    })
+
+    // this.getNVUsers('')
 
     this.reportsNoteList = [
       `Easily create users individually or in bulk.`,
@@ -113,6 +114,7 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       `Verified Users: Users with all their primary fields approved.`,
       // tslint:disable-next-line: max-line-length
       `Non-Verified Users: Users whose one or more primary fields are yet to be approved. You can help by reviewing and approving their requests.`,
+      `Not My User: Remove a user from your organization with a simple click.`,
     ]
   }
 
@@ -153,14 +155,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   }
 
   filterData(query: any) {
-    if (this.currentFilter === 'allusers') {
-      this.getAllUsers(query)
-    } else if (this.currentFilter === 'verified') {
-      this.getVUsers(query)
-    } else if (this.currentFilter === 'nonverified') {
-      this.getNVUsers(query)
-    } else if (this.currentFilter === 'notmyuser') {
-      this.getNMUsers(query)
+    if (this.currentFilter === 'verified') {
+      this.getAllVerifiedUsers(query)
+    } else if (this.currentFilter === 'mentor') {
+      this.getMentorUsers(query)
     }
   }
 
@@ -195,12 +193,13 @@ export class UsersViewComponent implements OnInit, OnDestroy {
   //   return blockedUsersData
   // }
 
-  async getAllUsers(query: any) {
+  async getAllVerifiedUsers(query: any) {
     this.loaderService.changeLoad.next(true)
     let reqBody
     const filtreq = {
       rootOrgId: this.rootOrgId,
       status: 1,
+      'profileDetails.profileStatus': 'VERIFIED',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
       Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
@@ -225,6 +224,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         fields: [
           'rootOrgId',
           'profileDetails',
+          'userId',
+          'roles',
         ],
         limit: this.limit,
         offset: this.pageIndex,
@@ -232,11 +233,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         sort_by: this.getSortOrder(query),
       },
     }
-    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
-      const allusersData = data.result.response
-      this.activeUsersData = allusersData.content
-      // this.activeUsersData = this.activeUsersData.filter((wf: any) => wf.profileDetails.profileStatus !== 'NOT-MY-USER')
-      this.activeUsersDataCount = allusersData.count
+    this.usersService.getAllUsersV3(reqBody).subscribe((data: any) => {
+      const allusersData = data
+      this.verifiedUsersData = allusersData.content
+      this.verifiedUsersDataCount = allusersData.count
       this.filterFacets = allusersData.facets ? allusersData.facets : []
 
       // const i = this.activeUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
@@ -250,11 +250,12 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       // }
     })
   }
-  async getVUsers(query: any) {
+  async getMentorUsers(query: any) {
     let reqBody
     this.loaderService.changeLoad.next(true)
     const filtreq = {
       rootOrgId: this.rootOrgId,
+      'roles.role': 'MENTOR',
       'profileDetails.profileStatus': 'VERIFIED',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
@@ -281,6 +282,8 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         fields: [
           'rootOrgId',
           'profileDetails',
+          'userId',
+          'roles',
         ],
         limit: this.limit,
         offset: this.pageIndex,
@@ -288,10 +291,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
         sort_by: this.getSortOrder(query),
       },
     }
-    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
-      const allusersData = data.result.response
-      this.verifiedUsersData = allusersData.content
-      this.verifiedUsersDataCount = data.result.response.count
+    this.usersService.getAllUsersV3(reqBody).subscribe((data: any) => {
+      const allusersData = data
+      this.mentorUsersData = allusersData.content
+      this.mentorUsersDataCount = allusersData.count
       this.filterFacets = allusersData.facets ? allusersData.facets : []
 
       // if (this.currentUserStatus === 'VERIFIED') {
@@ -301,107 +304,6 @@ export class UsersViewComponent implements OnInit, OnDestroy {
       //     this.verifiedUsersDataCount = this.verifiedUsersDataCount ? this.verifiedUsersDataCount - 1 : this.verifiedUsersDataCount
       //   }
       // }
-    })
-  }
-
-  async getNVUsers(query: any) {
-    let reqBody
-    this.loaderService.changeLoad.next(true)
-    const filtreq = {
-      rootOrgId: this.rootOrgId,
-      'profileDetails.profileStatus': 'NOT-VERIFIED',
-    }
-    if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
-    }
-    if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
-    }
-    if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
-    }
-    if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
-    }
-
-    reqBody = {
-      request: {
-        filters: filtreq,
-        facets: [
-          'profileDetails.professionalDetails.group',
-          'profileDetails.professionalDetails.designation',
-          'profileDetails.additionalDetails.tag',
-        ],
-        fields: [
-          'rootOrgId',
-          'profileDetails',
-        ],
-        limit: this.limit,
-        offset: this.pageIndex,
-        query: this.getSearchText(query),
-        sort_by: this.getSortOrder(query),
-      },
-    }
-    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
-      const allusersData = data.result.response
-      this.nonverifiedUsersData = allusersData.content
-      this.nonverifiedUsersDataCount = data.result.response.count
-      this.filterFacets = allusersData.facets ? allusersData.facets : []
-
-      // if (this.currentUserStatus === 'NOT-VERIFIED') {
-      //   const i = this.nonverifiedUsersData.findIndex((wf: any) => wf.userId === this.currentUser)
-      //   if (i > -1) {
-      //     this.nonverifiedUsersData.splice(i, 1)
-      //     this.nonverifiedUsersDataCount = this.nonverifiedUsersDataCount ?
-      //       this.nonverifiedUsersDataCount - 1 : this.nonverifiedUsersDataCount
-      //   }
-      // }
-    })
-  }
-
-  async getNMUsers(query: any) {
-    let reqBody
-    this.loaderService.changeLoad.next(true)
-    const filtreq = {
-      rootOrgId: this.rootOrgId,
-      'profileDetails.profileStatus': 'NOT-MY-USER',
-    }
-    if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
-    }
-    if (this.getFilterDesignation(query) && this.getFilterDesignation(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.designation': this.getFilterDesignation(query) })
-    }
-    if (this.getFilterRoles(query) && this.getFilterRoles(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.role': this.getFilterRoles(query) })
-    }
-    if (this.getFilterTags(query) && this.getFilterTags(query) !== 'undefind') {
-      Object.assign(filtreq, { 'profileDetails.professionalDetails.tag': this.getFilterTags(query) })
-    }
-
-    reqBody = {
-      request: {
-        filters: filtreq,
-        facets: [
-          'profileDetails.professionalDetails.group',
-          'profileDetails.professionalDetails.designation',
-          'profileDetails.additionalDetails.tag',
-        ],
-        fields: [
-          'rootOrgId',
-          'profileDetails',
-        ],
-        limit: this.limit,
-        offset: this.pageIndex,
-        query: this.getSearchText(query),
-        sort_by: this.getSortOrder(query),
-      },
-    }
-    this.usersService.getAllKongUsers(reqBody).subscribe((data: any) => {
-      const allusersData = data.result.response
-      this.notmyuserUsersData = allusersData.content
-      this.notmyuserUsersDataCount = data.result.response.count
-      this.filterFacets = allusersData.facets ? allusersData.facets : []
     })
   }
 

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { PipeDurationTransformModule, PipeFilterModule, PipeHtmlTagRemovalModule, PipeOrderByModule, PipeRelativeTimeModule } from '@sunbird-cb/utils'
 import { MatGridListModule } from '@angular/material/grid-list'
@@ -11,6 +11,7 @@ import {
   MatChipsModule, MatProgressSpinnerModule, MatProgressBarModule, MatRadioModule,
   MatTabsModule, MatCheckboxModule, MatDatepickerModule, MatAutocompleteModule, MatSlideToggleModule,
 } from '@angular/material'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatCardModule } from '@angular/material/card'
@@ -80,6 +81,12 @@ import { CreateRequestFormComponent } from './components/request-list/create-req
 import { CompetencyViewComponent } from './components/request-list/competency-view/competency-view.component'
 import { AssignListPopupComponent } from './components/request-list/assign-list-popup/assign-list-popup.component'
 import { SingleAssignPopupComponent } from './components/request-list/single-assign-popup/single-assign-popup.component'
+import { HttpClientModule } from '@angular/common/http'
+import { DesignationModule } from './routes/designation/designation.module'
+import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
+import { environment } from '../../../../../../../src/environments/environment'
+import { TaxonomyEditorModule } from '@sunbird-cb/taxonomy-editor'
+import { MentorManageComponent } from './routes/mentor-manage/mentor-manage.component'
 
 @NgModule({
   declarations: [
@@ -125,6 +132,8 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     CompetencyViewComponent,
     AssignListPopupComponent,
     SingleAssignPopupComponent,
+    MentorManageComponent,
+    OdcsMappingComponent,
   ],
   imports: [
     CommonModule,
@@ -180,6 +189,9 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     FilterSearchPipeModule,
     MatAutocompleteModule,
     MatSlideToggleModule,
+    HttpClientModule,
+    DesignationModule,
+    TaxonomyEditorModule,
   ],
   entryComponents: [
     AdduserpopupComponent,
@@ -198,12 +210,19 @@ import { SingleAssignPopupComponent } from './components/request-list/single-ass
     SingleAssignPopupComponent,
   ],
   providers: [
+    { provide: 'environment', useValue: environment },
+    {
+      provide: MatDialogRef,
+      useValue: {},
+    },
+    { provide: MAT_DIALOG_DATA, useValue: {} },
     InitResolver,
     MdoInfoService,
     UploadService,
     TrainingPlanDashboardService,
     UsersService,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomeModule {
 

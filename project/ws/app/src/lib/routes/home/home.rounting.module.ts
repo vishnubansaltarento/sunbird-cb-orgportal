@@ -27,6 +27,8 @@ import { UserCreationComponent } from './routes/users-view/user-creation/user-cr
 import { BulkUploadApprovalComponent } from './routes/approvals/bulk-upload/bulk-upload.component'
 import { RequestListComponent } from './components/request-list/request-list.component'
 import { CreateRequestFormComponent } from './components/request-list/create-request-form/create-request-form.component'
+import { MentorManageComponent } from './routes/mentor-manage/mentor-manage.component'
+import { OdcsMappingComponent } from './routes/odcs-mapping/odcs-mapping.component'
 
 const routes: Routes = [
   {
@@ -130,6 +132,36 @@ const routes: Routes = [
         path: 'users',
         redirectTo: 'users/allusers',
         component: UsersViewComponent,
+        resolve: {
+          usersList: UsersListResolve,
+          pageData: PageResolve,
+          configService: ConfigResolveService,
+        },
+        data: {
+          pageId: 'users',
+          module: 'User',
+          pageType: 'feature',
+          pageKey: 'users-view',
+        },
+      },
+      {
+        path: 'mentor-manage',
+        component: MentorManageComponent,
+        resolve: {
+          usersList: UsersListResolve,
+          pageData: PageResolve,
+          configService: ConfigResolveService,
+        },
+        data: {
+          pageId: 'users',
+          module: 'User',
+          pageType: 'feature',
+          pageKey: 'users-view',
+        },
+      },
+      {
+        path: 'mentor-manage/:tab',
+        component: MentorManageComponent,
         resolve: {
           usersList: UsersListResolve,
           pageData: PageResolve,
@@ -338,7 +370,24 @@ const routes: Routes = [
           pageData: PageResolve,
         },
       },
-
+      {
+        path: 'org-designations',
+        loadChildren: () => import('./routes/designation/designation.module').then(m => m.DesignationModule),
+      },
+      {
+        path: 'odcs-mapping',
+        component: OdcsMappingComponent,
+        data: {
+          pageId: 'home/odcs-mapping',
+          module: 'odcs-mapping',
+          pageType: 'feature',
+          pageKey: 'odcs',
+        },
+        resolve: {
+          configService: ConfigResolveService,
+          pageData: PageResolve,
+        },
+      },
     ],
   },
   {

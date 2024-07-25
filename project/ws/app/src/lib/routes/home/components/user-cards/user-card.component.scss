@@ -369,3 +369,28 @@ label {
     border: 1px solid rgba(0, 0, 0, .14);
     font-family: Lato;
 }
+
+.black-color {
+  color: #212529;
+}
+
+.gray-color {
+  color: color(0,0,0,0.6);
+}
+
+.mentor-status-label {
+  color: #fff;
+  font-weight: 400 ;
+  font-size:14px ;
+  font-family:Lato;
+  padding: 3px 8px 3px 8px;
+  border-radius: 4px;
+}
+
+.mentor-status-label.mentor {
+  background-color: #1B4CA1;
+  .status-text {
+    position: relative;
+    top: -2px;
+  }
+}
