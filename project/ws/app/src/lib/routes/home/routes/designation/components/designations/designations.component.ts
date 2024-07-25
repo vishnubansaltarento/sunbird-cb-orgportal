@@ -134,7 +134,7 @@ export class DesignationsComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        }, 10000)
+        },         10000)
       }
       // console.log('orgFramework Details', res)
     })
