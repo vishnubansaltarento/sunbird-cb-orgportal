@@ -44,7 +44,7 @@ export class UsersService {
   filterToggle = new Subject()
   clearFilter = new Subject()
   getFilterDataObject = new Subject()
-
+  mentorList$ = new Subject()
   constructor(private http: HttpClient) { }
 
   getAllUsers(filter: object): Observable<any> {

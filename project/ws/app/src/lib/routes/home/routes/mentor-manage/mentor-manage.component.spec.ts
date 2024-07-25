@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { MentorManageComponent } from './mentor-manage.component';
+import { MentorManageComponent } from './mentor-manage.component'
 
 describe('MentorManageComponent', () => {
-  let component: MentorManageComponent;
-  let fixture: ComponentFixture<MentorManageComponent>;
+  let component: MentorManageComponent
+  let fixture: ComponentFixture<MentorManageComponent>
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MentorManageComponent ]
+      declarations: [MentorManageComponent],
     })
-    .compileComponents();
-  }));
+    .compileComponents()
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MentorManageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(MentorManageComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

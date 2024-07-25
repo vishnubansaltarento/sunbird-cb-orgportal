@@ -47,10 +47,8 @@ export class MentorManageComponent implements OnInit, OnDestroy {
   nonverifiedUsersData!: any[]
   notmyuserUsersData!: any[]
 
-  mentorUsersDataCount?: number | 0
-  verifiedUsersDataCount?: number | 0
-  nonverifiedUsersDataCount?: number | 0
-  notmyuserUsersDataCount?: number | 0
+  mentorUsersDataCount?: any | 0
+  verifiedUsersDataCount?: any | 0
   content: NsContent.IContent = {} as NsContent.IContent
   isMdoAdmin = false
 
@@ -96,7 +94,6 @@ export class MentorManageComponent implements OnInit, OnDestroy {
   }
   ngOnInit() {
     this.currentFilter = this.route.snapshot.params['tab'] || 'verified'
-    console.log('this.currentFilter', this.currentFilter)
     this.rootOrgId = _.get(this.route.snapshot.parent, 'data.configService.unMappedUser.rootOrg.rootOrgId')
     this.searchQuery = ''
     if (this.configSvc.unMappedUser && this.configSvc.unMappedUser.roles) {
@@ -104,8 +101,11 @@ export class MentorManageComponent implements OnInit, OnDestroy {
     }
 
     // this.getNMUsers('')
-    this.getAllVerifiedUsers('')
-    this.getMentorUsers('')
+    this.usersService.mentorList$.subscribe(() => {
+      this.getAllVerifiedUsers('')
+      this.getMentorUsers('')
+    })
+
     // this.getNVUsers('')
 
     this.reportsNoteList = [
@@ -199,7 +199,7 @@ export class MentorManageComponent implements OnInit, OnDestroy {
     const filtreq = {
       rootOrgId: this.rootOrgId,
       status: 1,
-      'profileDetails.profileStatus': 'VERIFIED'
+      'profileDetails.profileStatus': 'VERIFIED',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
       Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
@@ -225,7 +225,7 @@ export class MentorManageComponent implements OnInit, OnDestroy {
           'rootOrgId',
           'profileDetails',
           'userId',
-          'roles'
+          'roles',
         ],
         limit: this.limit,
         offset: this.pageIndex,
@@ -256,7 +256,7 @@ export class MentorManageComponent implements OnInit, OnDestroy {
     const filtreq = {
       rootOrgId: this.rootOrgId,
       'roles.role': 'MENTOR',
-      'profileDetails.profileStatus': 'VERIFIED'
+      'profileDetails.profileStatus': 'VERIFIED',
     }
     if (this.getFilterGroup(query) && this.getFilterGroup(query) !== 'undefind') {
       Object.assign(filtreq, { 'profileDetails.professionalDetails.group': this.getFilterGroup(query) })
@@ -283,7 +283,7 @@ export class MentorManageComponent implements OnInit, OnDestroy {
           'rootOrgId',
           'profileDetails',
           'userId',
-          'roles'
+          'roles',
         ],
         limit: this.limit,
         offset: this.pageIndex,

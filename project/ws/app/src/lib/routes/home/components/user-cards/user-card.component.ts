@@ -49,7 +49,7 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() isApprovals: any
   @Input() handleApiData: any
   @Input() activeTab: any
-  @Input() forMentor: boolean = false
+  @Input() forMentor = false
   @Output() paginationData = new EventEmitter()
   @Output() searchByEnterKey = new EventEmitter()
   @Output() disableButton = new EventEmitter()
@@ -124,11 +124,11 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   currentUserRole = ''
   checked = false
   constructor(private usersSvc: UsersService, private roleservice: RolesService,
-    private dialog: MatDialog, private approvalSvc: ApprovalsService,
-    private route: ActivatedRoute, private snackBar: MatSnackBar,
-    private events: EventService,
-    private datePipe: DatePipe,
-    private cdr: ChangeDetectorRef) {
+              private dialog: MatDialog, private approvalSvc: ApprovalsService,
+              private route: ActivatedRoute, private snackBar: MatSnackBar,
+              private events: EventService,
+              private datePipe: DatePipe,
+              private cdr: ChangeDetectorRef) {
     this.updateUserDataForm = new FormGroup({
       designation: new FormControl('', []),
       group: new FormControl('', [Validators.required]),
@@ -1043,9 +1043,6 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   toggleMentor(template: any, event: any, user: any) {
-    console.log(event.checked)
-    console.log('user', user)
-    console.log('activeTab', this.activeTab)
     if (event.checked) {
       if (this.activeTab === 'mentor') {
         this.memberAlertMessage = 'Assign this user as a mentor?'
@@ -1087,7 +1084,6 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
     } else {
       this.userRoles.delete('MENTOR')
     }
-    console.log('this.userRoles--', this.userRoles, '25311a4f-fa42-4cf7-882a-5e79198edfcb')
     const dreq = {
       request: {
         organisationId: user.rootOrgId,
@@ -1095,17 +1091,32 @@ export class UserCardComponent implements OnInit, OnChanges, AfterViewChecked {
         roles: Array.from(this.userRoles),
       },
     }
+    this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
+      if (res) {
+        if (this.activeTab === 'mentor') {
+          this.usersSvc.mentorList$.next('mentor')
+        } else {
+          this.usersSvc.mentorList$.next('verified')
+        }
+        if (event.checked) {
+          this.snackBar.open('User Assigned as Mentor Successfully')
+        } else {
+          this.snackBar.open('User Removed from Mentor Role Successfully')
+        }
 
-    console.log('dreq', dreq)
-    // this.usersSvc.addUserToDepartment(dreq).subscribe(res => {
-    //   if (res) {
-    //   }
-    // })
+      } else {
+        if (event.checked) {
+          this.snackBar.open('Error While Assign User as a Mentor')
+        } else {
+          this.snackBar.open('Error While Removing User as a Mentor')
+        }
+      }
+    })
   }
 
   getUserRoles(user: any) {
     // console.log('user--', user)
-    let userRoles: any = []
+    const userRoles: any = []
 
     user.roles.map((role: any) => {
       userRoles.push(role.role)
