@@ -58,6 +58,7 @@ export class DesignationsComponent implements OnInit {
 
   initializeDefaultValues() {
     this.configSvc = this.activateRoute.snapshot.data['configService']
+    this.designationsService.setUserProfile(_.get(this.configSvc, 'userProfileV2'))
     this.orgId = _.get(this.configSvc, 'userProfile.rootOrgId')
     this.actionMenuItem = [
       // {
@@ -133,7 +134,7 @@ export class DesignationsComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        }, 10000)
+        },         10000)
       }
       // console.log('orgFramework Details', res)
     })
