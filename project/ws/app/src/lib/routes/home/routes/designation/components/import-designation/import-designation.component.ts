@@ -78,7 +78,6 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
       requestedFields: [],
       pageSize: this.pageSize,
     }
-    // this.startIndex
     if (searchKey) {
       requestParams['searchString'] = searchKey
     }

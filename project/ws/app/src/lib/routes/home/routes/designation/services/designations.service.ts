@@ -38,11 +38,20 @@ export class DesignationsService {
   orgDesignationList: any = []
   selectedDesignationList: any = []
   frameWorkInfo: any
+  userProfile: any
 
   constructor(
     private http: HttpClient,
     private configSvc: ConfigurationsService,
   ) { }
+
+  setUserProfile(profileDetails: any) {
+    this.userProfile = profileDetails
+  }
+
+  get userProfileDetails() {
+    return this.userProfile
+  }
 
   createFrameWork(frameworkName: string, orgId: string, termName: string) {
     return this.http.get<any>(API_END_POINTS.CREATE_FRAME_WORK(frameworkName, orgId, termName))
@@ -126,7 +135,9 @@ export class DesignationsService {
           if (associations.length > 0) {
             Object.assign(c, { children: associations })
           }
-          c['importedByName'] = _.get(c, 'additionalProperties.importedByName'),
+          const importedBy = _.get(c, 'additionalProperties.importedById', null) === _.get(this.userProfile, 'userId', '')
+            ? 'You' : _.get(c, 'additionalProperties.importedById', null)
+          c['importedByName'] = importedBy,
             c['importedOn'] = _.get(c, 'additionalProperties.importedOn'),
             c['importedById'] = _.get(c, 'additionalProperties.importedById')
           return c
@@ -182,7 +193,7 @@ export class DesignationsService {
       frameworkId,
       categoryId,
       categoryTermCode
-    )}`,                   reguestBody)
+    )}`, reguestBody)
   }
 
   publishFramework(frameworkName: string) {
