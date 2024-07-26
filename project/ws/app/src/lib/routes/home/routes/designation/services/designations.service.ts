@@ -195,7 +195,7 @@ export class DesignationsService {
       frameworkId,
       categoryId,
       categoryTermCode
-    )}`,                   reguestBody)
+    )}`, reguestBody)
   }
 
   publishFramework(frameworkName: string) {
@@ -223,6 +223,6 @@ export class DesignationsService {
   }
 
   deleteDesignation(frameworkName: string, category: string, formBody: any) {
-    return this.http.delete<any>(`${API_END_POINTS.DELETE_DESIGNATION(frameworkName, category)}`, formBody)
+    return this.http.post<any>(`${API_END_POINTS.DELETE_DESIGNATION(frameworkName, category)}`, formBody)
   }
 }

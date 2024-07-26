@@ -52,7 +52,7 @@ export class DesignationsComponent implements OnInit {
   //#region (intial actions)
   initialization() {
     this.initializeDefaultValues()
-    this.valudChangeSubscribers()
+    this.valueChangeSubscribers()
     this.getRoutesData()
   }
 
@@ -134,7 +134,7 @@ export class DesignationsComponent implements OnInit {
       } else {
         setTimeout(() => {
           this.getOrgReadData()
-        },         10000)
+        }, 10000)
       }
       // console.log('orgFramework Details', res)
     })
@@ -143,26 +143,30 @@ export class DesignationsComponent implements OnInit {
   getFrameworkInfo(frameworkid: string) {
     this.showLoader = true
     this.environment.frameworkName = frameworkid
-    this.designationsService.getFrameworkInfo(frameworkid).subscribe(res => {
-      this.showLoader = false
-      this.frameworkDetails = _.get(res, 'result.framework')
-      this.designationsService.setFrameWorkInfo(this.frameworkDetails)
+    this.designationsService.getFrameworkInfo(frameworkid).subscribe(
+      {
+        next: (res) => {
+          this.showLoader = false
+          this.frameworkDetails = _.get(res, 'result.framework')
+          this.designationsService.setFrameWorkInfo(this.frameworkDetails)
 
-      this.getOrganisations()
-      // console.log('frame work: ', this.frameworkDetails)
-    })
+          this.getOrganisations()
+        },
+        error: (error: HttpErrorResponse) => {
+          this.showLoader = false
+          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+          this.openSnackbar(errorMessage)
+        }
+
+      })
   }
 
-  valudChangeSubscribers() {
+  valueChangeSubscribers() {
     if (this.searchControl) {
       this.searchControl.valueChanges.pipe(delay(500)).subscribe({
         next: response => {
           this.filterDesignations(response)
-        },
-        error: (error: HttpErrorResponse) => {
-          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
-          this.openSnackbar(errorMessage)
-        },
+        }
       })
     }
   }
@@ -283,8 +287,47 @@ export class DesignationsComponent implements OnInit {
   }
 
   removeDesignation(designation: any) {
-    if (designation) { }
-    // console.log(designation)
+    if (designation) {
+      const requestBody = {
+        "request": {
+          "contentIds": [
+            _.get(designation, 'code')
+          ]
+        }
+      }
+      this.showLoader = true
+      this.designationsService.deleteDesignation
+        (this.frameworkDetails.code, 'designation', requestBody).subscribe({
+          next: (res) => {
+            if (res) {
+              this.publishFrameWork()
+            } else {
+              this.showLoader = false
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            this.showLoader = false
+            const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+            this.openSnackbar(errorMessage)
+          }
+        })
+    }
+  }
+
+  publishFrameWork() {
+    const frameworkName = _.get(this.frameworkDetails, 'code')
+    this.designationsService.publishFramework(frameworkName).subscribe({
+      next: response => {
+        if (response) {
+          this.getFrameworkInfo(this.frameworkDetails.code)
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.showLoader = false
+        const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+        this.openSnackbar(errorMessage)
+      },
+    })
   }
 
   private openSnackbar(primaryMsg: any, duration: number = 5000) {
