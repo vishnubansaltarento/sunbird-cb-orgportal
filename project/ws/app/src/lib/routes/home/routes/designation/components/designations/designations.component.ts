@@ -52,7 +52,7 @@ export class DesignationsComponent implements OnInit {
   //#region (intial actions)
   initialization() {
     this.initializeDefaultValues()
-    this.valudChangeSubscribers()
+    this.valueChangeSubscribers()
     this.getRoutesData()
   }
 
@@ -143,25 +143,29 @@ export class DesignationsComponent implements OnInit {
   getFrameworkInfo(frameworkid: string) {
     this.showLoader = true
     this.environment.frameworkName = frameworkid
-    this.designationsService.getFrameworkInfo(frameworkid).subscribe(res => {
-      this.showLoader = false
-      this.frameworkDetails = _.get(res, 'result.framework')
-      this.designationsService.setFrameWorkInfo(this.frameworkDetails)
+    this.designationsService.getFrameworkInfo(frameworkid).subscribe(
+      {
+        next: res => {
+          this.showLoader = false
+          this.frameworkDetails = _.get(res, 'result.framework')
+          this.designationsService.setFrameWorkInfo(this.frameworkDetails)
 
-      this.getOrganisations()
-      // console.log('frame work: ', this.frameworkDetails)
-    })
+          this.getOrganisations()
+        },
+        error: (error: HttpErrorResponse) => {
+          this.showLoader = false
+          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+          this.openSnackbar(errorMessage)
+        },
+
+      })
   }
 
-  valudChangeSubscribers() {
+  valueChangeSubscribers() {
     if (this.searchControl) {
       this.searchControl.valueChanges.pipe(delay(500)).subscribe({
         next: response => {
           this.filterDesignations(response)
-        },
-        error: (error: HttpErrorResponse) => {
-          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
-          this.openSnackbar(errorMessage)
         },
       })
     }
@@ -240,50 +244,90 @@ export class DesignationsComponent implements OnInit {
   openConformationPopup(event: any) {
     // console.log('envent data', event)
     const dialogData = {
+      dialogType: 'warning',
       descriptions: [
         {
-          header: '',
+          header: 'Are you sure you want to remove this designation from My designation master?',
+          headerClass: 'flex items-center justify-center text-blue',
           messages: [
             {
               msgClass: '',
-              msg: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+              msg: `Please note that doing so will result in the loss of role mapping.`,
             },
           ],
         },
       ],
-      footerClass: 'items-center justify-end',
+      footerClass: 'items-center justify-center',
       buttons: [
         {
-          btnText: 'Remove',
-          btnClass: 'btn-full-red',
-          response: true,
+          btnText: 'No',
+          btnClass: 'btn-outline',
+          response: false,
         },
         {
-          btnText: 'Cancel',
-          btnClass: '',
-          response: false,
+          btnText: 'Yes',
+          btnClass: 'btn-full-success',
+          response: true,
         },
       ],
     }
     const dialogRef = this.dialog.open(ConformationPopupComponent, {
       data: dialogData,
       autoFocus: false,
-      width: '500px',
+      width: '615px',
       maxWidth: '80vw',
       maxHeight: '90vh',
-      height: '300px',
       disableClose: true,
     })
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
-        // this.removeDesignation(event.row)
+        this.removeDesignation(event.row)
       }
     })
   }
 
-  // removeDesignation(designation: any) {
-  //   console.log(designation)
-  // }
+  removeDesignation(designation: any) {
+    if (designation) {
+      const requestBody = {
+        request: {
+          contentIds: [
+            _.get(designation, 'code'),
+          ],
+        },
+      }
+      this.showLoader = true
+      this.designationsService.deleteDesignation(this.frameworkDetails.code, 'designation', requestBody).subscribe({
+        next: res => {
+          if (res) {
+            this.publishFrameWork()
+          } else {
+            this.showLoader = false
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          this.showLoader = false
+          const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+          this.openSnackbar(errorMessage)
+        },
+      })
+    }
+  }
+
+  publishFrameWork() {
+    const frameworkName = _.get(this.frameworkDetails, 'code')
+    this.designationsService.publishFramework(frameworkName).subscribe({
+      next: response => {
+        if (response) {
+          this.getFrameworkInfo(this.frameworkDetails.code)
+        }
+      },
+      error: (error: HttpErrorResponse) => {
+        this.showLoader = false
+        const errorMessage = _.get(error, 'error.message', 'Some thing went wrong')
+        this.openSnackbar(errorMessage)
+      },
+    })
+  }
 
   private openSnackbar(primaryMsg: any, duration: number = 5000) {
     this.snackBar.open(primaryMsg, 'X', {
