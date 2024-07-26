@@ -10,14 +10,19 @@
 
 <div class="dialog-container">
   <ng-container [ngSwitch]="dialogDetails.dialogType">
-    <ng-container *ngSwitchCase="'success'">
-      <div class="circule mb2 success">
+    <!-- <ng-container *ngSwitchCase="'success'">
+      <div class="flex justify-center items-center mb-4">
         <mat-icon aria-hidden="false" class="success-icon">done</mat-icon>
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="'fail'">
-      <div class="circule mb2 fail">
+      <div class="flex justify-center items-center mb-4">
         <mat-icon aria-hidden="false" class="fail-icon">priority_high</mat-icon>
+      </div>
+    </ng-container> -->
+    <ng-container *ngSwitchCase="'warning'">
+      <div class="flex justify-center items-center mb-4">
+        <mat-icon aria-hidden="false" class="warning-icon">info_outlined</mat-icon>
       </div>
     </ng-container>
   </ng-container>
@@ -28,10 +33,12 @@
   </ng-container>
   <ng-container *ngFor="let description of dialogDetails?.descriptions">
     <ng-container *ngIf="description.header">
-      <span class="header">{{description.header}}</span>
+      <div [ngClass]="description.headerClass">
+        <span>{{description.header}}</span>
+      </div>
     </ng-container>
     <ng-container *ngIf="description.messages">
-      <div class="description mt-1 mb-6">
+      <div class="description mt-1 mb-6 flex w-full justify-center">
         <span>
           <ng-container *ngFor="let msgDetails of description.messages">
             <span [ngClass]="msgDetails.msgClass">{{msgDetails.msg}}</span>

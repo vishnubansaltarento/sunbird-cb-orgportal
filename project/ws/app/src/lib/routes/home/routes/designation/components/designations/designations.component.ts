@@ -240,50 +240,52 @@ export class DesignationsComponent implements OnInit {
   openConformationPopup(event: any) {
     // console.log('envent data', event)
     const dialogData = {
+      dialogType: 'warning',
       descriptions: [
         {
-          header: '',
+          header: 'Are you sure you want to remove this designation from My designation master?',
+          headerClass: 'flex items-center justify-center text-blue',
           messages: [
             {
               msgClass: '',
-              msg: `Are you sure you want to remove the ${_.get(event, 'row.name')} designation?`,
+              msg: `Please note that doing so will result in the loss of role mapping.`,
             },
           ],
         },
       ],
-      footerClass: 'items-center justify-end',
+      footerClass: 'items-center justify-center',
       buttons: [
         {
-          btnText: 'Remove',
-          btnClass: 'btn-full-red',
-          response: true,
+          btnText: 'No',
+          btnClass: 'btn-outline',
+          response: false,
         },
         {
-          btnText: 'Cancel',
-          btnClass: '',
-          response: false,
+          btnText: 'Yes',
+          btnClass: 'btn-full-success',
+          response: true,
         },
       ],
     }
     const dialogRef = this.dialog.open(ConformationPopupComponent, {
       data: dialogData,
       autoFocus: false,
-      width: '500px',
+      width: '615px',
       maxWidth: '80vw',
       maxHeight: '90vh',
-      height: '300px',
       disableClose: true,
     })
     dialogRef.afterClosed().subscribe((res: any) => {
       if (res) {
-        // this.removeDesignation(event.row)
+        this.removeDesignation(event.row)
       }
     })
   }
 
-  // removeDesignation(designation: any) {
-  //   console.log(designation)
-  // }
+  removeDesignation(designation: any) {
+    if (designation) { }
+    // console.log(designation)
+  }
 
   private openSnackbar(primaryMsg: any, duration: number = 5000) {
     this.snackBar.open(primaryMsg, 'X', {

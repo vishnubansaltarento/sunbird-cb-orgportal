@@ -27,6 +27,8 @@ const API_END_POINTS = {
   CREATE_TERM: `/apis/proxies/v8/designation/create/term`,
   CREATE_FRAME_WORK: (frameworkName: string, orgId: string, termName: string) =>
     `/apis/proxies/v8/org/framework/read?frameworkName=${frameworkName}&orgId=${orgId}&termName=${termName}`,
+  DELETE_DESIGNATION: (frameworkName: string, category: string) =>
+    `/apis/proxies/v8/framework/v1/term/retire?framework=${frameworkName}&category=${category}`,
 }
 
 @Injectable({
@@ -136,7 +138,7 @@ export class DesignationsService {
             Object.assign(c, { children: associations })
           }
           const importedBy = _.get(c, 'additionalProperties.importedById', null) === _.get(this.userProfile, 'userId', '')
-            ? 'You' : _.get(c, 'additionalProperties.importedById', null)
+            ? 'You' : _.get(c, 'additionalProperties.importedByName', null)
           c['importedByName'] = importedBy,
             c['importedOn'] = _.get(c, 'additionalProperties.importedOn'),
             c['importedById'] = _.get(c, 'additionalProperties.importedById')
@@ -218,5 +220,9 @@ export class DesignationsService {
 
   importDesigantion(framework: string, category: string, reqBody: any): Observable<any> {
     return this.http.post<any>(`${API_END_POINTS.IMPORT_DESIGNATION}framework=${framework}&category=${category}`, reqBody)
+  }
+
+  deleteDesignation(frameworkName: string, category: string, formBody: any) {
+    return this.http.delete<any>(`${API_END_POINTS.DELETE_DESIGNATION(frameworkName, category)}`, formBody)
   }
 }
