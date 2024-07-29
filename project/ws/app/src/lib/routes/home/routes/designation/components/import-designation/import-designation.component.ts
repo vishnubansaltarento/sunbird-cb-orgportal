@@ -257,7 +257,9 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
     this.designationsService.publishFramework(frameworkName).subscribe({
       next: response => {
         if (response) {
-          this.dialogRef.close()
+          setTimeout(() => {
+            this.dialogRef.close()
+          }, 2000)
         }
       },
       error: (error: HttpErrorResponse) => {
