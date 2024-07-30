@@ -3,7 +3,7 @@
     <div class="mobile-margin text-capitalize mat-h2">{{designationConfig.mainHeading}}</div>
     <div>
       <button mat-raised-button class="importBtn" [routerLink]="'import-designation'" type="button">
-        Import from Igot master
+        Import from iGOT master
       </button>
     </div>
   </div>
@@ -13,9 +13,9 @@
       <div class="section-1">
         <div class="flex-4 mobile-margin text-capitalize mat-h2">{{designationConfig?.topsection?.heading}}</div>
         <ng-container *ngFor="let step of designationConfig?.topsection?.steps">
-          <div class="flex gap-4 mb-4">
+          <div class="flex gap-4">
             <div>
-              <mat-icon class="infoIcon">info_outlined</mat-icon>
+              <mat-icon class="infoIcon">error_outline</mat-icon>
             </div>
             <div>
               <p>{{step.title}}</p>
@@ -57,7 +57,7 @@
           <div class="w-full flex flex-col justify-center items-center emptyDesignations">
             <img src="/assets/icons/empty_data.svg" class="empty-desigantions-img">
             <div>
-              <p class="empty-desigantions-text">No deisgnation has been imported from iGOT master.</p>
+              <p class="empty-desigantions-text">No designation has been imported from iGOT master.</p>
             </div>
             <div class="mt-4">
               <button mat-raised-button class="importBtn" [routerLink]="'import-designation'">

@@ -11,7 +11,7 @@ import {
   MatChipsModule, MatProgressSpinnerModule, MatProgressBarModule, MatRadioModule,
   MatTabsModule, MatCheckboxModule, MatDatepickerModule, MatAutocompleteModule, MatSlideToggleModule,
 } from '@angular/material'
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
+import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatMenuModule } from '@angular/material/menu'
 import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatCardModule } from '@angular/material/card'
@@ -211,10 +211,6 @@ import { MentorManageComponent } from './routes/mentor-manage/mentor-manage.comp
   ],
   providers: [
     { provide: 'environment', useValue: environment },
-    {
-      provide: MatDialogRef,
-      useValue: {},
-    },
     { provide: MAT_DIALOG_DATA, useValue: {} },
     InitResolver,
     MdoInfoService,

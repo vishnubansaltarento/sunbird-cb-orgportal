@@ -78,7 +78,6 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
       requestedFields: [],
       pageSize: this.pageSize,
     }
-    // this.startIndex
     if (searchKey) {
       requestParams['searchString'] = searchKey
     }
@@ -258,7 +257,9 @@ export class ImportDesignationComponent implements OnInit, OnDestroy {
     this.designationsService.publishFramework(frameworkName).subscribe({
       next: response => {
         if (response) {
-          this.dialogRef.close()
+          setTimeout(() => {
+            this.dialogRef.close()
+          },         2000)
         }
       },
       error: (error: HttpErrorResponse) => {

@@ -11,9 +11,9 @@
       <div class="flex">
         <span class="mat-body-1 font-bold-imp flex-1">{{odcConfig?.topsection?.heading}}</span>
         <mat-icon class="cursor-pointer mat-icon mr-4" *ngIf="showTopSection"
-          (click)="showTopSection = !showTopSection">keyboard_arrow_up</mat-icon>
+          (click)="showTopSection = !showTopSection; callResizeEvent($event)">keyboard_arrow_up</mat-icon>
         <mat-icon class="cursor-pointer mat-icon mr-4" *ngIf="!showTopSection"
-          (click)="showTopSection = !showTopSection">keyboard_arrow_down</mat-icon>
+          (click)="showTopSection = !showTopSection; callResizeEvent($event)">keyboard_arrow_down</mat-icon>
       </div>
       <div class="mt-5" *ngIf="showTopSection">
         <div class="flex">
@@ -32,7 +32,7 @@
         </div>
       </div>
     </mat-card>
-    <div>
+    <div *ngIf="environmentVal && environmentVal.frameworkName">
       <lib-taxonomy-view [environment]="environmentVal" [taxonomyConfig]="taxonomyConfig"></lib-taxonomy-view>
     </div>
   </div>

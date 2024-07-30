@@ -4,6 +4,7 @@
   height: 20px;
   color: #797979;
   pointer-events: all;
+  cursor: pointer;
 }
 
 .header-text {
@@ -129,10 +130,10 @@
     }
 
     .custom-user-card {
-      width: 292px;
+      width: 360px;
       border: 1px solid rgba(0, 0, 0, 0.16);
       border-radius: 4px;
-      height: 70px;
+      height: 82px;
     }
 
     .disableCard {
