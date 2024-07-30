@@ -222,10 +222,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
           'profileDetails.professionalDetails.designation',
           'profileDetails.additionalDetails.tag',
         ],
-        fields: [
-          'rootOrgId',
-          'profileDetails',
-        ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -278,10 +278,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
           'profileDetails.professionalDetails.designation',
           'profileDetails.additionalDetails.tag',
         ],
-        fields: [
-          'rootOrgId',
-          'profileDetails',
-        ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -332,10 +332,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
           'profileDetails.professionalDetails.designation',
           'profileDetails.additionalDetails.tag',
         ],
-        fields: [
-          'rootOrgId',
-          'profileDetails',
-        ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
@@ -387,10 +387,10 @@ export class UsersViewComponent implements OnInit, OnDestroy {
           'profileDetails.professionalDetails.designation',
           'profileDetails.additionalDetails.tag',
         ],
-        fields: [
-          'rootOrgId',
-          'profileDetails',
-        ],
+        // fields: [
+        //   'rootOrgId',
+        //   'profileDetails',
+        // ],
         limit: this.limit,
         offset: this.pageIndex,
         query: this.getSearchText(query),
