@@ -105,6 +105,8 @@ export class MentorManageComponent implements OnInit, OnDestroy {
       this.getAllVerifiedUsers('')
       this.getMentorUsers('')
     })
+    this.getAllVerifiedUsers('')
+    this.getMentorUsers('')
 
     // this.getNVUsers('')
 
